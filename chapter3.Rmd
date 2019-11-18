@@ -1,0 +1,160 @@
+---
+title: "chapter3"
+author: "Joonas Luukkonen"
+date: "14 11 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Logistic Regression
+
+**2.**
+
+The data approach student achievement in secondary education of two Portuguese schools. There are 382 observations of 35  variables (+ techical variable x, which appeared for some reason after reading data into r.) in the dataset after structuration. In addition to factor, integer and numerical variables there is a logical variable as well, the one which was created for the purpose of logistic regression.
+
+``` {r}
+setwd("~/IODS-project/data")
+read.csv("alc.csv")
+alc <- read.csv("alc.csv")
+colnames(alc)
+str(alc)
+dim(alc)
+head(alc)
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+```
+
+**3.**
+
+I chose *absences*, *going out with friens (goout)*, *mother's education* and *father's job* for variables predicting student's alcohol consumption.
+My hypothesis is, that the  absences from school is the strongest predictor of alcohol consumption of the four chosen predictors. I also assume, that going out with friends have a clear connection with alcohol consumption: the more one goes out, the more one consumes alcohol, on average. Third hypothesis is, that family's socio-economic position (mother's education + father's job) has an inverse connection to alcohol consumption of a child: the lower the family's socio-economic position, the more there is certain type of risk behavior (alcohol consumption) even intergenerationally.
+
+
+**4.** 
+
+For preliminary, graphical exploration of the hypothesis formulated, following box plot graphs are printed for integer variables *goout* and *absences*.
+
+```{r}
+g1 <- ggplot(alc, aes(x = high_use, y = absences, col = sex))
+g2 <- ggplot(alc, aes(x = high_use, y = goout, col = sex))
+g1 + geom_boxplot()
+g2 + geom_boxplot()
+```
+
+It seems, that there are some differences in absences between high_users and low_users of alcohol. The differences are more clear among men. Men whose alcohol consumption is high, have more absences from school in general. Also, high consuming men's distribution of absences seems wider than those who do not consume as much and seems skewed as well. Between high and not-high consuming females there are not so clear difference in absences based on boxplot diagram. Some outliers can be detected among all four classes in question. Among females there seem to be more outliers, that drastically differ from main population in absences, than among men. Going out seems to have a clear connection with alcohol consumption. For both female and men a high consumption of alcohol indicates a higher outgoing rate.
+
+For gategorial variables concerning family's socio-economic position, boxplot diagrams are not reasonable solution. Therefore, pobability tables are printed for Medu and Fjob with following commands and results:
+
+```{r}
+attach(alc)
+mytable0 <- table(high_use)
+mytable0
+prop.table(mytable0)
+
+mytable <- table(Fjob, high_use)
+mytable
+prop.table(mytable, 1)
+
+mytable2 <- table(Medu, high_use)
+mytable2
+prop.table(mytable2, 1)
+
+chisq.test(mytable)
+chisq.test(mytable2)
+```
+
+```{r}
+
+```
+
+
+In average, the probability of high alcohol consumption is ~ 30 %. From tables concerning father's job, it can be seen, that especially students, whose father works at service sector, have a higher probability of high alcohol usage compared to students, whose fathers work in other sectors. Mother's education does not have a straightforward relationship with students high alcohol consumption. Although students, whose mothers do not have any education, have clearly higher probability (66%) for high alcohol usage, it must be noticed, that there are only 3 students whose mother do not have any education in the data, which means that any conlcusions of those students cannot be drawn. Based on chi-square tests, father's job doesn't have statistically significant connection to student's alcohol consumption, but mother's education does have.
+
+In contrast to my hypotheses, it seems that going out might be the strongest predictor of high alcohol consumption, rather than absences from school. Also, family's socioeconomic position does have a connection, but the interpretation with these two variables in question (Medu, Fjob) is difficult due to shortages in sample size.
+
+**5.**
+
+Logistic regression is utilized to form a predictive model for alcohol consumption, using following commands:
+
+```{r}
+m <- glm(high_use ~ Fjob + Medu + goout + absences, data = alc, family = "binomial")
+summary(m)
+
+OR <- coef(m) %>% exp
+CI <- confint(m) %>% exp
+cbind(OR, CI)
+```
+
+
+Logistic regression model confirms the interpretation presented above: going out is the srongest predictor for high alcohol consumption. One unit increase in going out means that the odds ratio for belonging to the group of high alcohol consuming students grows 2,1. This is not exactly the same as saying "probability increases two times", although in reality it can be close to this kind of interpretation (relative risk vs. odds ratio, eg. https://journal.fi/janus/article/download/50456/15253, in Finnish, unfortunately). Absences from school is statistically significant predictor as well, but it's effect seems modest. Partly this can be explained by the relatively large scale of the variable. If standardized, the effect would appear much stronger.
+
+The model interprets mother's education to be numerical due to variable's numerical coding. In this case, this can be accepted, because mother's education (based on crosstabs) didn't have the kind of relationship with alcohol consumption, that would have had a straightforward theoretical interpretation. That is, there were a statistically significant variation with alcohol usage, but as the connection was not even close to linear, this was enough to question my hypothesis concerning especially mother's low education.
+
+Father's job is considered as a factor variable in the model. Since the first class of the variable works as a reference group for others, it seems that students whose father works at a service sector, have a higher probability of high consumption of alcohol (OR = 3,81) compared to students whose father works / is at home (this category is not included visibly in the model). However, the value of the estimate is not statistically significant, so with this number of observations, this kind of interpretation cannot be made.
+
+**6.**
+
+Based on AIC criterion, a better fitting (simpler) model is formed by dropping statistically non-significant variables (Medu, Fjob) out of the model. Step by step it can be seen, that AIC has the lowest value with only two statistically significant predictors (goout and absences) in the model (AIC = 408,5), although, the differences are modest.
+
+
+``` {r}
+m1 <- glm(high_use ~ Fjob + goout + absences, data = alc, family = "binomial")
+summary(m1)
+
+OR <- coef(m1) %>% exp
+CI <- confint(m1) %>% exp
+cbind(OR, CI)
+
+m2 <- glm(high_use ~ goout + absences, data = alc, family = "binomial")
+summary(m2)
+
+OR <- coef(m2) %>% exp
+CI <- confint(m2) %>% exp
+cbind(OR, CI)
+```
+
+
+A "confusion matrix" shows, that a model does have power predicting observations right, but it must be noticed, that there exist misclassified observations as well.
+
+Utilizing a loss function, the average number of correct (accuracy) and incorrect (penalty) predictions can be estimated. Based on the latter loss function, the average number of incorrect predictions is about 23,6 percentage.
+
+
+```{r}
+probabilities <- predict(m2, type = "response")
+alc <- mutate(alc, probability = probabilities)
+alc <- mutate(alc, prediction = probability > 0.5)
+table(high_use = alc$high_use, prediction = alc$prediction)
+
+g6 <- ggplot(alc, aes(x = probability, y = high_use, col = prediction))
+g6 + geom_point()
+table(high_use = alc$high_use, prediction = alc$prediction) %>% prop.table %>% addmargins
+
+loss_func <- function(class, prob) {
+n_wrong <- abs(class - prob) > 0.5
+mean(n_wrong)
+}
+
+loss_func(class = alc$high_use, prob = 1)
+loss_func(class = alc$high_use, prob = 0)
+loss_func(class = alc$high_use, prob = alc$probability)
+
+```
+
+
+**7.** 
+
+Following commands are executed for 10-fold cross-validation of the model.
+
+```{r}
+library(boot)
+cv <- cv.glm(data = alc, cost = loss_func, glmfit = m, K = 10)
+cv$delta[1]
+```
+
+It seems, that the mean prediction error of the model presented above (0,246) is slightly smaller compared to the model presented in the data camp excercise (0,264).
+
