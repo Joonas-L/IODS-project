@@ -388,7 +388,9 @@ summary {
 <div id="TOC">
 <ul>
 <li><a href="#about-the-project">About the project</a></li>
-<li><a href="#chapter-2">chapter 2</a></li>
+<li><a href="#chapter-2">chapter 2</a><ul>
+<li><a href="#logistic-regression">Logistic Regression</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -466,6 +468,1871 @@ surf -0.58607 0.80138 -0.731 0.46563<br />
 <p>The graph of “Residuals vs. Fitted” shows a scatter plot with no clear patterns to perceive. In other words, there is a reasonably random spread of points in the graph, apart from few single points at the bottom of the scatter plot. This indicates, that the size of errors does not depend on the explanatory variable and that the errors do have a constant variance.</p>
 <p>Based on “Residuals vs. Leverage” graph, it seems that there are no single observation with significantly more leverage than others, because the scatter plot is quite randomly dispersed. This means that no single observation with unusually high impact in the model can be detected. Thus, the model seems quite valid with the assumptions fulfilled in a reasonable way.</p>
 <hr />
+<div id="logistic-regression" class="section level2">
+<h2>Logistic Regression</h2>
+<p><strong>2.</strong></p>
+<p>The data approach student achievement in secondary education of two Portuguese schools. There are 382 observations of 35 variables (+ techical variable x, which appeared for some reason after reading data into r.) in the dataset after structuration. In addition to factor, integer and numerical variables there is a logical variable as well, the one which was created for the purpose of logistic regression.</p>
+<pre class="r"><code>setwd(&quot;~/IODS-project/data&quot;)
+read.csv(&quot;alc.csv&quot;)</code></pre>
+<pre><code>##       X school sex age address famsize Pstatus Medu Fedu     Mjob     Fjob
+## 1     1     GP   F  18       U     GT3       A    4    4  at_home  teacher
+## 2     2     GP   F  17       U     GT3       T    1    1  at_home    other
+## 3     3     GP   F  15       U     LE3       T    1    1  at_home    other
+## 4     4     GP   F  15       U     GT3       T    4    2   health services
+## 5     5     GP   F  16       U     GT3       T    3    3    other    other
+## 6     6     GP   M  16       U     LE3       T    4    3 services    other
+## 7     7     GP   M  16       U     LE3       T    2    2    other    other
+## 8     8     GP   F  17       U     GT3       A    4    4    other  teacher
+## 9     9     GP   M  15       U     LE3       A    3    2 services    other
+## 10   10     GP   M  15       U     GT3       T    3    4    other    other
+## 11   11     GP   F  15       U     GT3       T    4    4  teacher   health
+## 12   12     GP   F  15       U     GT3       T    2    1 services    other
+## 13   13     GP   M  15       U     LE3       T    4    4   health services
+## 14   14     GP   M  15       U     GT3       T    4    3  teacher    other
+## 15   15     GP   M  15       U     GT3       A    2    2    other    other
+## 16   16     GP   F  16       U     GT3       T    4    4   health    other
+## 17   17     GP   F  16       U     GT3       T    4    4 services services
+## 18   18     GP   F  16       U     GT3       T    3    3    other    other
+## 19   19     GP   M  17       U     GT3       T    3    2 services services
+## 20   20     GP   M  16       U     LE3       T    4    3   health    other
+## 21   21     GP   M  15       U     GT3       T    4    3  teacher    other
+## 22   22     GP   M  15       U     GT3       T    4    4   health   health
+## 23   23     GP   M  16       U     LE3       T    4    2  teacher    other
+## 24   24     GP   M  16       U     LE3       T    2    2    other    other
+## 25   25     GP   F  15       R     GT3       T    2    4 services   health
+## 26   26     GP   F  16       U     GT3       T    2    2 services services
+## 27   27     GP   M  15       U     GT3       T    2    2    other    other
+## 28   28     GP   M  15       U     GT3       T    4    2   health services
+## 29   29     GP   M  16       U     LE3       A    3    4 services    other
+## 30   30     GP   M  16       U     GT3       T    4    4  teacher  teacher
+## 31   31     GP   M  15       U     GT3       T    4    4   health services
+## 32   32     GP   M  15       U     GT3       T    4    4 services services
+## 33   33     GP   M  15       R     GT3       T    4    3  teacher  at_home
+## 34   34     GP   M  15       U     LE3       T    3    3    other    other
+## 35   35     GP   M  16       U     GT3       T    3    2    other    other
+## 36   36     GP   F  15       U     GT3       T    2    3    other    other
+## 37   37     GP   M  15       U     LE3       T    4    3  teacher services
+## 38   38     GP   M  16       R     GT3       A    4    4    other  teacher
+## 39   39     GP   F  15       R     GT3       T    3    4 services   health
+## 40   40     GP   F  15       R     GT3       T    2    2  at_home    other
+## 41   41     GP   F  16       U     LE3       T    2    2    other    other
+## 42   42     GP   M  15       U     LE3       T    4    4  teacher    other
+## 43   43     GP   M  15       U     GT3       T    4    4 services  teacher
+## 44   44     GP   M  15       U     GT3       T    2    2 services services
+## 45   45     GP   F  16       U     LE3       T    2    2    other  at_home
+## 46   46     GP   F  15       U     LE3       A    4    3    other    other
+## 47   47     GP   F  16       U     LE3       A    3    3    other services
+## 48   48     GP   M  16       U     GT3       T    4    3   health services
+## 49   49     GP   M  15       U     GT3       T    4    2  teacher    other
+## 50   50     GP   F  15       U     GT3       T    4    4 services  teacher
+## 51   51     GP   F  16       U     LE3       T    2    2 services services
+## 52   52     GP   F  15       U     LE3       T    4    2   health    other
+## 53   53     GP   M  15       U     LE3       A    4    2   health   health
+## 54   54     GP   F  15       U     GT3       T    4    4 services services
+## 55   55     GP   F  15       U     LE3       A    3    3    other    other
+## 56   56     GP   F  16       U     GT3       A    2    1    other    other
+## 57   57     GP   F  15       U     GT3       A    4    3 services services
+## 58   58     GP   M  15       U     GT3       T    4    4  teacher   health
+## 59   59     GP   M  15       U     LE3       T    1    2    other  at_home
+## 60   60     GP   F  16       U     GT3       T    4    2 services    other
+## 61   61     GP   F  16       R     GT3       T    4    4   health  teacher
+## 62   62     GP   F  16       U     GT3       T    1    1 services services
+## 63   63     GP   F  16       U     LE3       T    1    2    other services
+## 64   64     GP   F  16       U     GT3       T    4    3  teacher   health
+## 65   65     GP   F  15       U     LE3       T    4    3 services services
+## 66   66     GP   F  16       U     LE3       T    4    3  teacher services
+## 67   67     GP   M  15       U     GT3       A    4    4    other services
+## 68   68     GP   F  16       U     GT3       T    3    1 services    other
+## 69   69     GP   F  15       R     LE3       T    2    2   health services
+## 70   70     GP   F  15       R     LE3       T    3    1    other    other
+## 71   71     GP   M  16       U     GT3       T    3    1    other    other
+## 72   72     GP   M  15       U     GT3       T    4    2    other    other
+## 73   73     GP   F  15       R     GT3       T    1    1    other    other
+## 74   74     GP   M  16       U     GT3       T    3    1    other    other
+## 75   75     GP   F  16       U     GT3       T    3    3    other services
+## 76   76     GP   M  15       U     GT3       T    4    3  teacher    other
+## 77   77     GP   M  15       U     GT3       T    4    0  teacher    other
+## 78   78     GP   F  16       U     GT3       T    2    2    other    other
+## 79   79     GP   M  17       U     GT3       T    2    1    other    other
+## 80   80     GP   M  17       U     GT3       T    2    1    other    other
+## 81   81     GP   F  16       U     GT3       T    3    4  at_home    other
+## 82   82     GP   M  15       U     GT3       T    2    3    other services
+## 83   83     GP   M  15       U     GT3       T    2    3    other    other
+## 84   84     GP   F  15       U     LE3       T    3    2 services    other
+## 85   85     GP   M  15       U     LE3       T    2    2 services services
+## 86   86     GP   F  15       U     GT3       T    1    1    other    other
+## 87   87     GP   F  15       U     GT3       T    4    4 services services
+## 88   88     GP   F  16       U     LE3       T    2    2  at_home    other
+## 89   89     GP   F  15       U     GT3       T    4    2    other    other
+## 90   90     GP   M  16       U     GT3       T    2    2 services    other
+## 91   91     GP   M  16       U     LE3       A    4    4  teacher   health
+## 92   92     GP   F  16       U     GT3       T    3    3    other    other
+## 93   93     GP   F  15       U     GT3       T    4    3 services    other
+## 94   94     GP   F  16       U     LE3       T    3    1    other    other
+## 95   95     GP   F  16       U     GT3       T    4    2  teacher services
+## 96   96     GP   M  15       U     LE3       T    2    2 services   health
+## 97   97     GP   F  15       R     GT3       T    1    1  at_home    other
+## 98   98     GP   M  16       R     GT3       T    4    3 services    other
+## 99   99     GP   F  16       U     GT3       T    2    1    other    other
+## 100 100     GP   F  16       U     GT3       T    4    4    other    other
+## 101 101     GP   F  16       U     GT3       T    4    3    other  at_home
+## 102 102     GP   M  16       U     GT3       T    4    4 services services
+## 103 103     GP   M  16       U     GT3       T    4    4 services  teacher
+## 104 104     GP   M  15       U     GT3       T    4    4 services    other
+## 105 105     GP   F  15       U     GT3       T    3    2 services    other
+## 106 106     GP   M  15       U     GT3       A    3    4 services    other
+## 107 107     GP   F  15       U     GT3       A    3    3    other   health
+## 108 108     GP   F  15       U     GT3       T    2    2    other    other
+## 109 109     GP   M  16       U     GT3       T    3    3 services    other
+## 110 110     GP   M  16       U     GT3       T    3    3 services    other
+## 111 111     GP   M  15       R     GT3       T    4    4    other    other
+## 112 112     GP   F  16       U     LE3       T    4    4   health   health
+## 113 113     GP   M  15       U     LE3       A    4    4  teacher  teacher
+## 114 114     GP   F  16       R     GT3       T    3    3 services    other
+## 115 115     GP   F  16       U     GT3       T    2    2  at_home    other
+## 116 116     GP   M  15       U     LE3       T    4    2  teacher    other
+## 117 117     GP   M  15       R     GT3       T    2    1   health services
+## 118 118     GP   M  16       U     GT3       T    4    4  teacher  teacher
+## 119 119     GP   M  16       U     GT3       T    4    4  teacher  teacher
+## 120 120     GP   M  15       U     GT3       T    4    4    other  teacher
+## 121 121     GP   M  16       U     GT3       T    3    3    other services
+## 122 122     GP   M  17       R     GT3       T    1    3    other    other
+## 123 123     GP   M  15       U     GT3       T    3    4    other    other
+## 124 124     GP   F  15       U     GT3       T    1    2  at_home services
+## 125 125     GP   M  15       U     GT3       T    2    2 services services
+## 126 126     GP   F  16       U     LE3       T    2    4    other   health
+## 127 127     GP   M  16       U     GT3       T    4    4   health    other
+## 128 128     GP   F  16       U     GT3       T    2    2    other    other
+## 129 129     GP   M  15       U     GT3       T    3    4 services services
+## 130 130     GP   F  15       U     LE3       A    3    4    other    other
+## 131 131     GP   F  19       U     GT3       T    0    1  at_home    other
+## 132 132     GP   M  16       R     GT3       T    4    4  teacher  teacher
+## 133 133     GP   F  15       R     GT3       T    3    4 services  teacher
+## 134 134     GP   F  15       U     GT3       T    1    1  at_home    other
+## 135 135     GP   F  17       U     LE3       T    2    2    other    other
+## 136 136     GP   F  16       U     GT3       A    3    4 services    other
+## 137 137     GP   M  15       R     GT3       T    3    4  at_home  teacher
+## 138 138     GP   F  15       U     GT3       T    4    4 services  at_home
+## 139 139     GP   M  17       R     GT3       T    3    4  at_home    other
+## 140 140     GP   F  16       U     GT3       A    3    3    other    other
+## 141 141     GP   M  16       U     LE3       T    1    1 services    other
+## 142 142     GP   F  15       U     GT3       T    4    4  teacher  teacher
+## 143 143     GP   M  15       U     GT3       T    4    3  teacher services
+## 144 144     GP   M  16       U     LE3       T    2    2 services services
+## 145 145     GP   F  15       U     GT3       T    4    4  teacher services
+## 146 146     GP   F  16       U     LE3       T    1    1  at_home  at_home
+## 147 147     GP   M  17       U     GT3       T    2    1    other    other
+## 148 148     GP   M  17       U     GT3       T    2    1    other    other
+## 149 149     GP   F  15       U     GT3       T    1    1    other services
+## 150 150     GP   F  15       U     GT3       T    3    2   health services
+## 151 151     GP   F  15       U     GT3       T    1    2  at_home    other
+## 152 152     GP   M  16       U     GT3       T    4    4  teacher  teacher
+## 153 153     GP   M  16       U     GT3       T    4    4  teacher  teacher
+## 154 154     GP   M  15       U     LE3       A    2    1 services    other
+## 155 155     GP   M  18       U     LE3       T    1    1    other    other
+## 156 156     GP   M  16       U     LE3       T    2    1  at_home    other
+## 157 157     GP   F  15       R     GT3       T    3    3 services services
+## 158 158     GP   M  19       U     GT3       T    3    2 services  at_home
+## 159 159     GP   F  17       U     GT3       T    4    4    other  teacher
+## 160 160     GP   M  15       R     GT3       T    2    3  at_home services
+## 161 161     GP   M  17       R     LE3       T    1    2    other    other
+## 162 162     GP   F  18       R     GT3       T    1    1  at_home    other
+## 163 163     GP   M  16       R     GT3       T    2    2  at_home    other
+## 164 164     GP   M  16       U     GT3       T    3    3    other services
+## 165 165     GP   M  17       R     LE3       T    2    1  at_home    other
+## 166 166     GP   M  17       R     LE3       T    1    1    other services
+## 167 167     GP   M  16       U     GT3       T    2    2    other    other
+## 168 168     GP   F  16       U     GT3       T    4    2   health services
+## 169 169     GP   F  16       U     GT3       T    2    2    other    other
+## 170 170     GP   F  16       U     GT3       T    4    4   health   health
+## 171 171     GP   M  16       U     GT3       T    3    4    other    other
+## 172 172     GP   M  16       U     GT3       T    1    0    other    other
+## 173 173     GP   M  17       U     LE3       T    4    4  teacher    other
+## 174 174     GP   F  16       U     GT3       T    1    3  at_home services
+## 175 175     GP   F  16       U     LE3       T    3    3    other    other
+## 176 176     GP   M  17       U     LE3       T    4    3  teacher    other
+## 177 177     GP   F  16       U     GT3       T    2    2 services    other
+## 178 178     GP   M  17       U     GT3       T    3    3    other    other
+## 179 179     GP   M  16       R     GT3       T    4    2  teacher services
+## 180 180     GP   M  17       U     GT3       T    4    3    other    other
+## 181 181     GP   M  16       U     GT3       T    4    3  teacher    other
+## 182 182     GP   M  16       U     GT3       T    3    3 services    other
+## 183 183     GP   M  16       U     GT3       T    3    3 services    other
+## 184 184     GP   F  17       U     GT3       T    2    4 services services
+## 185 185     GP   F  17       U     LE3       T    3    3    other    other
+## 186 186     GP   F  16       U     GT3       T    3    2    other    other
+## 187 187     GP   M  17       U     GT3       T    3    3 services services
+## 188 188     GP   M  16       U     GT3       T    1    2 services services
+## 189 189     GP   M  16       U     LE3       T    2    1    other    other
+## 190 190     GP   F  17       U     GT3       A    3    3   health    other
+## 191 191     GP   M  17       R     GT3       T    1    2  at_home    other
+## 192 192     GP   F  16       U     GT3       T    2    3 services services
+## 193 193     GP   F  17       U     GT3       T    1    1  at_home services
+## 194 194     GP   M  17       U     GT3       T    1    2  at_home services
+## 195 195     GP   M  16       R     GT3       T    3    3 services services
+## 196 196     GP   M  16       U     GT3       T    2    3    other    other
+## 197 197     GP   F  17       U     LE3       T    2    4 services services
+## 198 198     GP   M  17       U     GT3       T    4    4 services  teacher
+## 199 199     GP   M  16       R     LE3       T    3    3  teacher    other
+## 200 200     GP   F  17       U     GT3       T    4    4 services  teacher
+## 201 201     GP   F  16       U     LE3       T    4    4  teacher  teacher
+## 202 202     GP   F  16       U     GT3       T    4    3   health    other
+## 203 203     GP   F  16       U     GT3       T    2    3    other    other
+## 204 204     GP   F  17       U     GT3       T    1    1    other    other
+## 205 205     GP   F  17       R     GT3       T    2    2    other    other
+## 206 206     GP   F  16       R     GT3       T    2    2 services services
+## 207 207     GP   F  17       U     GT3       T    3    4  at_home services
+## 208 208     GP   F  16       U     GT3       A    3    1 services    other
+## 209 209     GP   F  16       U     GT3       T    4    3  teacher    other
+## 210 210     GP   F  16       U     GT3       T    1    1  at_home    other
+## 211 211     GP   F  17       R     GT3       T    4    3  teacher    other
+## 212 212     GP   F  19       U     GT3       T    3    3    other    other
+## 213 213     GP   M  17       U     LE3       T    4    4 services    other
+## 214 214     GP   F  16       U     GT3       A    2    2    other    other
+## 215 215     GP   M  18       U     GT3       T    2    2 services    other
+## 216 216     GP   F  17       R     LE3       T    4    4 services    other
+## 217 217     GP   F  17       U     LE3       T    3    2    other    other
+## 218 218     GP   F  17       U     GT3       T    4    3    other    other
+## 219 219     GP   M  18       U     LE3       T    3    3 services   health
+## 220 220     GP   F  17       U     GT3       T    2    3  at_home    other
+## 221 221     GP   F  17       U     GT3       T    2    2  at_home  at_home
+## 222 222     GP   F  17       R     GT3       T    2    1  at_home services
+## 223 223     GP   F  17       U     GT3       T    1    1  at_home    other
+## 224 224     GP   F  16       U     GT3       T    2    3 services  teacher
+## 225 225     GP   M  18       U     GT3       T    2    2    other    other
+## 226 226     GP   F  16       U     GT3       T    4    4  teacher services
+## 227 227     GP   F  18       R     GT3       T    3    1    other    other
+## 228 228     GP   F  17       U     GT3       T    3    2    other    other
+## 229 229     GP   M  17       U     LE3       T    2    3 services services
+## 230 230     GP   M  18       U     LE3       T    2    1  at_home    other
+## 231 231     GP   F  17       U     GT3       A    2    1    other    other
+## 232 232     GP   F  17       U     LE3       T    4    3   health    other
+## 233 233     GP   M  17       R     GT3       T    2    2    other    other
+## 234 234     GP   M  17       U     GT3       T    4    4  teacher  teacher
+## 235 235     GP   M  16       U     GT3       T    4    4   health    other
+## 236 236     GP   M  16       U     LE3       T    1    1    other    other
+## 237 237     GP   M  16       U     GT3       T    3    2  at_home    other
+## 238 238     GP   M  17       U     LE3       T    2    2    other    other
+## 239 239     GP   F  16       U     GT3       T    2    1    other    other
+## 240 240     GP   F  17       R     GT3       T    2    1  at_home services
+## 241 241     GP   M  18       U     GT3       T    2    2    other services
+## 242 242     GP   M  17       U     LE3       T    4    3   health    other
+## 243 243     GP   M  17       R     LE3       A    4    4  teacher    other
+## 244 244     GP   M  16       U     LE3       T    4    3  teacher    other
+## 245 245     GP   M  16       U     GT3       T    4    4 services services
+## 246 246     GP   M  16       U     GT3       T    4    4 services services
+## 247 247     GP   F  18       U     GT3       T    2    1    other    other
+## 248 248     GP   M  16       U     GT3       T    2    1    other    other
+## 249 249     GP   M  17       U     GT3       T    2    3    other    other
+## 250 250     GP   M  22       U     GT3       T    3    1 services services
+## 251 251     GP   M  18       R     LE3       T    3    3    other services
+## 252 252     GP   M  16       U     GT3       T    0    2    other    other
+## 253 253     GP   M  18       U     GT3       T    3    2 services    other
+## 254 254     GP   M  16       U     GT3       T    3    3  at_home    other
+## 255 255     GP   M  18       U     GT3       T    2    1 services services
+## 256 256     GP   M  16       R     GT3       T    2    1    other    other
+## 257 257     GP   M  17       R     GT3       T    2    1    other    other
+## 258 258     GP   M  17       U     LE3       T    1    1   health    other
+## 259 259     GP   F  17       U     LE3       T    4    2  teacher services
+## 260 260     GP   M  19       U     LE3       A    4    3 services  at_home
+## 261 261     GP   M  18       U     GT3       T    2    1    other    other
+## 262 262     GP   F  17       U     LE3       T    2    2 services services
+## 263 263     GP   F  18       U     GT3       T    4    3 services    other
+## 264 264     GP   M  18       U     GT3       T    4    3  teacher    other
+## 265 265     GP   M  18       R     GT3       T    3    2    other    other
+## 266 266     GP   F  17       U     GT3       T    3    3    other    other
+## 267 267     GP   F  18       U     GT3       T    2    2  at_home services
+## 268 268     GP   M  18       R     LE3       A    3    4    other    other
+## 269 269     GP   M  17       U     GT3       T    3    1 services    other
+## 270 270     GP   F  18       R     GT3       T    4    4  teacher    other
+## 271 271     GP   M  18       U     GT3       T    4    2   health    other
+## 272 272     GP   F  18       R     GT3       T    2    1    other    other
+## 273 273     GP   F  19       U     GT3       T    3    3    other services
+## 274 274     GP   F  18       U     GT3       T    2    3    other services
+## 275 275     GP   F  18       U     LE3       T    1    1    other    other
+## 276 276     GP   M  17       R     GT3       T    1    2  at_home  at_home
+## 277 277     GP   F  17       U     GT3       T    2    4  at_home   health
+## 278 278     GP   F  17       U     LE3       T    2    2 services    other
+## 279 279     GP   F  18       R     GT3       A    3    2    other services
+## 280 280     GP   M  18       U     GT3       T    4    4  teacher services
+## 281 281     GP   M  18       U     GT3       T    4    4  teacher services
+## 282 282     GP   F  18       U     GT3       T    4    4   health   health
+## 283 283     GP   M  18       U     LE3       T    4    3  teacher services
+## 284 284     GP   M  17       U     LE3       A    4    1 services    other
+## 285 285     GP   M  17       U     LE3       A    3    2  teacher services
+## 286 286     GP   F  18       R     LE3       T    1    1  at_home    other
+## 287 287     GP   F  18       U     GT3       T    1    1    other    other
+## 288 288     GP   F  18       U     GT3       T    1    1    other    other
+## 289 289     GP   F  17       U     GT3       T    2    2    other    other
+## 290 290     GP   M  17       U     GT3       T    1    1    other    other
+## 291 291     GP   F  18       U     GT3       T    2    2  at_home  at_home
+## 292 292     GP   F  17       U     GT3       T    1    1 services  teacher
+## 293 293     GP   M  18       U     GT3       T    2    1 services services
+## 294 294     GP   M  18       U     LE3       A    4    4  teacher  teacher
+## 295 295     GP   M  18       U     GT3       T    4    2  teacher    other
+## 296 296     GP   F  17       U     GT3       T    4    3   health services
+## 297 297     GP   F  17       R     LE3       T    3    1 services    other
+## 298 298     GP   M  18       R     LE3       T    3    2 services    other
+## 299 299     GP   M  17       U     GT3       T    3    3   health    other
+## 300 300     GP   F  19       U     GT3       T    4    4   health    other
+## 301 301     GP   F  18       U     LE3       T    4    3    other    other
+## 302 302     GP   F  18       U     GT3       T    4    3    other    other
+## 303 303     GP   M  18       U     LE3       T    4    4  teacher  teacher
+## 304 304     GP   F  18       U     LE3       A    4    4   health    other
+## 305 305     GP   M  17       U     LE3       T    4    4    other  teacher
+## 306 306     GP   F  17       U     GT3       T    4    2    other    other
+## 307 307     GP   F  17       U     GT3       T    3    2   health   health
+## 308 308     GP   M  20       U     GT3       A    3    2 services    other
+## 309 309     GP   M  19       R     GT3       T    3    3    other services
+## 310 310     GP   F  18       U     GT3       T    2    1 services    other
+## 311 311     GP   F  18       U     GT3       T    4    3    other    other
+## 312 312     GP   F  17       R     GT3       T    3    4  at_home services
+## 313 313     GP   F  18       U     GT3       T    4    4  teacher    other
+## 314 314     GP   F  17       U     GT3       A    4    3 services services
+## 315 315     GP   F  17       U     GT3       T    2    2    other    other
+## 316 316     GP   F  17       R     LE3       T    2    2 services services
+## 317 317     GP   F  17       U     GT3       T    3    1 services services
+## 318 318     GP   F  17       U     LE3       T    0    2  at_home  at_home
+## 319 319     GP   M  18       U     GT3       T    4    4    other    other
+## 320 320     GP   M  17       U     GT3       T    3    3    other services
+## 321 321     GP   M  17       R     GT3       T    2    2 services    other
+## 322 322     GP   F  17       U     GT3       T    4    4  teacher services
+## 323 323     GP   F  17       U     GT3       T    4    4  teacher services
+## 324 324     GP   F  17       U     GT3       T    4    4  teacher  teacher
+## 325 325     GP   M  18       U     LE3       T    2    2    other    other
+## 326 326     GP   F  17       R     GT3       T    2    4  at_home    other
+## 327 327     GP   F  18       U     GT3       T    3    3 services services
+## 328 328     GP   F  18       U     LE3       T    2    2    other    other
+## 329 329     GP   F  18       R     GT3       T    2    2  at_home    other
+## 330 330     GP   F  17       U     GT3       T    3    4 services    other
+## 331 331     GP   F  17       U     GT3       T    3    2    other    other
+## 332 332     GP   F  18       U     LE3       T    3    3 services services
+## 333 333     GP   F  17       R     GT3       A    3    2    other    other
+## 334 334     GP   M  18       U     GT3       T    4    4  teacher services
+## 335 335     GP   M  18       U     GT3       T    4    4  teacher services
+## 336 336     GP   M  18       U     LE3       T    3    4 services    other
+## 337 337     GP   F  17       U     GT3       A    2    2  at_home  at_home
+## 338 338     GP   F  18       U     GT3       T    2    3  at_home    other
+## 339 339     GP   F  18       U     GT3       T    3    2    other services
+## 340 340     GP   M  18       R     GT3       T    4    3  teacher services
+## 341 341     GP   M  18       U     GT3       T    4    3  teacher    other
+## 342 342     GP   F  17       U     GT3       T    4    3   health    other
+## 343 343     MS   M  18       R     GT3       T    3    2    other    other
+## 344 344     MS   M  19       R     GT3       T    1    1    other services
+## 345 345     MS   M  17       U     GT3       T    3    3   health    other
+## 346 346     MS   M  18       U     LE3       T    1    3  at_home services
+## 347 347     MS   M  19       R     GT3       T    1    1    other    other
+## 348 348     MS   M  17       R     GT3       T    4    3 services    other
+## 349 349     MS   F  18       U     GT3       T    3    3 services services
+## 350 350     MS   F  17       R     GT3       T    4    4  teacher services
+## 351 351     MS   F  17       U     LE3       A    3    2 services    other
+## 352 352     MS   M  18       U     LE3       T    1    1    other services
+## 353 353     MS   F  18       U     LE3       T    1    1  at_home services
+## 354 354     MS   F  18       U     GT3       T    3    3 services services
+## 355 355     MS   F  17       U     LE3       T    4    4  at_home  at_home
+## 356 356     MS   F  17       R     GT3       T    1    2    other services
+## 357 357     MS   M  18       R     GT3       T    1    3  at_home    other
+## 358 358     MS   M  18       U     LE3       T    4    4  teacher services
+## 359 359     MS   F  17       R     GT3       T    1    1    other services
+## 360 360     MS   F  18       U     GT3       T    2    3  at_home services
+## 361 361     MS   F  18       R     GT3       T    4    4    other  teacher
+## 362 362     MS   M  18       R     LE3       T    1    2  at_home services
+## 363 363     MS   F  17       U     GT3       T    2    2    other  at_home
+## 364 364     MS   F  17       R     GT3       T    1    2    other    other
+## 365 365     MS   F  18       R     LE3       T    4    4    other    other
+## 366 366     MS   F  18       R     GT3       T    1    1    other    other
+## 367 367     MS   F  18       R     LE3       T    4    4  teacher services
+## 368 368     MS   F  18       U     GT3       T    3    3    other    other
+## 369 369     MS   F  17       R     GT3       T    3    1  at_home    other
+## 370 370     MS   M  18       U     GT3       T    4    4  teacher  teacher
+## 371 371     MS   M  18       R     GT3       T    2    1    other    other
+## 372 372     MS   M  17       U     GT3       T    2    3    other services
+## 373 373     MS   M  19       R     GT3       T    1    1    other services
+## 374 374     MS   M  18       R     GT3       T    4    2    other    other
+## 375 375     MS   F  18       R     GT3       T    2    2  at_home    other
+## 376 376     MS   F  18       R     GT3       T    4    4  teacher  at_home
+## 377 377     MS   F  19       R     GT3       T    2    3 services    other
+## 378 378     MS   F  18       U     LE3       T    3    1  teacher services
+## 379 379     MS   F  18       U     GT3       T    1    1    other    other
+## 380 380     MS   F  18       U     GT3       T    1    1    other    other
+## 381 381     MS   M  17       U     LE3       T    3    1 services services
+## 382 382     MS   M  18       R     LE3       T    3    2 services    other
+##         reason nursery internet guardian traveltime studytime failures
+## 1       course     yes       no   mother          2         2        0
+## 2       course      no      yes   father          1         2        0
+## 3        other     yes      yes   mother          1         2        2
+## 4         home     yes      yes   mother          1         3        0
+## 5         home     yes       no   father          1         2        0
+## 6   reputation     yes      yes   mother          1         2        0
+## 7         home     yes      yes   mother          1         2        0
+## 8         home     yes       no   mother          2         2        0
+## 9         home     yes      yes   mother          1         2        0
+## 10        home     yes      yes   mother          1         2        0
+## 11  reputation     yes      yes   mother          1         2        0
+## 12  reputation     yes      yes   father          3         3        0
+## 13      course     yes      yes   father          1         1        0
+## 14      course     yes      yes   mother          2         2        0
+## 15        home     yes      yes    other          1         3        0
+## 16        home     yes      yes   mother          1         1        0
+## 17  reputation     yes      yes   mother          1         3        0
+## 18  reputation     yes       no   mother          3         2        0
+## 19      course     yes      yes   mother          1         1        3
+## 20        home     yes      yes   father          1         1        0
+## 21  reputation     yes      yes   mother          1         2        0
+## 22       other     yes      yes   father          1         1        0
+## 23      course     yes      yes   mother          1         2        0
+## 24  reputation     yes      yes   mother          2         2        0
+## 25      course     yes      yes   mother          1         3        0
+## 26        home      no      yes   mother          1         1        1
+## 27        home     yes      yes   mother          1         1        0
+## 28       other     yes      yes   mother          1         1        0
+## 29        home     yes      yes   mother          1         2        0
+## 30        home     yes      yes   mother          1         2        0
+## 31        home      no      yes   mother          1         2        0
+## 32  reputation     yes      yes   mother          2         2        0
+## 33      course     yes      yes   mother          1         2        0
+## 34      course      no      yes   mother          1         2        0
+## 35        home      no      yes   mother          1         1        0
+## 36       other     yes       no   father          2         1        0
+## 37        home     yes      yes   mother          1         3        0
+## 38  reputation     yes      yes   mother          2         3        0
+## 39      course     yes      yes   mother          1         3        0
+## 40  reputation     yes       no   mother          1         1        0
+## 41        home      no      yes   mother          2         2        0
+## 42        home      no      yes    other          1         1        0
+## 43      course     yes      yes   father          1         2        0
+## 44      course     yes      yes   father          1         1        0
+## 45      course     yes      yes   father          2         2        1
+## 46      course     yes      yes   mother          1         2        0
+## 47        home     yes      yes   mother          1         2        0
+## 48  reputation     yes      yes   mother          1         4        0
+## 49        home     yes       no   mother          1         2        0
+## 50       other      no      yes   father          1         2        0
+## 51      course     yes      yes   mother          3         2        0
+## 52       other     yes      yes   mother          1         2        0
+## 53       other     yes       no   father          2         1        0
+## 54      course     yes      yes   mother          1         1        0
+## 55       other     yes      yes   mother          1         1        0
+## 56       other     yes      yes   mother          1         2        0
+## 57  reputation     yes      yes   mother          1         2        0
+## 58  reputation     yes       no   mother          1         2        0
+## 59        home     yes      yes   father          1         2        0
+## 60      course     yes      yes   mother          1         2        0
+## 61       other     yes       no   mother          1         2        0
+## 62      course      no      yes   father          4         1        0
+## 63  reputation     yes      yes   father          1         2        0
+## 64        home     yes      yes   mother          1         3        0
+## 65  reputation     yes      yes   father          1         2        0
+## 66      course     yes      yes   mother          3         2        0
+## 67  reputation      no      yes   mother          1         4        0
+## 68      course     yes      yes   mother          1         4        0
+## 69  reputation     yes      yes   mother          2         2        0
+## 70  reputation      no      yes   father          2         4        0
+## 71  reputation     yes      yes   father          2         4        0
+## 72      course     yes      yes   mother          1         4        0
+## 73  reputation      no      yes   mother          1         2        1
+## 74  reputation     yes       no   mother          1         1        0
+## 75        home     yes      yes   mother          1         2        0
+## 76        home     yes      yes   mother          1         2        0
+## 77      course     yes      yes   mother          2         4        0
+## 78  reputation     yes      yes   mother          1         4        0
+## 79        home     yes      yes   mother          2         1        3
+## 80        home     yes      yes   mother          2         1        2
+## 81      course     yes      yes   mother          1         2        0
+## 82      course      no      yes   father          1         1        0
+## 83        home      no      yes   mother          1         3        0
+## 84  reputation     yes      yes   mother          1         2        0
+## 85        home     yes      yes   mother          2         2        0
+## 86        home      no      yes   father          1         2        0
+## 87  reputation     yes      yes   father          2         2        1
+## 88      course     yes       no   mother          1         2        0
+## 89  reputation     yes      yes   mother          1         3        0
+## 90  reputation      no      yes   father          2         2        0
+## 91  reputation     yes       no   mother          1         2        0
+## 92        home     yes      yes   mother          1         3        0
+## 93  reputation     yes      yes   mother          1         1        0
+## 94        home     yes       no   father          1         2        0
+## 95        home     yes      yes   mother          2         2        0
+## 96  reputation     yes      yes   mother          1         4        0
+## 97        home     yes      yes   mother          2         4        0
+## 98  reputation      no      yes   mother          2         1        0
+## 99      course     yes       no   mother          1         2        0
+## 100 reputation      no      yes   mother          1         1        0
+## 101     course     yes      yes   mother          1         3        0
+## 102      other     yes      yes   mother          1         1        0
+## 103      other     yes      yes   father          1         3        0
+## 104     course      no      yes   mother          1         1        0
+## 105       home     yes      yes   mother          2         2        0
+## 106     course     yes      yes   mother          1         2        0
+## 107 reputation     yes       no   father          1         4        0
+## 108     course     yes      yes   mother          1         4        0
+## 109       home     yes      yes   father          1         3        0
+## 110       home     yes      yes   father          1         2        0
+## 111       home     yes      yes   father          4         4        0
+## 112      other     yes      yes   mother          1         3        0
+## 113     course     yes      yes   mother          1         1        0
+## 114 reputation     yes      yes   father          1         3        0
+## 115       home     yes      yes   mother          1         2        1
+## 116     course     yes      yes   mother          1         1        0
+## 117 reputation     yes      yes   mother          1         2        0
+## 118     course     yes      yes   father          1         2        0
+## 119     course     yes      yes   father          1         2        0
+## 120 reputation     yes       no   father          2         2        0
+## 121       home     yes      yes   father          2         1        0
+## 122     course     yes      yes   father          3         2        1
+## 123 reputation     yes      yes   father          1         1        0
+## 124     course      no      yes   mother          1         2        0
+## 125       home     yes      yes   father          1         4        0
+## 126     course     yes      yes   father          2         2        0
+## 127     course     yes      yes   mother          1         1        0
+## 128       home     yes      yes   mother          1         2        0
+## 129       home     yes      yes   father          1         1        0
+## 130       home     yes      yes   mother          1         2        0
+## 131     course      no       no    other          1         2        2
+## 132     course     yes      yes   mother          1         1        0
+## 133     course     yes      yes   father          2         3        1
+## 134     course      no      yes   mother          3         1        0
+## 135     course     yes      yes   father          1         1        0
+## 136     course     yes      yes   father          1         1        0
+## 137     course     yes       no   mother          4         2        0
+## 138     course     yes      yes   mother          1         3        0
+## 139     course     yes       no   mother          3         2        0
+## 140     course      no      yes    other          2         1        1
+## 141     course     yes       no   mother          1         2        2
+## 142     course     yes      yes   mother          2         1        0
+## 143     course     yes      yes   father          2         4        0
+## 144 reputation     yes      yes   father          2         1        1
+## 145     course     yes      yes   mother          1         3        0
+## 146     course     yes      yes   mother          1         1        0
+## 147       home     yes      yes   mother          2         1        3
+## 148       home     yes      yes   mother          1         1        2
+## 149     course     yes      yes   father          1         2        0
+## 150       home     yes      yes   father          1         2        2
+## 151     course      no      yes   mother          1         2        0
+## 152     course     yes      yes   mother          1         2        0
+## 153     course     yes      yes   mother          1         1        0
+## 154     course     yes      yes   mother          4         1        2
+## 155     course     yes      yes   mother          1         1        2
+## 156     course     yes       no   mother          1         1        1
+## 157 reputation     yes      yes    other          2         3        1
+## 158       home     yes      yes   mother          1         1        2
+## 159     course     yes       no   mother          1         1        0
+## 160     course     yes       no   mother          1         2        0
+## 161 reputation     yes       no   mother          1         1        2
+## 162     course      no       no   mother          3         1        3
+## 163     course      no       no   mother          3         1        0
+## 164     course     yes      yes   father          1         2        1
+## 165     course     yes      yes   mother          2         1        2
+## 166     course     yes       no   mother          4         2        2
+## 167     course     yes      yes   father          1         2        0
+## 168       home     yes      yes   father          1         2        0
+## 169       home      no      yes   mother          1         2        0
+## 170 reputation     yes      yes   mother          1         2        0
+## 171     course      no      yes   father          3         1        2
+## 172 reputation     yes      yes   mother          2         2        0
+## 173 reputation     yes      yes   mother          1         2        0
+## 174       home      no      yes   mother          1         2        2
+## 175 reputation     yes      yes   mother          2         2        0
+## 176     course     yes      yes   mother          2         2        0
+## 177 reputation      no      yes   mother          2         2        0
+## 178 reputation      no      yes   father          1         2        0
+## 179      other     yes      yes   mother          1         1        0
+## 180     course     yes      yes   mother          1         2        0
+## 181       home     yes      yes   mother          1         2        0
+## 182       home     yes      yes   mother          1         2        0
+## 183       home     yes      yes   mother          1         2        0
+## 184 reputation     yes       no   father          1         2        0
+## 185 reputation     yes      yes   mother          1         2        0
+## 186 reputation     yes      yes   mother          1         2        0
+## 187      other     yes      yes   mother          1         2        0
+## 188      other     yes      yes   mother          1         1        0
+## 189     course     yes      yes   mother          1         2        0
+## 190 reputation      no      yes   mother          1         2        0
+## 191       home     yes       no   mother          1         2        0
+## 192     course     yes      yes   mother          1         2        0
+## 193     course     yes      yes   mother          1         2        0
+## 194      other      no      yes    other          2         2        0
+## 195 reputation     yes      yes   mother          1         1        0
+## 196       home     yes      yes   father          2         1        0
+## 197     course     yes      yes   father          1         2        0
+## 198       home     yes      yes   mother          1         1        0
+## 199       home     yes      yes   father          3         1        0
+## 200       home     yes      yes   mother          2         1        1
+## 201 reputation     yes      yes   mother          1         2        0
+## 202       home     yes      yes   mother          1         2        0
+## 203 reputation     yes       no   mother          1         2        0
+## 204     course      no       no   mother          1         2        0
+## 205 reputation     yes      yes   mother          1         1        0
+## 206 reputation      no      yes   mother          2         4        0
+## 207       home     yes      yes   mother          1         3        1
+## 208     course     yes      yes   mother          1         2        2
+## 209      other     yes      yes   mother          1         2        0
+## 210       home     yes       no   mother          2         1        0
+## 211 reputation     yes      yes   mother          2         3        0
+## 212 reputation     yes      yes    other          1         4        0
+## 213       home     yes      yes   mother          1         2        0
+## 214 reputation     yes      yes   mother          1         2        0
+## 215       home     yes      yes   mother          1         2        0
+## 216      other     yes       no   mother          1         1        0
+## 217 reputation     yes      yes   mother          2         2        0
+## 218 reputation     yes      yes   mother          1         2        1
+## 219       home     yes      yes   father          1         2        0
+## 220       home     yes       no   father          2         1        0
+## 221     course     yes      yes   mother          1         3        0
+## 222 reputation     yes      yes   mother          2         2        0
+## 223 reputation     yes       no   mother          1         3        0
+## 224      other     yes      yes   mother          1         2        0
+## 225       home     yes      yes   mother          2         2        2
+## 226       home      no      yes   mother          1         3        0
+## 227 reputation     yes      yes   mother          1         2        0
+## 228     course      no      yes   mother          1         2        0
+## 229 reputation      no      yes   father          1         2        0
+## 230     course     yes      yes   mother          4         2        0
+## 231     course     yes      yes   mother          2         3        0
+## 232 reputation     yes      yes   father          1         2        0
+## 233     course     yes      yes   father          2         2        0
+## 234 reputation     yes      yes   mother          1         2        0
+## 235 reputation     yes      yes   father          1         2        0
+## 236       home     yes      yes   mother          2         2        0
+## 237 reputation     yes      yes   mother          2         3        0
+## 238       home      no      yes   father          1         2        0
+## 239       home     yes      yes   mother          1         1        0
+## 240     course     yes       no   mother          3         2        0
+## 241 reputation     yes      yes   father          1         2        0
+## 242     course     yes      yes   mother          2         2        0
+## 243     course     yes      yes   mother          2         2        0
+## 244     course      no      yes   mother          1         1        0
+## 245     course     yes      yes   mother          1         2        0
+## 246     course     yes      yes   mother          1         1        0
+## 247     course      no      yes    other          2         3        0
+## 248     course     yes      yes   mother          3         1        0
+## 249     course     yes      yes   father          2         1        0
+## 250      other      no      yes   mother          1         1        3
+## 251     course     yes      yes   mother          1         2        0
+## 252      other      no      yes   mother          1         1        0
+## 253     course     yes      yes   mother          2         1        0
+## 254 reputation      no      yes    other          3         2        0
+## 255      other      no      yes   mother          1         1        2
+## 256     course      no       no   mother          2         1        0
+## 257     course      no      yes   mother          1         1        0
+## 258     course     yes      yes   mother          2         1        1
+## 259 reputation     yes      yes   mother          1         4        0
+## 260 reputation     yes      yes   mother          1         2        0
+## 261       home     yes      yes   mother          1         2        0
+## 262     course     yes      yes   father          1         4        0
+## 263       home     yes      yes   father          1         2        0
+## 264     course      no      yes   mother          1         2        0
+## 265     course      no       no   mother          1         3        0
+## 266       home      no       no   mother          1         3        0
+## 267       home     yes      yes   mother          1         3        0
+## 268 reputation     yes      yes   mother          2         2        0
+## 269      other     yes      yes   mother          1         2        0
+## 270 reputation     yes      yes   mother          2         2        0
+## 271 reputation     yes      yes   father          1         2        0
+## 272 reputation     yes      yes   mother          2         2        0
+## 273       home     yes      yes    other          1         2        1
+## 274 reputation     yes      yes   father          1         4        0
+## 275       home      no       no   mother          2         2        0
+## 276       home      no       no   mother          1         2        0
+## 277 reputation     yes      yes   mother          2         2        0
+## 278     course     yes      yes   mother          2         2        0
+## 279       home      no      yes   mother          2         2        0
+## 280       home     yes      yes   mother          2         1        0
+## 281       home     yes      yes   mother          2         2        0
+## 282 reputation     yes      yes   father          1         2        1
+## 283     course     yes      yes   mother          2         1        0
+## 284       home     yes      yes   mother          2         1        0
+## 285       home     yes      yes   mother          1         1        0
+## 286 reputation     yes       no   mother          2         4        0
+## 287       home     yes      yes   mother          2         2        0
+## 288       home     yes      yes   mother          2         2        0
+## 289     course      no      yes   mother          1         2        0
+## 290 reputation      no      yes   father          1         2        0
+## 291      other     yes      yes   mother          1         3        0
+## 292 reputation     yes      yes   mother          1         3        0
+## 293 reputation     yes      yes   mother          1         3        0
+## 294 reputation     yes      yes   mother          1         2        0
+## 295       home     yes      yes   mother          1         2        0
+## 296 reputation     yes      yes   mother          1         3        0
+## 297 reputation     yes       no   mother          2         4        0
+## 298 reputation     yes      yes   mother          2         3        0
+## 299       home     yes      yes   mother          1         1        0
+## 300 reputation     yes      yes    other          2         2        0
+## 301       home     yes      yes    other          2         2        0
+## 302 reputation     yes      yes   father          1         4        0
+## 303       home     yes      yes   mother          1         1        0
+## 304       home     yes      yes   mother          1         2        0
+## 305       home     yes      yes   father          2         1        0
+## 306 reputation     yes      yes   mother          2         3        0
+## 307 reputation      no      yes   father          1         4        0
+## 308     course     yes       no    other          1         1        1
+## 309 reputation     yes       no   father          1         2        0
+## 310     course     yes      yes   mother          2         2        0
+## 311     course     yes      yes   mother          1         3        0
+## 312     course      no      yes   father          1         3        0
+## 313     course     yes      yes   mother          1         2        0
+## 314     course     yes      yes   mother          1         2        0
+## 315     course     yes       no   mother          1         2        0
+## 316     course     yes      yes   mother          1         3        0
+## 317     course      no      yes   father          1         3        0
+## 318       home     yes      yes   father          2         3        0
+## 319     course     yes      yes   mother          1         3        0
+## 320 reputation      no      yes   mother          1         1        0
+## 321     course     yes      yes   mother          4         1        0
+## 322     course     yes      yes   mother          1         2        0
+## 323     course     yes      yes   mother          1         3        0
+## 324     course      no      yes   mother          2         3        0
+## 325     course     yes      yes   mother          1         4        0
+## 326     course     yes      yes   father          1         3        0
+## 327       home     yes      yes   mother          1         2        0
+## 328       home      no      yes    other          1         2        0
+## 329     course     yes       no   mother          2         4        0
+## 330     course     yes      yes   mother          1         3        0
+## 331       home     yes      yes   mother          1         2        0
+## 332       home     yes      yes   mother          1         4        0
+## 333       home     yes      yes   mother          1         2        0
+## 334       home     yes      yes   father          2         2        0
+## 335       home     yes      yes   father          1         2        0
+## 336       home     yes      yes   mother          1         2        0
+## 337       home     yes      yes   father          1         2        0
+## 338     course     yes      yes   mother          1         3        0
+## 339      other     yes      yes   mother          1         3        0
+## 340     course     yes      yes   mother          1         3        0
+## 341     course     yes      yes   mother          1         3        0
+## 342 reputation     yes      yes   mother          1         3        0
+## 343     course      no      yes   mother          2         1        0
+## 344       home     yes      yes    other          3         2        2
+## 345     course     yes      yes   mother          2         2        0
+## 346     course     yes      yes   mother          1         1        0
+## 347       home     yes      yes    other          3         1        1
+## 348       home      no      yes   mother          2         2        0
+## 349     course     yes       no   father          1         2        0
+## 350      other     yes      yes   father          2         2        0
+## 351 reputation     yes       no   mother          2         2        0
+## 352       home      no      yes   father          2         1        0
+## 353     course     yes      yes   father          2         3        0
+## 354      other     yes      yes   mother          2         2        0
+## 355     course     yes      yes   mother          1         2        0
+## 356     course      no       no   father          2         2        0
+## 357     course     yes       no   mother          2         2        0
+## 358      other     yes      yes   mother          2         3        0
+## 359 reputation     yes      yes   mother          3         1        1
+## 360     course     yes      yes   father          2         1        0
+## 361      other      no      yes   father          3         2        0
+## 362      other     yes      yes   father          3         1        0
+## 363       home     yes       no   mother          1         3        0
+## 364     course     yes      yes   mother          1         1        0
+## 365 reputation     yes      yes   mother          2         3        0
+## 366       home     yes      yes   mother          4         3        0
+## 367     course     yes      yes   mother          1         2        0
+## 368       home     yes      yes   mother          1         2        0
+## 369 reputation      no      yes   mother          1         2        0
+## 370       home      no      yes   father          1         2        0
+## 371      other      no      yes   mother          2         1        0
+## 372       home     yes      yes   father          2         2        0
+## 373      other     yes       no   mother          2         1        1
+## 374       home     yes       no   father          2         1        1
+## 375      other     yes       no   mother          2         3        0
+## 376 reputation     yes      yes   mother          3         1        0
+## 377     course      no      yes   mother          1         3        1
+## 378     course     yes      yes   mother          1         2        0
+## 379     course     yes       no   mother          2         2        2
+## 380     course     yes       no   mother          2         2        0
+## 381     course      no      yes   mother          2         1        0
+## 382     course      no      yes   mother          3         1        0
+##     schoolsup famsup paid activities higher romantic famrel freetime goout
+## 1         yes     no   no         no    yes       no      4        3     4
+## 2          no    yes   no         no    yes       no      5        3     3
+## 3         yes     no  yes         no    yes       no      4        3     2
+## 4          no    yes  yes        yes    yes      yes      3        2     2
+## 5          no    yes  yes         no    yes       no      4        3     2
+## 6          no    yes  yes        yes    yes       no      5        4     2
+## 7          no     no   no         no    yes       no      4        4     4
+## 8         yes    yes   no         no    yes       no      4        1     4
+## 9          no    yes  yes         no    yes       no      4        2     2
+## 10         no    yes  yes        yes    yes       no      5        5     1
+## 11         no    yes  yes         no    yes       no      3        3     3
+## 12         no    yes   no        yes    yes       no      5        2     2
+## 13         no    yes  yes        yes    yes       no      4        3     3
+## 14         no    yes  yes         no    yes       no      5        4     3
+## 15         no    yes   no         no    yes      yes      4        5     2
+## 16         no    yes   no         no    yes       no      4        4     4
+## 17         no    yes  yes        yes    yes       no      3        2     3
+## 18        yes    yes   no        yes    yes       no      5        3     2
+## 19         no    yes   no        yes    yes       no      5        5     5
+## 20         no     no  yes        yes    yes       no      3        1     3
+## 21         no     no   no         no    yes       no      4        4     1
+## 22         no    yes  yes         no    yes       no      5        4     2
+## 23         no     no   no        yes    yes       no      4        5     1
+## 24         no    yes   no        yes    yes       no      5        4     4
+## 25        yes    yes  yes        yes    yes       no      4        3     2
+## 26         no    yes  yes         no    yes       no      1        2     2
+## 27         no    yes  yes         no    yes       no      4        2     2
+## 28         no     no  yes         no    yes       no      2        2     4
+## 29        yes    yes   no        yes    yes       no      5        3     3
+## 30         no    yes  yes        yes    yes      yes      4        4     5
+## 31         no    yes  yes         no    yes       no      5        4     2
+## 32         no    yes   no        yes    yes       no      4        3     1
+## 33         no    yes   no        yes    yes      yes      4        5     2
+## 34         no     no   no        yes    yes       no      5        3     2
+## 35         no    yes  yes         no    yes       no      5        4     3
+## 36         no    yes   no        yes    yes       no      3        5     1
+## 37         no    yes   no        yes    yes       no      5        4     3
+## 38         no    yes   no        yes    yes      yes      2        4     3
+## 39        yes    yes  yes        yes    yes       no      4        3     2
+## 40        yes    yes  yes        yes    yes       no      4        3     1
+## 41         no    yes   no        yes    yes      yes      3        3     3
+## 42         no    yes   no         no    yes      yes      5        4     3
+## 43         no    yes   no        yes    yes       no      4        3     3
+## 44        yes    yes   no         no    yes       no      5        4     1
+## 45        yes     no   no        yes    yes       no      4        3     3
+## 46        yes    yes  yes        yes    yes      yes      5        2     2
+## 47         no    yes   no         no    yes       no      2        3     5
+## 48         no     no   no        yes    yes       no      4        2     2
+## 49         no    yes  yes         no    yes       no      4        3     3
+## 50        yes    yes   no        yes    yes       no      4        4     4
+## 51         no    yes  yes         no    yes       no      4        3     3
+## 52         no    yes  yes         no    yes       no      4        3     3
+## 53         no     no   no         no    yes       no      5        5     5
+## 54        yes    yes  yes         no    yes       no      3        3     4
+## 55         no     no  yes         no    yes       no      5        3     4
+## 56         no     no  yes        yes    yes      yes      5        3     4
+## 57         no    yes  yes        yes    yes       no      4        3     2
+## 58         no    yes   no        yes    yes       no      3        2     2
+## 59        yes    yes   no        yes    yes       no      4        3     2
+## 60         no    yes   no         no    yes       no      4        2     3
+## 61         no    yes   no        yes    yes       no      2        4     4
+## 62        yes    yes   no        yes    yes      yes      5        5     5
+## 63        yes     no   no        yes    yes       no      4        4     3
+## 64        yes    yes  yes        yes    yes       no      3        4     4
+## 65        yes     no   no        yes    yes      yes      4        4     4
+## 66         no    yes   no        yes    yes       no      5        4     3
+## 67         no    yes   no        yes    yes      yes      1        3     3
+## 68        yes    yes  yes         no    yes       no      4        3     3
+## 69        yes    yes  yes         no    yes       no      4        1     3
+## 70         no    yes   no         no    yes       no      4        4     2
+## 71         no    yes  yes         no    yes       no      4        3     2
+## 72         no     no   no         no    yes       no      3        3     3
+## 73        yes    yes   no         no    yes      yes      3        3     4
+## 74         no     no   no        yes    yes       no      5        3     2
+## 75        yes    yes  yes        yes    yes       no      4        3     3
+## 76         no    yes  yes        yes    yes       no      4        3     3
+## 77         no     no   no        yes    yes       no      3        4     3
+## 78         no     no  yes         no    yes      yes      5        2     3
+## 79        yes    yes   no        yes     no       no      4        5     1
+## 80        yes    yes   no        yes     no       no      4        4     3
+## 81         no    yes   no         no    yes       no      2        4     3
+## 82        yes    yes  yes        yes    yes      yes      3        2     2
+## 83        yes     no  yes         no    yes       no      5        3     2
+## 84         no    yes  yes         no    yes       no      4        4     4
+## 85         no     no  yes        yes    yes       no      5        3     3
+## 86         no    yes   no        yes    yes       no      4        3     2
+## 87         no     no  yes         no    yes      yes      4        4     4
+## 88         no    yes   no         no    yes       no      4        3     4
+## 89         no    yes   no        yes    yes       no      5        3     3
+## 90         no     no  yes        yes    yes       no      4        4     2
+## 91         no    yes   no         no    yes       no      4        1     3
+## 92         no    yes  yes         no    yes      yes      4        3     3
+## 93         no     no  yes        yes    yes       no      4        5     5
+## 94        yes    yes   no         no    yes       no      3        3     3
+## 95         no    yes  yes        yes    yes       no      5        3     3
+## 96         no    yes   no        yes    yes       no      4        3     4
+## 97        yes    yes  yes        yes    yes       no      3        1     2
+## 98        yes    yes   no        yes    yes       no      3        3     3
+## 99         no    yes  yes         no    yes      yes      4        3     5
+## 100        no     no   no        yes    yes       no      5        3     4
+## 101       yes    yes  yes         no    yes       no      5        3     5
+## 102       yes    yes  yes        yes    yes       no      4        5     5
+## 103        no    yes   no        yes    yes      yes      4        4     3
+## 104        no    yes   no        yes    yes       no      5        3     3
+## 105       yes    yes  yes         no    yes       no      4        3     5
+## 106        no    yes  yes        yes    yes       no      5        4     4
+## 107       yes     no   no         no    yes       no      4        3     3
+## 108       yes    yes  yes         no    yes       no      5        1     2
+## 109        no    yes   no        yes    yes       no      5        3     3
+## 110        no    yes   no        yes    yes       no      4        2     3
+## 111        no    yes  yes        yes    yes      yes      1        3     5
+## 112        no    yes  yes        yes    yes      yes      5        4     5
+## 113        no     no   no        yes    yes       no      5        5     3
+## 114       yes    yes   no        yes    yes       no      4        1     2
+## 115       yes     no   no        yes    yes       no      3        1     2
+## 116        no     no   no         no    yes       no      3        5     2
+## 117        no     no   no        yes    yes      yes      5        4     2
+## 118        no    yes   no        yes    yes       no      5        4     4
+## 119        no    yes   no        yes    yes       no      4        4     3
+## 120        no    yes   no        yes    yes       no      4        4     3
+## 121        no     no   no        yes    yes       no      5        4     2
+## 122        no    yes   no        yes    yes       no      5        2     4
+## 123        no     no   no         no    yes       no      3        4     3
+## 124        no     no   no         no    yes       no      3        2     3
+## 125        no    yes  yes        yes    yes       no      5        5     4
+## 126        no    yes  yes        yes    yes      yes      4        2     2
+## 127        no    yes   no        yes    yes       no      3        4     4
+## 128        no     no  yes         no    yes      yes      5        4     4
+## 129       yes     no   no         no    yes       no      5        5     5
+## 130       yes     no   no        yes    yes      yes      5        3     2
+## 131        no    yes   no         no     no       no      3        4     2
+## 132        no     no  yes        yes    yes       no      3        5     5
+## 133        no    yes   no         no    yes      yes      4        2     2
+## 134        no    yes   no        yes    yes      yes      4        3     3
+## 135        no    yes   no         no    yes      yes      3        4     4
+## 136        no     no   no         no    yes       no      3        2     1
+## 137        no    yes   no         no    yes      yes      5        3     3
+## 138        no    yes   no        yes    yes      yes      4        3     3
+## 139        no     no   no         no    yes       no      5        4     5
+## 140        no    yes   no        yes    yes      yes      4        3     2
+## 141        no     no   no         no    yes      yes      4        4     4
+## 142        no     no   no        yes    yes       no      4        3     2
+## 143       yes    yes   no         no    yes       no      2        2     2
+## 144        no    yes   no        yes    yes       no      2        3     3
+## 145        no    yes  yes        yes    yes       no      4        2     2
+## 146        no     no   no         no    yes       no      3        4     4
+## 147        no    yes   no         no    yes       no      4        4     3
+## 148        no    yes   no         no    yes       no      5        4     5
+## 149        no    yes  yes         no    yes       no      4        4     2
+## 150        no    yes   no         no    yes       no      3        3     2
+## 151        no    yes  yes         no    yes       no      4        3     2
+## 152        no    yes   no         no     no      yes      4        4     3
+## 153        no    yes   no         no     no      yes      3        3     2
+## 154        no     no   no         no    yes       no      4        5     5
+## 155        no     no   no         no     no      yes      2        3     5
+## 156        no     no   no        yes    yes      yes      4        4     4
+## 157        no    yes  yes        yes    yes      yes      4        2     1
+## 158        no    yes   no         no     no      yes      4        5     4
+## 159       yes    yes   no         no    yes      yes      4        2     1
+## 160       yes     no  yes        yes    yes       no      4        4     4
+## 161        no     no   no         no    yes       no      2        2     2
+## 162        no    yes   no        yes    yes       no      5        2     5
+## 163        no     no   no         no    yes       no      4        2     2
+## 164        no    yes  yes         no    yes      yes      4        5     5
+## 165        no     no   no        yes     no      yes      3        3     2
+## 166        no     no   no        yes     no      yes      5        3     5
+## 167        no     no   no         no     no       no      4        3     5
+## 168        no     no  yes         no    yes      yes      4        2     3
+## 169        no    yes  yes         no    yes       no      5        1     5
+## 170        no    yes  yes         no    yes      yes      4        4     2
+## 171        no    yes   no        yes    yes       no      3        4     5
+## 172        no    yes  yes        yes    yes      yes      4        3     2
+## 173        no    yes  yes        yes    yes       no      4        4     4
+## 174        no     no   no        yes    yes      yes      4        3     5
+## 175        no    yes  yes        yes    yes       no      4        4     5
+## 176        no     no  yes        yes    yes       no      4        4     4
+## 177        no     no  yes        yes    yes       no      3        4     4
+## 178        no     no   no        yes    yes       no      4        3     4
+## 179        no    yes   no        yes    yes      yes      4        3     3
+## 180        no    yes   no        yes    yes      yes      5        2     3
+## 181        no    yes  yes        yes    yes       no      3        4     3
+## 182        no     no  yes        yes    yes      yes      4        2     3
+## 183        no     no  yes        yes    yes      yes      4        2     3
+## 184        no    yes   no        yes    yes       no      5        4     2
+## 185        no    yes   no        yes    yes      yes      5        3     3
+## 186        no    yes  yes         no    yes       no      1        2     2
+## 187        no    yes   no        yes    yes      yes      4        3     4
+## 188        no    yes  yes        yes    yes      yes      3        3     3
+## 189        no     no  yes        yes    yes      yes      4        2     3
+## 190        no    yes   no         no    yes      yes      3        3     3
+## 191        no     no   no         no    yes       no      3        1     3
+## 192        no     no   no         no    yes       no      4        3     3
+## 193        no     no   no        yes    yes       no      5        3     3
+## 194        no     no  yes        yes    yes       no      4        4     4
+## 195        no    yes   no        yes    yes       no      4        3     2
+## 196        no     no   no         no    yes       no      5        3     3
+## 197        no     no   no        yes    yes      yes      4        3     2
+## 198        no     no   no         no    yes       no      5        2     3
+## 199        no    yes  yes        yes    yes       no      3        3     4
+## 200        no    yes   no         no    yes       no      4        2     4
+## 201        no    yes  yes         no    yes       no      4        5     2
+## 202        no    yes   no        yes    yes       no      4        3     5
+## 203       yes    yes  yes        yes    yes       no      4        4     3
+## 204        no    yes  yes         no    yes       no      4        4     4
+## 205        no    yes   no         no    yes       no      5        3     2
+## 206        no    yes  yes        yes    yes       no      5        3     5
+## 207        no    yes  yes         no    yes      yes      4        4     3
+## 208        no    yes  yes         no    yes       no      2        3     3
+## 209        no     no  yes        yes    yes      yes      1        3     2
+## 210        no    yes  yes         no    yes       no      4        3     2
+## 211        no    yes  yes        yes    yes      yes      4        4     2
+## 212        no    yes  yes        yes    yes       no      4        3     3
+## 213        no    yes  yes         no    yes      yes      5        3     5
+## 214       yes    yes  yes         no    yes       no      3        3     4
+## 215        no    yes  yes        yes    yes       no      4        4     4
+## 216        no    yes  yes         no    yes       no      5        2     1
+## 217        no     no  yes         no    yes       no      4        4     4
+## 218        no     no  yes         no    yes      yes      3        4     5
+## 219        no    yes  yes         no    yes       no      3        2     4
+## 220        no    yes  yes         no    yes       no      3        3     3
+## 221        no    yes  yes        yes    yes       no      4        3     3
+## 222        no    yes   no        yes    yes       no      4        2     5
+## 223        no    yes   no        yes    yes      yes      4        3     4
+## 224       yes     no   no         no    yes       no      2        3     1
+## 225        no    yes  yes         no    yes       no      3        3     3
+## 226        no    yes   no        yes    yes       no      5        3     2
+## 227        no     no   no        yes    yes      yes      5        3     3
+## 228        no     no   no        yes    yes       no      5        3     4
+## 229        no    yes  yes         no    yes       no      5        3     3
+## 230       yes    yes  yes        yes    yes      yes      4        3     2
+## 231        no     no   no        yes    yes      yes      3        2     3
+## 232        no     no   no        yes    yes      yes      3        2     3
+## 233        no    yes  yes        yes    yes       no      4        5     2
+## 234       yes    yes   no        yes    yes      yes      4        5     5
+## 235        no    yes  yes        yes    yes       no      4        2     4
+## 236        no    yes  yes         no    yes       no      3        4     2
+## 237        no     no   no        yes    yes      yes      5        3     3
+## 238        no     no  yes        yes    yes      yes      4        4     2
+## 239        no     no   no         no    yes      yes      4        5     2
+## 240        no     no   no        yes    yes       no      2        1     1
+## 241        no     no   no         no     no       no      5        5     4
+## 242        no     no   no        yes    yes      yes      2        5     5
+## 243        no    yes  yes         no    yes       no      3        3     3
+## 244        no     no   no        yes    yes       no      5        4     5
+## 245        no     no   no        yes    yes       no      5        3     2
+## 246        no     no   no        yes    yes       no      5        3     2
+## 247        no    yes  yes         no    yes      yes      4        4     4
+## 248        no     no   no         no    yes       no      4        3     3
+## 249        no     no   no         no    yes       no      5        2     2
+## 250        no     no   no         no     no      yes      5        4     5
+## 251        no    yes   no         no    yes      yes      4        3     3
+## 252        no     no  yes         no    yes       no      4        3     2
+## 253        no     no   no         no     no       no      4        4     5
+## 254       yes    yes   no         no    yes       no      5        3     3
+## 255        no     no   no         no     no       no      3        2     5
+## 256        no     no   no        yes    yes       no      3        3     2
+## 257        no     no   no         no    yes       no      4        4     2
+## 258        no    yes   no        yes    yes       no      4        4     4
+## 259        no    yes  yes        yes    yes       no      4        2     3
+## 260        no    yes   no         no    yes       no      4        3     1
+## 261        no     no   no        yes    yes       no      5        2     4
+## 262        no     no  yes        yes    yes      yes      3        4     1
+## 263        no    yes  yes         no    yes      yes      3        1     2
+## 264        no    yes  yes         no    yes       no      4        3     2
+## 265        no     no   no        yes    yes       no      5        3     2
+## 266        no     no   no        yes    yes       no      3        2     3
+## 267        no    yes  yes        yes    yes      yes      4        3     3
+## 268        no    yes  yes        yes    yes       no      4        2     5
+## 269        no     no  yes        yes    yes      yes      5        4     4
+## 270        no     no  yes        yes    yes       no      4        3     4
+## 271        no    yes  yes        yes    yes      yes      5        4     5
+## 272        no    yes   no         no     no      yes      4        3     5
+## 273        no    yes  yes        yes    yes       no      4        3     5
+## 274        no    yes  yes        yes    yes      yes      4        5     5
+## 275        no    yes  yes         no    yes       no      4        4     3
+## 276        no    yes  yes        yes    yes      yes      3        5     2
+## 277        no    yes  yes         no    yes      yes      4        3     3
+## 278       yes    yes  yes         no    yes      yes      4        4     4
+## 279        no     no   no         no     no      yes      4        1     1
+## 280        no     no  yes        yes    yes       no      3        2     4
+## 281        no     no  yes        yes    yes       no      4        2     4
+## 282       yes    yes   no        yes    yes      yes      2        4     4
+## 283        no     no  yes        yes    yes       no      4        2     3
+## 284        no     no  yes        yes    yes      yes      4        5     4
+## 285        no     no   no         no    yes       no      4        4     4
+## 286        no    yes  yes        yes    yes       no      5        2     2
+## 287       yes     no   no        yes    yes       no      5        4     4
+## 288       yes     no   no        yes    yes       no      4        4     4
+## 289        no    yes   no         no    yes       no      5        4     5
+## 290        no     no  yes         no    yes       no      4        3     3
+## 291        no    yes  yes         no    yes       no      4        3     3
+## 292        no    yes  yes         no    yes       no      4        3     3
+## 293        no     no  yes        yes    yes       no      4        2     4
+## 294        no    yes  yes        yes    yes       no      5        4     3
+## 295        no    yes  yes        yes    yes      yes      4        3     2
+## 296        no    yes  yes         no    yes       no      4        2     2
+## 297        no    yes  yes         no    yes       no      3        1     2
+## 298        no    yes  yes        yes    yes       no      5        4     2
+## 299        no    yes  yes         no    yes       no      4        4     3
+## 300        no    yes  yes        yes    yes       no      2        3     4
+## 301        no    yes  yes         no    yes      yes      4        4     5
+## 302        no    yes  yes         no    yes       no      4        3     3
+## 303        no    yes  yes         no    yes      yes      1        4     2
+## 304        no    yes   no         no    yes      yes      4        2     4
+## 305        no     no  yes         no    yes       no      4        1     1
+## 306        no    yes  yes         no    yes       no      4        3     3
+## 307        no    yes  yes        yes    yes       no      5        2     2
+## 308        no     no   no        yes    yes       no      5        5     3
+## 309        no     no   no        yes    yes      yes      4        5     3
+## 310        no    yes  yes        yes    yes       no      5        3     3
+## 311        no    yes  yes        yes    yes      yes      4        3     4
+## 312        no    yes  yes        yes    yes       no      4        3     4
+## 313        no    yes  yes         no    yes       no      4        4     4
+## 314        no    yes  yes         no    yes      yes      5        2     2
+## 315        no    yes   no         no    yes      yes      4        2     2
+## 316        no    yes  yes        yes    yes       no      3        3     2
+## 317        no    yes   no         no    yes       no      3        4     3
+## 318        no     no   no         no    yes       no      3        3     3
+## 319        no     no   no        yes    yes       no      4        3     3
+## 320        no     no   no        yes    yes       no      4        3     5
+## 321        no    yes   no         no    yes       no      4        4     5
+## 322        no    yes  yes        yes    yes       no      5        4     2
+## 323        no    yes  yes        yes    yes       no      5        4     4
+## 324        no    yes  yes         no    yes      yes      4        3     3
+## 325        no    yes   no        yes    yes       no      4        5     5
+## 326        no    yes   no         no    yes      yes      4        4     3
+## 327        no     no   no        yes    yes       no      5        3     4
+## 328        no     no   no        yes    yes      yes      4        3     3
+## 329        no     no   no        yes    yes       no      4        4     4
+## 330        no     no   no         no    yes       no      4        4     5
+## 331        no    yes  yes         no    yes      yes      4        3     2
+## 332        no    yes   no         no    yes       no      5        3     3
+## 333        no    yes  yes         no    yes       no      4        3     3
+## 334        no    yes   no        yes    yes       no      4        2     4
+## 335        no    yes   no        yes    yes       no      4        3     3
+## 336        no     no   no        yes    yes      yes      4        3     3
+## 337        no    yes   no         no    yes      yes      3        3     1
+## 338        no    yes   no         no    yes       no      4        3     3
+## 339        no     no   no         no    yes      yes      5        4     3
+## 340        no     no   no         no    yes      yes      5        3     2
+## 341        no    yes  yes         no    yes      yes      5        4     5
+## 342        no    yes  yes        yes    yes      yes      4        4     3
+## 343        no    yes   no         no    yes       no      2        5     5
+## 344        no     no   no         no    yes       no      5        4     4
+## 345        no    yes  yes         no    yes       no      4        5     4
+## 346        no     no   no         no     no      yes      4        3     3
+## 347        no    yes   no         no    yes       no      4        4     4
+## 348        no    yes  yes        yes    yes      yes      4        5     5
+## 349        no    yes   no         no    yes      yes      5        3     4
+## 350        no    yes  yes        yes    yes       no      4        3     3
+## 351        no     no   no         no    yes      yes      1        2     3
+## 352        no     no   no         no    yes      yes      3        3     2
+## 353        no     no   no         no    yes       no      5        3     2
+## 354        no    yes   no         no    yes      yes      4        3     2
+## 355        no    yes  yes        yes    yes      yes      2        3     4
+## 356        no     no   no         no    yes       no      3        2     2
+## 357        no    yes  yes         no    yes       no      3        3     4
+## 358        no     no  yes         no    yes      yes      4        2     2
+## 359        no    yes  yes         no    yes      yes      5        2     1
+## 360        no    yes  yes         no    yes      yes      5        2     3
+## 361        no    yes  yes         no    yes      yes      3        2     2
+## 362        no    yes  yes        yes     no      yes      4        3     3
+## 363        no     no   no        yes    yes      yes      3        4     3
+## 364        no     no   no        yes    yes       no      3        5     5
+## 365        no     no   no         no    yes       no      5        4     4
+## 366        no     no   no         no    yes       no      4        3     2
+## 367        no     no  yes        yes    yes       no      5        4     3
+## 368        no     no  yes         no    yes      yes      4        1     3
+## 369        no    yes  yes        yes    yes       no      4        5     4
+## 370        no     no  yes        yes    yes       no      3        2     4
+## 371        no     no   no        yes    yes      yes      4        4     3
+## 372        no     no   no        yes    yes       no      4        4     3
+## 373        no     no   no         no    yes       no      4        3     2
+## 374        no     no  yes         no    yes       no      5        4     3
+## 375        no     no  yes         no    yes       no      5        3     3
+## 376        no    yes  yes        yes    yes      yes      4        4     3
+## 377        no     no   no        yes    yes       no      5        4     2
+## 378        no    yes  yes         no    yes       no      4        3     4
+## 379        no     no   no        yes    yes       no      2        2     2
+## 380        no     no   no        yes    yes       no      1        1     1
+## 381        no     no   no         no    yes       no      2        4     5
+## 382        no     no   no         no    yes       no      4        4     1
+##     Dalc Walc health absences G1 G2 G3 alc_use high_use
+## 1      1    1      3        5  2  8  8     1.0    FALSE
+## 2      1    1      3        3  7  8  8     1.0    FALSE
+## 3      2    3      3        8 10 10 11     2.5     TRUE
+## 4      1    1      5        1 14 14 14     1.0    FALSE
+## 5      1    2      5        2  8 12 12     1.5    FALSE
+## 6      1    2      5        8 14 14 14     1.5    FALSE
+## 7      1    1      3        0 12 12 12     1.0    FALSE
+## 8      1    1      1        4  8  9 10     1.0    FALSE
+## 9      1    1      1        0 16 17 18     1.0    FALSE
+## 10     1    1      5        0 13 14 14     1.0    FALSE
+## 11     1    2      2        1 12 11 12     1.5    FALSE
+## 12     1    1      4        2 10 12 12     1.0    FALSE
+## 13     1    3      5        1 13 14 13     2.0    FALSE
+## 14     1    2      3        1 11 11 12     1.5    FALSE
+## 15     1    1      3        0 14 15 16     1.0    FALSE
+## 16     1    2      2        5 16 16 16     1.5    FALSE
+## 17     1    2      2        8 13 14 14     1.5    FALSE
+## 18     1    1      4        3 10 12 12     1.0    FALSE
+## 19     2    4      5        9  7  6  6     3.0     TRUE
+## 20     1    3      5        5 10 11 11     2.0    FALSE
+## 21     1    1      1        0 12 14 14     1.0    FALSE
+## 22     1    1      5        0 12 14 14     1.0    FALSE
+## 23     1    3      5        1 14 14 15     2.0    FALSE
+## 24     2    4      5        1 12 12 11     3.0     TRUE
+## 25     1    1      5        2 10 10  9     1.0    FALSE
+## 26     1    3      5       10  8 10 10     2.0    FALSE
+## 27     1    2      5        5 12 12 12     1.5    FALSE
+## 28     2    4      1        2 13 14 13     3.0     TRUE
+## 29     1    1      5        3 12 12 12     1.0    FALSE
+## 30     5    5      5       10 11 12 12     5.0     TRUE
+## 31     3    4      5        0 10 11 12     3.5     TRUE
+## 32     1    1      5        1 16 16 16     1.0    FALSE
+## 33     1    1      5        0 15 15 16     1.0    FALSE
+## 34     1    1      2        0 10 11 12     1.0    FALSE
+## 35     1    1      5        2 12 13 14     1.0    FALSE
+## 36     1    1      5        2 10  9  8     1.0    FALSE
+## 37     1    1      4        1 14 15 16     1.0    FALSE
+## 38     1    1      5        6 14 14 14     1.0    FALSE
+## 39     1    1      5        2 12 12 12     1.0    FALSE
+## 40     1    1      2        8 14 13 12     1.0    FALSE
+## 41     1    2      3       20  9 10 10     1.5    FALSE
+## 42     2    4      5        8 11 12 12     3.0     TRUE
+## 43     1    1      5        1 16 16 16     1.0    FALSE
+## 44     1    1      1        0  8  9 10     1.0    FALSE
+## 45     2    2      5       14 10 10 10     2.0    FALSE
+## 46     1    1      5        6  9 10  8     1.0    FALSE
+## 47     1    4      3        9 12 12 12     2.5     TRUE
+## 48     1    1      2        3 18 18 18     1.0    FALSE
+## 49     2    2      5        3 13 14 14     2.0    FALSE
+## 50     1    1      3        2 10 10 10     1.0    FALSE
+## 51     2    3      4        1 13 13 13     2.5     TRUE
+## 52     1    1      5        1 14 14 14     1.0    FALSE
+## 53     3    4      5        5 10 10 10     3.5     TRUE
+## 54     2    3      5        0 10 11 12     2.5     TRUE
+## 55     4    4      1        3 12 12 13     4.0     TRUE
+## 56     1    1      2        5 10 11 11     1.0    FALSE
+## 57     1    1      1        0 14 14 15     1.0    FALSE
+## 58     1    1      5        6 14 15 16     1.0    FALSE
+## 59     1    1      5        1 12 12 12     1.0    FALSE
+## 60     1    1      5        2 16 16 16     1.0    FALSE
+## 61     2    3      4        3 14 14 14     2.5     TRUE
+## 62     5    5      5        3 10  9 14     5.0     TRUE
+## 63     1    1      1        2 10 12 10     1.0    FALSE
+## 64     2    4      4        1 12 11 11     3.0     TRUE
+## 65     2    4      2        0 12 11 11     3.0     TRUE
+## 66     1    2      1        2 16 15 16     1.5    FALSE
+## 67     5    5      3        2 12 12 12     5.0     TRUE
+## 68     1    2      5        2  8  8  8     1.5    FALSE
+## 69     1    3      4        1 10 10 10     2.0    FALSE
+## 70     2    3      3        9 16 16 16     2.5     TRUE
+## 71     1    1      5        1 13 13 13     1.0    FALSE
+## 72     1    1      3        0 10 10 10     1.0    FALSE
+## 73     2    4      5        2 10  8  8     3.0     TRUE
+## 74     2    2      5        1 12 12 14     2.0    FALSE
+## 75     2    4      5       29 11 12 11     3.0     TRUE
+## 76     2    3      5        3 10 10 10     2.5     TRUE
+## 77     1    1      1        4 12 11 10     1.0    FALSE
+## 78     1    3      3        0 12 12 12     2.0    FALSE
+## 79     1    1      3        1  8  8 10     1.0    FALSE
+## 80     1    2      4       12  8  8  8     1.5    FALSE
+## 81     1    2      3       13  8  8  8     1.5    FALSE
+## 82     1    3      3        1 10 12 12     2.0    FALSE
+## 83     1    2      5        3 10 10 10     1.5    FALSE
+## 84     1    1      5        7 10  8  8     1.0    FALSE
+## 85     1    3      4        3 14 14 14     2.0    FALSE
+## 86     2    3      4        2 11 11 11     2.5     TRUE
+## 87     2    3      5        5 10 10 10     2.5     TRUE
+## 88     1    2      2        5 10  9  8     1.5    FALSE
+## 89     1    3      1        4 14 14 14     2.0    FALSE
+## 90     1    1      3        9 12 10 10     1.0    FALSE
+## 91     3    5      5       12  8  8  8     4.0     TRUE
+## 92     1    3      4        1  8  9 10     2.0    FALSE
+## 93     1    3      1        5 15 15 16     2.0    FALSE
+## 94     2    3      2        2 10 10  9     2.5     TRUE
+## 95     1    1      1        1 12 12 12     1.0    FALSE
+## 96     1    1      4        4 11 12 13     1.0    FALSE
+## 97     1    1      1        3 10 12 12     1.0    FALSE
+## 98     1    1      4        4 10 13 13     1.0    FALSE
+## 99     1    1      5        1 10 10 11     1.0    FALSE
+## 100    1    2      1        5 12 14 14     1.5    FALSE
+## 101    1    1      3        1 10 11 10     1.0    FALSE
+## 102    5    5      4       13  8  8  6     5.0     TRUE
+## 103    1    1      4        0 16 16 16     1.0    FALSE
+## 104    1    1      5        3 11 13 13     1.0    FALSE
+## 105    1    1      2       21  9  8  8     1.0    FALSE
+## 106    1    1      1        0 16 17 17     1.0    FALSE
+## 107    1    1      4       10 10 10 10     1.0    FALSE
+## 108    1    1      3        6  8  9  9     1.0    FALSE
+## 109    1    1      5        3 14 16 16     1.0    FALSE
+## 110    1    2      4        1 14 15 16     1.5    FALSE
+## 111    3    5      1        7 11 12 12     4.0     TRUE
+## 112    1    1      4        3 14 15 15     1.0    FALSE
+## 113    1    1      4        5 16 16 16     1.0    FALSE
+## 114    1    1      2        2  9 10 10     1.0    FALSE
+## 115    1    1      5        9  9 12 12     1.0    FALSE
+## 116    1    1      3       10 18 18 18     1.0    FALSE
+## 117    1    1      5        6 10  9 10     1.0    FALSE
+## 118    1    2      5        4 16 14 15     1.5    FALSE
+## 119    2    2      5        9 12 12 12     2.0    FALSE
+## 120    1    1      2        3 14 14 15     1.0    FALSE
+## 121    1    1      5        3 14 14 14     1.0    FALSE
+## 122    1    4      5       17 10  9 10     2.5     TRUE
+## 123    1    2      4        4 14 13 14     1.5    FALSE
+## 124    1    2      1        1 15 14 14     1.5    FALSE
+## 125    1    2      5        6 15 14 14     1.5    FALSE
+## 126    1    2      5        2 14 12 13     1.5    FALSE
+## 127    1    4      5       11 13 12 13     2.5     TRUE
+## 128    1    1      5        0 10  9 10     1.0    FALSE
+## 129    3    2      5        1 11 11 10     2.5     TRUE
+## 130    1    1      1        0  8 10 11     1.0    FALSE
+## 131    1    1      5        1  8  9 10     1.0    FALSE
+## 132    2    5      4        8 16 16 16     3.5     TRUE
+## 133    2    2      5        0 11  6  6     2.0    FALSE
+## 134    1    2      4        3 10  6  6     1.5    FALSE
+## 135    1    3      5        7 12 12 12     2.0    FALSE
+## 136    1    4      5       14 14 12 12     2.5     TRUE
+## 137    1    1      5        1 10  6  6     1.0    FALSE
+## 138    1    1      5        2 12  7  8     1.0    FALSE
+## 139    2    4      5        1 10  4  5     3.0     TRUE
+## 140    1    1      5        2  6  4  5     1.0    FALSE
+## 141    1    3      5        0 12 11 11     2.0    FALSE
+## 142    1    1      5        3 14 15 14     1.0    FALSE
+## 143    1    1      3        3  8 10  6     1.0    FALSE
+## 144    2    2      2        6 10 10 10     2.0    FALSE
+## 145    1    1      5        2 11 12 12     1.0    FALSE
+## 146    3    3      1        3 12 12 12     3.0     TRUE
+## 147    1    2      4        0  7  4  5     1.5    FALSE
+## 148    1    2      5       11  7  4  3     1.5    FALSE
+## 149    1    2      5        0 10 12 12     1.5    FALSE
+## 150    1    1      3        1  8  9  6     1.0    FALSE
+## 151    1    1      5        4 12 12 12     1.0    FALSE
+## 152    2    2      5        3 12 10  7     2.0    FALSE
+## 153    2    1      5        8  8  8  4     1.5    FALSE
+## 154    2    5      5        0 10 10 10     3.5     TRUE
+## 155    2    5      4        0  8  7  0     3.5     TRUE
+## 156    3    5      5        6 10 12 12     4.0     TRUE
+## 157    2    3      3        5 12 12 12     2.5     TRUE
+## 158    1    1      4        3  8  4  6     1.0    FALSE
+## 159    1    1      4        0 12 12 12     1.0    FALSE
+## 160    1    1      1        1  9  8  8     1.0    FALSE
+## 161    3    3      5       11 12 10 12     3.0     TRUE
+## 162    1    5      4        6 10  9 10     3.0     TRUE
+## 163    1    2      3        3 14 12 13     1.5    FALSE
+## 164    4    4      5        2 10 11  6     4.0     TRUE
+## 165    2    2      5        4  8  7  4     2.0    FALSE
+## 166    1    5      5        0  6  8  8     3.0     TRUE
+## 167    2    4      4        2 10 10 10     3.0     TRUE
+## 168    1    1      3        0 16 16 17     1.0    FALSE
+## 169    1    1      4        0  9 10  6     1.0    FALSE
+## 170    1    1      3        0 15 15 16     1.0    FALSE
+## 171    2    4      2        2  8  7  5     3.0     TRUE
+## 172    1    1      3        1 14 16 17     1.0    FALSE
+## 173    1    3      5        0 12 10 10     2.0    FALSE
+## 174    1    1      3        0 11 10  6     1.0    FALSE
+## 175    1    1      4        2 12 12 12     1.0    FALSE
+## 176    4    4      4        2 10 10 10     4.0     TRUE
+## 177    1    4      5        1 13 12 12     2.5     TRUE
+## 178    1    4      4        4  8  7  8     2.5     TRUE
+## 179    3    4      3        9 10  8 10     3.5     TRUE
+## 180    1    1      2        4 10 10 12     1.0    FALSE
+## 181    2    3      3        7 10  9 10     2.5     TRUE
+## 182    1    2      4        3 12 14 13     1.5    FALSE
+## 183    1    2      3        1 12 12 12     1.5    FALSE
+## 184    2    3      5        0 16 18 17     2.5     TRUE
+## 185    2    3      1       44 12 11 11     2.5     TRUE
+## 186    1    2      1       11 13 14 14     1.5    FALSE
+## 187    2    3      4        9 12 12 12     2.5     TRUE
+## 188    1    2      3        1 10 10 11     1.5    FALSE
+## 189    1    2      5        0 14 14 16     1.5    FALSE
+## 190    1    3      3        8 10 10 12     2.0    FALSE
+## 191    1    5      3        5  8  9 10     3.0     TRUE
+## 192    1    1      2        8 12 12 13     1.0    FALSE
+## 193    1    1      3        0 10 10 10     1.0    FALSE
+## 194    4    5      5       14  8 10 10     4.5     TRUE
+## 195    3    4      5        4 10 10 10     3.5     TRUE
+## 196    1    1      3        0 13 13 13     1.0    FALSE
+## 197    1    1      5        4 14 15 16     1.0    FALSE
+## 198    1    2      5        4 15 14 15     1.5    FALSE
+## 199    3    5      3       12 10 10 11     4.0     TRUE
+## 200    2    3      2       27 16 16 17     2.5     TRUE
+## 201    1    2      3        0 10 10 10     1.5    FALSE
+## 202    1    5      2        2 15 15 16     3.0     TRUE
+## 203    1    3      4        5 10 11 11     2.0    FALSE
+## 204    1    3      1        2 12 12 12     2.0    FALSE
+## 205    1    2      3       20 10 10 10     1.5    FALSE
+## 206    1    1      5        6 12 12 12     1.0    FALSE
+## 207    3    4      5       21  9  9  8     3.5     TRUE
+## 208    2    2      4        4  9  9 10     2.0    FALSE
+## 209    1    1      1        7 12 14 14     1.0    FALSE
+## 210    1    4      5        4 10 11 12     2.5     TRUE
+## 211    1    1      4        3  9 10 10     1.0    FALSE
+## 212    1    2      3        7 10 10 10     1.5    FALSE
+## 213    4    5      3       14 12 12 12     4.5     TRUE
+## 214    1    1      4        0 12 13 14     1.0    FALSE
+## 215    2    4      5       12  9  9 10     3.0     TRUE
+## 216    1    2      3        9 10 10 10     1.5    FALSE
+## 217    1    3      1        2 14 16 15     2.0    FALSE
+## 218    2    4      1       19  8  8  7     3.0     TRUE
+## 219    2    4      4       12  8  8  9     3.0     TRUE
+## 220    1    4      3        4 10 10 10     2.5     TRUE
+## 221    1    1      4        2 10 11 12     1.0    FALSE
+## 222    1    2      5        1  8  8  8     1.5    FALSE
+## 223    1    1      5        6  9  8  6     1.0    FALSE
+## 224    1    1      3        1 14 14 16     1.0    FALSE
+## 225    5    5      4        4 11 11 12     5.0     TRUE
+## 226    1    1      5        2 14 14 15     1.0    FALSE
+## 227    1    1      4       10  8  8  8     1.0    FALSE
+## 228    1    3      3        6 16 16 16     2.0    FALSE
+## 229    1    3      3        1 11 11 12     2.0    FALSE
+## 230    4    5      3        8 10  9 10     4.5     TRUE
+## 231    1    2      3        5 14 12 14     1.5    FALSE
+## 232    1    2      3        7 14 12 13     1.5    FALSE
+## 233    1    1      1        2 12 12 12     1.0    FALSE
+## 234    1    3      2        7 12 11 11     2.0    FALSE
+## 235    2    4      1        1 14 13 14     3.0     TRUE
+## 236    1    1      5       10  9  8  8     1.0    FALSE
+## 237    1    3      2        5 12 10 11     2.0    FALSE
+## 238    5    5      4        2 15 14 14     5.0     TRUE
+## 239    1    1      5       12 11 11 11     1.0    FALSE
+## 240    1    1      3        2 13 12 12     1.0    FALSE
+## 241    3    5      2        8  8  7  4     4.0     TRUE
+## 242    1    4      5       11 14 14 14     2.5     TRUE
+## 243    2    3      4        1 11 12 12     2.5     TRUE
+## 244    1    1      3        4 10  7  8     1.0    FALSE
+## 245    1    2      5        0 14 12 12     1.5    FALSE
+## 246    1    2      5        2 14 14 14     1.5    FALSE
+## 247    1    1      3        5 10  5  6     1.0    FALSE
+## 248    1    1      4        6 16 17 17     1.0    FALSE
+## 249    1    1      2        3 10 12 13     1.0    FALSE
+## 250    5    5      1       14  6  8  6     5.0     TRUE
+## 251    1    3      5        8  6  7  8     2.0    FALSE
+## 252    2    4      5        0 12 14 13     3.0     TRUE
+## 253    2    4      5        4  6  8  8     3.0     TRUE
+## 254    1    3      2        5  8 10 10     2.0    FALSE
+## 255    2    5      5        4  6  8  7     3.5     TRUE
+## 256    1    3      3        1 11 11 10     2.0    FALSE
+## 257    2    4      5        0 10 12 12     3.0     TRUE
+## 258    1    2      5        1  8 10  9     1.5    FALSE
+## 259    1    1      4        4 14 14 15     1.0    FALSE
+## 260    1    1      1        8 11 12 12     1.0    FALSE
+## 261    1    2      4        5 16 15 15     1.5    FALSE
+## 262    1    1      2        1 10 10  6     1.0    FALSE
+## 263    1    3      2       12 16 16 16     2.0    FALSE
+## 264    1    1      3        2  9  9 10     1.0    FALSE
+## 265    1    1      3        2 12 12 12     1.0    FALSE
+## 266    1    1      4        3 12 10 11     1.0    FALSE
+## 267    1    1      3        0 10 11  6     1.0    FALSE
+## 268    3    4      1       10 16 16 16     3.5     TRUE
+## 269    3    4      5        1 10 10 12     3.5     TRUE
+## 270    2    2      4        8 11 10 12     2.0    FALSE
+## 271    1    3      5        7 10 10 12     2.0    FALSE
+## 272    1    2      3        6  7  4  5     1.5    FALSE
+## 273    3    3      5       16 10 10 10     3.0     TRUE
+## 274    1    3      2        7 16 15 15     2.0    FALSE
+## 275    1    1      3        2 12 12 12     1.0    FALSE
+## 276    2    2      1        2 16 16 16     2.0    FALSE
+## 277    1    1      1        4 12 13 13     1.0    FALSE
+## 278    2    3      5        6 12 12 12     2.5     TRUE
+## 279    1    1      5       45 11  9 10     1.0    FALSE
+## 280    1    4      3       14 10 10 10     2.5     TRUE
+## 281    2    3      2       11 10 10 11     2.5     TRUE
+## 282    1    1      4        8 12 10 10     1.0    FALSE
+## 283    1    2      1        4 10 10 10     1.5    FALSE
+## 284    2    4      5       26 10 10  9     3.0     TRUE
+## 285    3    4      3       18 12 11 12     3.5     TRUE
+## 286    1    1      3        2 14 14 15     1.0    FALSE
+## 287    1    1      4        2 10 11 12     1.0    FALSE
+## 288    1    2      3        2 11 12 12     1.5    FALSE
+## 289    1    2      5        8 11 10 12     1.5    FALSE
+## 290    1    2      4        1 12 11 12     1.5    FALSE
+## 291    1    2      2        2 18 18 18     1.5    FALSE
+## 292    1    1      3        3 13 12 13     1.0    FALSE
+## 293    1    3      2        3 14 14 14     2.0    FALSE
+## 294    1    1      2        4 16 15 16     1.0    FALSE
+## 295    1    4      5        6 14 14 14     2.5     TRUE
+## 296    1    2      3        0 16 16 16     1.5    FALSE
+## 297    1    1      3        3 18 18 18     1.0    FALSE
+## 298    1    1      4        4 14 14 14     1.0    FALSE
+## 299    1    3      5        2 14 14 13     2.0    FALSE
+## 300    2    3      2        1 12 11  6     2.5     TRUE
+## 301    1    2      2        5 12 11 11     1.5    FALSE
+## 302    1    1      3        0 15 15 16     1.0    FALSE
+## 303    2    2      1        2 17 16 16     2.0    FALSE
+## 304    1    1      4        7 13 12 13     1.0    FALSE
+## 305    2    2      5        0 12 12 12     2.0    FALSE
+## 306    1    1      3        0 16 14 15     1.0    FALSE
+## 307    1    2      5        0 18 18 18     1.5    FALSE
+## 308    1    1      5        0 16 16 16     1.0    FALSE
+## 309    1    2      5        0 12 11 12     1.5    FALSE
+## 310    1    2      1        1 10 10  8     1.5    FALSE
+## 311    1    1      5        6 12 12 13     1.0    FALSE
+## 312    2    5      5        1 13 13 14     3.5     TRUE
+## 313    3    3      5        1 12 11 12     3.0     TRUE
+## 314    1    2      5       18 14 14 15     1.5    FALSE
+## 315    1    1      3        8 12 11 11     1.0    FALSE
+## 316    2    2      3        2 11 11 10     2.0    FALSE
+## 317    2    3      5        0 14 16 16     2.5     TRUE
+## 318    2    3      2        0 15 14 15     2.5     TRUE
+## 319    2    2      3        2 11 13 12     2.0    FALSE
+## 320    3    5      5        2 16 16 16     4.0     TRUE
+## 321    5    5      4        5 11 10 10     5.0     TRUE
+## 322    1    4      4        4 10 10 10     2.5     TRUE
+## 323    1    3      4        4 12 10 11     2.0    FALSE
+## 324    1    2      4        4 14 14 14     1.5    FALSE
+## 325    2    4      5        1 10 10 10     3.0     TRUE
+## 326    1    1      5        4 14 14 14     1.0    FALSE
+## 327    1    1      4        4  8  6  6     1.0    FALSE
+## 328    1    1      2        0  9  8  6     1.0    FALSE
+## 329    1    1      4        3 12 11  7     1.0    FALSE
+## 330    1    3      5       12 14 14 14     2.0    FALSE
+## 331    2    3      2        0 10 10  8     2.5     TRUE
+## 332    1    1      1        6 15 14 16     1.0    FALSE
+## 333    2    3      2        2 12 12 13     2.5     TRUE
+## 334    2    3      2        3 10 11  6     2.5     TRUE
+## 335    2    2      2        0 11 11  6     2.0    FALSE
+## 336    1    3      5        8 16 16 16     2.0    FALSE
+## 337    1    2      4        9 10 10  7     1.5    FALSE
+## 338    1    2      3        2 11 11 12     1.5    FALSE
+## 339    2    3      1        6 14 14 16     2.5     TRUE
+## 340    1    2      4        6 16 14 16     1.5    FALSE
+## 341    2    3      5        0 12 12 12     2.5     TRUE
+## 342    1    3      4        0 12 14 14     2.0    FALSE
+## 343    5    5      5        9 10 12 12     5.0     TRUE
+## 344    3    3      2        8  9  8 10     3.0     TRUE
+## 345    2    3      3        3 10 11 12     2.5     TRUE
+## 346    2    3      3        4  8  8  8     2.5     TRUE
+## 347    3    3      5        4  8  8  9     3.0     TRUE
+## 348    1    3      2        4 12 11 11     2.0    FALSE
+## 349    1    1      5        0 10 10 10     1.0    FALSE
+## 350    1    2      5        3 12 12 12     1.5    FALSE
+## 351    1    2      5        1 14 13 13     1.5    FALSE
+## 352    1    2      3        3 12 12 12     1.5    FALSE
+## 353    1    1      4        0 18 16 17     1.0    FALSE
+## 354    1    3      3        3 12 12 12     2.0    FALSE
+## 355    1    1      1        2 16 14 15     1.0    FALSE
+## 356    1    2      3        0 12 12 12     1.5    FALSE
+## 357    2    4      3        2  9 10 10     3.0     TRUE
+## 358    2    2      5        0 14 14 14     2.0    FALSE
+## 359    1    2      1        0  8  7  4     1.5    FALSE
+## 360    1    2      4        0 10 10 10     1.5    FALSE
+## 361    4    2      5        5 10  8  6     3.0     TRUE
+## 362    2    3      3        3 12 11 11     2.5     TRUE
+## 363    1    1      3        8 12 11 12     1.0    FALSE
+## 364    1    3      1        9  6  6  7     2.0    FALSE
+## 365    1    1      1        0 17 18 18     1.0    FALSE
+## 366    1    2      4        3  9 10 11     1.5    FALSE
+## 367    3    4      2        2 10 12 12     3.5     TRUE
+## 368    1    2      1        0 16 16 16     1.5    FALSE
+## 369    2    3      1       14  9 10 10     2.5     TRUE
+## 370    1    4      2        4 16 16 16     2.5     TRUE
+## 371    1    3      5        2  7  6  4     2.0    FALSE
+## 372    1    1      3        3 12 13 13     1.0    FALSE
+## 373    1    3      5        0  6  6  0     2.0    FALSE
+## 374    4    3      3        7  6  6  2     3.5     TRUE
+## 375    1    3      4        1 12 13 12     2.0    FALSE
+## 376    2    2      5        6  6  7  8     2.0    FALSE
+## 377    1    2      5        2  8  8  5     1.5    FALSE
+## 378    1    1      1        2 11 12 12     1.0    FALSE
+## 379    2    2      5        2  6  6  4     2.0    FALSE
+## 380    1    1      5        3  8  8  4     1.0    FALSE
+## 381    3    4      2        4 12 13 13     3.5     TRUE
+## 382    3    4      5        2 10 12 10     3.5     TRUE</code></pre>
+<pre class="r"><code>alc &lt;- read.csv(&quot;alc.csv&quot;)
+colnames(alc)</code></pre>
+<pre><code>##  [1] &quot;X&quot;          &quot;school&quot;     &quot;sex&quot;        &quot;age&quot;        &quot;address&quot;   
+##  [6] &quot;famsize&quot;    &quot;Pstatus&quot;    &quot;Medu&quot;       &quot;Fedu&quot;       &quot;Mjob&quot;      
+## [11] &quot;Fjob&quot;       &quot;reason&quot;     &quot;nursery&quot;    &quot;internet&quot;   &quot;guardian&quot;  
+## [16] &quot;traveltime&quot; &quot;studytime&quot;  &quot;failures&quot;   &quot;schoolsup&quot;  &quot;famsup&quot;    
+## [21] &quot;paid&quot;       &quot;activities&quot; &quot;higher&quot;     &quot;romantic&quot;   &quot;famrel&quot;    
+## [26] &quot;freetime&quot;   &quot;goout&quot;      &quot;Dalc&quot;       &quot;Walc&quot;       &quot;health&quot;    
+## [31] &quot;absences&quot;   &quot;G1&quot;         &quot;G2&quot;         &quot;G3&quot;         &quot;alc_use&quot;   
+## [36] &quot;high_use&quot;</code></pre>
+<pre class="r"><code>str(alc)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    382 obs. of  36 variables:
+##  $ X         : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ school    : Factor w/ 2 levels &quot;GP&quot;,&quot;MS&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ sex       : Factor w/ 2 levels &quot;F&quot;,&quot;M&quot;: 1 1 1 1 1 2 2 1 2 2 ...
+##  $ age       : int  18 17 15 15 16 16 16 17 15 15 ...
+##  $ address   : Factor w/ 2 levels &quot;R&quot;,&quot;U&quot;: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ famsize   : Factor w/ 2 levels &quot;GT3&quot;,&quot;LE3&quot;: 1 1 2 1 1 2 2 1 2 1 ...
+##  $ Pstatus   : Factor w/ 2 levels &quot;A&quot;,&quot;T&quot;: 1 2 2 2 2 2 2 1 1 2 ...
+##  $ Medu      : int  4 1 1 4 3 4 2 4 3 3 ...
+##  $ Fedu      : int  4 1 1 2 3 3 2 4 2 4 ...
+##  $ Mjob      : Factor w/ 5 levels &quot;at_home&quot;,&quot;health&quot;,..: 1 1 1 2 3 4 3 3 4 3 ...
+##  $ Fjob      : Factor w/ 5 levels &quot;at_home&quot;,&quot;health&quot;,..: 5 3 3 4 3 3 3 5 3 3 ...
+##  $ reason    : Factor w/ 4 levels &quot;course&quot;,&quot;home&quot;,..: 1 1 3 2 2 4 2 2 2 2 ...
+##  $ nursery   : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 2 1 2 2 2 2 2 2 2 2 ...
+##  $ internet  : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 2 2 2 1 2 2 1 2 2 ...
+##  $ guardian  : Factor w/ 3 levels &quot;father&quot;,&quot;mother&quot;,..: 2 1 2 2 1 2 2 2 2 2 ...
+##  $ traveltime: int  2 1 1 1 1 1 1 2 1 1 ...
+##  $ studytime : int  2 2 2 3 2 2 2 2 2 2 ...
+##  $ failures  : int  0 0 2 0 0 0 0 0 0 0 ...
+##  $ schoolsup : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 2 1 2 1 1 1 1 2 1 1 ...
+##  $ famsup    : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 2 1 2 2 2 1 2 2 2 ...
+##  $ paid      : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 1 2 2 2 2 1 1 2 2 ...
+##  $ activities: Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 1 1 2 1 2 1 1 1 2 ...
+##  $ higher    : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ romantic  : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 1 1 2 1 1 1 1 1 1 ...
+##  $ famrel    : int  4 5 4 3 4 5 4 4 4 5 ...
+##  $ freetime  : int  3 3 3 2 3 4 4 1 2 5 ...
+##  $ goout     : int  4 3 2 2 2 2 4 4 2 1 ...
+##  $ Dalc      : int  1 1 2 1 1 1 1 1 1 1 ...
+##  $ Walc      : int  1 1 3 1 2 2 1 1 1 1 ...
+##  $ health    : int  3 3 3 5 5 5 3 1 1 5 ...
+##  $ absences  : int  5 3 8 1 2 8 0 4 0 0 ...
+##  $ G1        : int  2 7 10 14 8 14 12 8 16 13 ...
+##  $ G2        : int  8 8 10 14 12 14 12 9 17 14 ...
+##  $ G3        : int  8 8 11 14 12 14 12 10 18 14 ...
+##  $ alc_use   : num  1 1 2.5 1 1.5 1.5 1 1 1 1 ...
+##  $ high_use  : logi  FALSE FALSE TRUE FALSE FALSE FALSE ...</code></pre>
+<pre class="r"><code>dim(alc)</code></pre>
+<pre><code>## [1] 382  36</code></pre>
+<pre class="r"><code>head(alc)</code></pre>
+<pre><code>##   X school sex age address famsize Pstatus Medu Fedu     Mjob     Fjob
+## 1 1     GP   F  18       U     GT3       A    4    4  at_home  teacher
+## 2 2     GP   F  17       U     GT3       T    1    1  at_home    other
+## 3 3     GP   F  15       U     LE3       T    1    1  at_home    other
+## 4 4     GP   F  15       U     GT3       T    4    2   health services
+## 5 5     GP   F  16       U     GT3       T    3    3    other    other
+## 6 6     GP   M  16       U     LE3       T    4    3 services    other
+##       reason nursery internet guardian traveltime studytime failures
+## 1     course     yes       no   mother          2         2        0
+## 2     course      no      yes   father          1         2        0
+## 3      other     yes      yes   mother          1         2        2
+## 4       home     yes      yes   mother          1         3        0
+## 5       home     yes       no   father          1         2        0
+## 6 reputation     yes      yes   mother          1         2        0
+##   schoolsup famsup paid activities higher romantic famrel freetime goout
+## 1       yes     no   no         no    yes       no      4        3     4
+## 2        no    yes   no         no    yes       no      5        3     3
+## 3       yes     no  yes         no    yes       no      4        3     2
+## 4        no    yes  yes        yes    yes      yes      3        2     2
+## 5        no    yes  yes         no    yes       no      4        3     2
+## 6        no    yes  yes        yes    yes       no      5        4     2
+##   Dalc Walc health absences G1 G2 G3 alc_use high_use
+## 1    1    1      3        5  2  8  8     1.0    FALSE
+## 2    1    1      3        3  7  8  8     1.0    FALSE
+## 3    2    3      3        8 10 10 11     2.5     TRUE
+## 4    1    1      5        1 14 14 14     1.0    FALSE
+## 5    1    2      5        2  8 12 12     1.5    FALSE
+## 6    1    2      5        8 14 14 14     1.5    FALSE</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(tidyr)</code></pre>
+<p><strong>3.</strong></p>
+<p>I chose <em>absences</em>, <em>going out with friens (goout)</em>, <em>mother’s education</em> and <em>father’s job</em> for variables predicting student’s alcohol consumption. My hypothesis is, that the absences from school is the strongest predictor of alcohol consumption of the four chosen predictors. I also assume, that going out with friends have a clear connection with alcohol consumption: the more one goes out, the more one consumes alcohol, on average. Third hypothesis is, that family’s socio-economic position (mother’s education + father’s job) has an inverse connection to alcohol consumption of a child: the lower the family’s socio-economic position, the more there is certain type of risk behavior (alcohol consumption) even intergenerationally.</p>
+<p><strong>4.</strong></p>
+<p>For preliminary, graphical exploration of the hypothesis formulated, following box plot graphs are printed for integer variables <em>goout</em> and <em>absences</em>.</p>
+<pre class="r"><code>g1 &lt;- ggplot(alc, aes(x = high_use, y = absences, col = sex))
+g2 &lt;- ggplot(alc, aes(x = high_use, y = goout, col = sex))
+g1 + geom_boxplot()</code></pre>
+<p><img src="data:image/png;base64,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" width="576" /></p>
+<pre class="r"><code>g2 + geom_boxplot()</code></pre>
+<p><img src="data:image/png;base64,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" width="576" /></p>
+<p>It seems, that there are some differences in absences between high_users and low_users of alcohol. The differences are more clear among men. Men whose alcohol consumption is high, have more absences from school in general. Also, high consuming men’s distribution of absences seems wider than those who do not consume as much and seems skewed as well. Between high and not-high consuming females there are not so clear difference in absences based on boxplot diagram. Some outliers can be detected among all four classes in question. Among females there seem to be more outliers, that drastically differ from main population in absences, than among men. Going out seems to have a clear connection with alcohol consumption. For both female and men a high consumption of alcohol indicates a higher outgoing rate.</p>
+<p>For gategorial variables concerning family’s socio-economic position, boxplot diagrams are not reasonable solution. Therefore, pobability tables are printed for Medu and Fjob with following commands and results:</p>
+<pre class="r"><code>attach(alc)
+mytable0 &lt;- table(high_use)
+mytable0</code></pre>
+<pre><code>## high_use
+## FALSE  TRUE 
+##   268   114</code></pre>
+<pre class="r"><code>prop.table(mytable0)</code></pre>
+<pre><code>## high_use
+##     FALSE      TRUE 
+## 0.7015707 0.2984293</code></pre>
+<pre class="r"><code>mytable &lt;- table(Fjob, high_use)
+mytable</code></pre>
+<pre><code>##           high_use
+## Fjob       FALSE TRUE
+##   at_home     14    2
+##   health      13    4
+##   other      149   62
+##   services    67   40
+##   teacher     25    6</code></pre>
+<pre class="r"><code>prop.table(mytable, 1)</code></pre>
+<pre><code>##           high_use
+## Fjob           FALSE      TRUE
+##   at_home  0.8750000 0.1250000
+##   health   0.7647059 0.2352941
+##   other    0.7061611 0.2938389
+##   services 0.6261682 0.3738318
+##   teacher  0.8064516 0.1935484</code></pre>
+<pre class="r"><code>mytable2 &lt;- table(Medu, high_use)
+mytable2</code></pre>
+<pre><code>##     high_use
+## Medu FALSE TRUE
+##    0     1    2
+##    1    33   18
+##    2    80   18
+##    3    59   36
+##    4    95   40</code></pre>
+<pre class="r"><code>prop.table(mytable2, 1)</code></pre>
+<pre><code>##     high_use
+## Medu     FALSE      TRUE
+##    0 0.3333333 0.6666667
+##    1 0.6470588 0.3529412
+##    2 0.8163265 0.1836735
+##    3 0.6210526 0.3789474
+##    4 0.7037037 0.2962963</code></pre>
+<pre class="r"><code>chisq.test(mytable)</code></pre>
+<pre><code>## Warning in chisq.test(mytable): Chi-squared approximation may be incorrect</code></pre>
+<pre><code>## 
+##  Pearson&#39;s Chi-squared test
+## 
+## data:  mytable
+## X-squared = 7.1778, df = 4, p-value = 0.1268</code></pre>
+<pre class="r"><code>chisq.test(mytable2)</code></pre>
+<pre><code>## Warning in chisq.test(mytable2): Chi-squared approximation may be incorrect</code></pre>
+<pre><code>## 
+##  Pearson&#39;s Chi-squared test
+## 
+## data:  mytable2
+## X-squared = 11.775, df = 4, p-value = 0.0191</code></pre>
+<p>In average, the probability of high alcohol consumption is ~ 30 %. From tables concerning father’s job, it can be seen, that especially students, whose father works at service sector, have a higher probability of high alcohol usage compared to students, whose fathers work in other sectors. Mother’s education does not have a straightforward relationship with students high alcohol consumption. Although students, whose mothers do not have any education, have clearly higher probability (66%) for high alcohol usage, it must be noticed, that there are only 3 students whose mother do not have any education in the data, which means that any conlcusions of those students cannot be drawn. Based on chi-square tests, father’s job doesn’t have statistically significant connection to student’s alcohol consumption, but mother’s education does have.</p>
+<p>In contrast to my hypotheses, it seems that going out might be the strongest predictor of high alcohol consumption, rather than absences from school. Also, family’s socioeconomic position does have a connection, but the interpretation with these two variables in question (Medu, Fjob) is difficult due to shortages in sample size.</p>
+<p><strong>5.</strong></p>
+<p>Logistic regression is utilized to form a predictive model for alcohol consumption, using following commands:</p>
+<pre class="r"><code>m &lt;- glm(high_use ~ Fjob + Medu + goout + absences, data = alc, family = &quot;binomial&quot;)
+summary(m)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = high_use ~ Fjob + Medu + goout + absences, family = &quot;binomial&quot;, 
+##     data = alc)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.8866  -0.7804  -0.5554   0.8854   2.4079  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  -4.53829    0.92553  -4.903 9.42e-07 ***
+## Fjobhealth    0.60259    0.99512   0.606 0.544818    
+## Fjobother     0.85834    0.79461   1.080 0.280050    
+## Fjobservices  1.33889    0.80861   1.656 0.097766 .  
+## Fjobteacher   0.30601    0.93443   0.327 0.743301    
+## Medu         -0.02015    0.12079  -0.167 0.867490    
+## goout         0.74436    0.11896   6.257 3.92e-10 ***
+## absences      0.07683    0.02251   3.413 0.000643 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 465.68  on 381  degrees of freedom
+## Residual deviance: 395.11  on 374  degrees of freedom
+## AIC: 411.11
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>OR &lt;- coef(m) %&gt;% exp
+CI &lt;- confint(m) %&gt;% exp</code></pre>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<pre class="r"><code>cbind(OR, CI)</code></pre>
+<pre><code>##                      OR       2.5 %      97.5 %
+## (Intercept)  0.01069165 0.001312637  0.05555929
+## Fjobhealth   1.82684300 0.274371446 15.92422759
+## Fjobother    2.35924185 0.596708164 15.77444797
+## Fjobservices 3.81479474 0.932973456 25.98660923
+## Fjobteacher  1.35800019 0.239357299 10.89282334
+## Medu         0.98004813 0.773500235  1.24334301
+## goout        2.10508797 1.676682452  2.67561855
+## absences     1.07986226 1.035215955  1.13186353</code></pre>
+<p>Logistic regression model confirms the interpretation presented above: going out is the srongest predictor for high alcohol consumption. One unit increase in going out means that the odds ratio for belonging to the group of high alcohol consuming students grows 2,1. This is not exactly the same as saying “probability increases two times”, although in reality it can be close to this kind of interpretation (relative risk vs. odds ratio, eg. <a href="https://journal.fi/janus/article/download/50456/15253" class="uri">https://journal.fi/janus/article/download/50456/15253</a>, in Finnish, unfortunately). Absences from school is statistically significant predictor as well, but it’s effect seems modest. Partly this can be explained by the relatively large scale of the variable. If standardized, the effect would appear much stronger.</p>
+<p>The model interprets mother’s education to be numerical due to variable’s numerical coding. In this case, this can be accepted, because mother’s education (based on crosstabs) didn’t have the kind of relationship with alcohol consumption, that would have had a straightforward theoretical interpretation. That is, there were a statistically significant variation with alcohol usage, but as the connection was not even close to linear, this was enough to question my hypothesis concerning especially mother’s low education.</p>
+<p>Father’s job is considered as a factor variable in the model. Since the first class of the variable works as a reference group for others, it seems that students whose father works at a service sector, have a higher probability of high consumption of alcohol (OR = 3,81) compared to students whose father works / is at home (this category is not included visibly in the model). However, the value of the estimate is not statistically significant, so with this number of observations, this kind of interpretation cannot be made.</p>
+<p><strong>6.</strong></p>
+<p>Based on AIC criterion, a better fitting (simpler) model is formed by dropping statistically non-significant variables (Medu, Fjob) out of the model. Step by step it can be seen, that AIC has the lowest value with only two statistically significant predictors (goout and absences) in the model (AIC = 408,5), although, the differences are modest.</p>
+<pre class="r"><code>m1 &lt;- glm(high_use ~ Fjob + goout + absences, data = alc, family = &quot;binomial&quot;)
+summary(m1)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = high_use ~ Fjob + goout + absences, family = &quot;binomial&quot;, 
+##     data = alc)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.8868  -0.7831  -0.5612   0.8959   2.4044  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  -4.58738    0.87909  -5.218 1.81e-07 ***
+## Fjobhealth    0.58795    0.99170   0.593 0.553270    
+## Fjobother     0.85735    0.79501   1.078 0.280846    
+## Fjobservices  1.33554    0.80874   1.651 0.098659 .  
+## Fjobteacher   0.28172    0.92327   0.305 0.760264    
+## goout         0.74360    0.11887   6.256 3.96e-10 ***
+## absences      0.07654    0.02244   3.411 0.000648 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 465.68  on 381  degrees of freedom
+## Residual deviance: 395.14  on 375  degrees of freedom
+## AIC: 409.14
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>OR &lt;- coef(m1) %&gt;% exp
+CI &lt;- confint(m1) %&gt;% exp</code></pre>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<pre class="r"><code>cbind(OR, CI)</code></pre>
+<pre><code>##                      OR       2.5 %      97.5 %
+## (Intercept)  0.01017947 0.001343874  0.04796635
+## Fjobhealth   1.80029096 0.272528679 15.61959813
+## Fjobother    2.35691789 0.595702770 15.76861178
+## Fjobservices 3.80205572 0.929991554 25.90839965
+## Fjobteacher  1.32541059 0.239495282 10.46342160
+## goout        2.10350198 1.675712336  2.67317870
+## absences     1.07955007 1.035062573  1.13137478</code></pre>
+<pre class="r"><code>m2 &lt;- glm(high_use ~ goout + absences, data = alc, family = &quot;binomial&quot;)
+summary(m2)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = high_use ~ goout + absences, family = &quot;binomial&quot;, 
+##     data = alc)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.9111  -0.7480  -0.5173   0.9427   2.3741  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -3.64647    0.43400  -8.402  &lt; 2e-16 ***
+## goout        0.73590    0.11715   6.282 3.35e-10 ***
+## absences     0.07703    0.02209   3.487 0.000489 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 465.68  on 381  degrees of freedom
+## Residual deviance: 402.50  on 379  degrees of freedom
+## AIC: 408.5
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>OR &lt;- coef(m2) %&gt;% exp
+CI &lt;- confint(m2) %&gt;% exp</code></pre>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<pre class="r"><code>cbind(OR, CI)</code></pre>
+<pre><code>##                   OR      2.5 %     97.5 %
+## (Intercept) 0.026083 0.01076768 0.05922061
+## goout       2.087359 1.66817170 2.64318173
+## absences    1.080069 1.03581041 1.13071158</code></pre>
+<p>A “confusion matrix” shows, that a model does have power predicting observations right, but it must be noticed, that there exist misclassified observations as well.</p>
+<p>Utilizing a loss function, the average number of correct (accuracy) and incorrect (penalty) predictions can be estimated. Based on the latter loss function, the average number of incorrect predictions is about 23,6 percentage.</p>
+<pre class="r"><code>probabilities &lt;- predict(m2, type = &quot;response&quot;)
+alc &lt;- mutate(alc, probability = probabilities)
+alc &lt;- mutate(alc, prediction = probability &gt; 0.5)
+table(high_use = alc$high_use, prediction = alc$prediction)</code></pre>
+<pre><code>##         prediction
+## high_use FALSE TRUE
+##    FALSE   245   23
+##    TRUE     67   47</code></pre>
+<pre class="r"><code>g6 &lt;- ggplot(alc, aes(x = probability, y = high_use, col = prediction))
+g6 + geom_point()</code></pre>
+<p><img src="data:image/png;base64,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" width="576" /></p>
+<pre class="r"><code>table(high_use = alc$high_use, prediction = alc$prediction) %&gt;% prop.table %&gt;% addmargins</code></pre>
+<pre><code>##         prediction
+## high_use      FALSE       TRUE        Sum
+##    FALSE 0.64136126 0.06020942 0.70157068
+##    TRUE  0.17539267 0.12303665 0.29842932
+##    Sum   0.81675393 0.18324607 1.00000000</code></pre>
+<pre class="r"><code>loss_func &lt;- function(class, prob) {
+n_wrong &lt;- abs(class - prob) &gt; 0.5
+mean(n_wrong)
+}
+
+loss_func(class = alc$high_use, prob = 1)</code></pre>
+<pre><code>## [1] 0.7015707</code></pre>
+<pre class="r"><code>loss_func(class = alc$high_use, prob = 0)</code></pre>
+<pre><code>## [1] 0.2984293</code></pre>
+<pre class="r"><code>loss_func(class = alc$high_use, prob = alc$probability)</code></pre>
+<pre><code>## [1] 0.2356021</code></pre>
+<p><strong>7.</strong></p>
+<p>Following commands are executed for 10-fold cross-validation of the model.</p>
+<pre class="r"><code>library(boot)
+cv &lt;- cv.glm(data = alc, cost = loss_func, glmfit = m, K = 10)
+cv$delta[1]</code></pre>
+<pre><code>## [1] 0.2513089</code></pre>
+<p>It seems, that the mean prediction error of the model presented above (0,246) is slightly smaller compared to the model presented in the data camp excercise (0,264).</p>
+</div>
 </div>
 
 
