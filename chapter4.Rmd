@@ -1,0 +1,161 @@
+---
+title: "Clustering and Classification"
+author: "Joonas Luukkonen"
+date: "20 11 2019"
+output: html_document
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## Clustering and Classification
+
+**2.**
+
+There are 506 observations of 14 variables in the data mapping housing values in suburbs of Boston. Data consist of constant, numerical variables and two integers. It is important to notice, that contrary to previous data, this data seems to contain information from aggregated measures, that is, neighbourgood or suburb-level measurements, which can explain strong correlations between varaibles in the dataset on average.
+
+```{r}
+library(MASS)
+data("Boston")
+str(Boston)
+
+```
+
+
+
+**3.** 
+
+Following commands are executed for graphical overview of the data.
+
+```{r}
+library(GGally)
+library(ggplot2)
+library(tidyr) 
+library(dplyr)
+summary(Boston)
+pairs(Boston)
+p <- ggpairs(Boston, mapping = aes(), lower = list(combo = wrap("facethist", bins = 20)))
+p
+```
+
+Correlation matrix and plots can alternatively be printed using following commands:
+
+```{r}
+library(corrplot)
+
+cor_matrix<-cor(Boston) %>% round(digits = 2)
+cor_matrix
+corrplot(cor_matrix, method="circle", type="upper", cl.pos="b", tl.pos="d", tl.cex = 0.6)
+
+```
+
+It seems, that many of the variables are not normally distributed.The strongest positive correlation is between nox(nitrogen oxides concentration (parts per 10 million)) and indus (proportion of non-retail business acres per town) 0,76. Strongest negative correlation lies between nox(nitrogen oxides concentration (parts per 10 million)) and dis (weighted mean of distances to five Boston employment centres) -0,77.
+
+
+**4.** 
+
+Dataset is standardized so, that mean of the scaled variables are zero.
+Categorical variable of the crime rate in Boston is formed and dataset is divided to train and test sets.
+
+```{r}
+boston_scaled <- scale(Boston)
+summary(boston_scaled)
+class(boston_scaled)
+boston_scaled <- as.data.frame(boston_scaled)
+
+summary(boston_scaled$crim)
+bins <- quantile(boston_scaled$crim)
+crime <- cut(boston_scaled$crim, breaks = bins, include.lowest = TRUE, labels = c("low", "med_low", "med_high", "high"))
+table(crime)
+boston_scaled <- dplyr::select(boston_scaled, -crim)
+boston_scaled <- data.frame(boston_scaled, crime)
+
+n <- nrow(boston_scaled)
+ind <- sample(n,  size = n * 0.8)
+train <- boston_scaled[ind,]
+test <- boston_scaled[-ind,]
+correct_classes <- test$crime
+test <- dplyr::select(test, -crime)
+```
+
+
+**5.** 
+
+Linear discriminant model was fitted:
+
+``` {r}
+lda.fit <- lda(crime ~ ., data = train)
+lda.fit
+lda.arrows <- function(x, myscale = 1, arrow_heads = 0.1, color = "orange", tex = 0.75, choices = c(1,2)){
+  heads <- coef(x)
+  arrows(x0 = 0, y0 = 0, 
+         x1 = myscale * heads[,choices[1]], 
+         y1 = myscale * heads[,choices[2]], col=color, length = arrow_heads)
+  text(myscale * heads[,choices], labels = row.names(heads), 
+       cex = tex, col=color, pos=3)
+}
+
+classes <- as.numeric(train$crime)
+
+plot(lda.fit, dimen = 2, col = classes, pch = classes)
+lda.arrows(lda.fit, myscale = 1)
+```
+
+The first discriminant dimension (LD1) is clearly the strongest discriminative one. It seems that rad(index of accessibility to radial highways) has the strongest charge in this dimension.
+
+
+**6.** 
+
+The classes of the test set is predicted with the LDA model:  
+
+
+```{r}
+lda.pred <- predict(lda.fit, newdata = test)
+table(correct = correct_classes, predicted = lda.pred$class)
+```
+
+The classifier did predict the crime rates quite well. In cases of the centermost classes (med_low and med_high), there are more miscorrect classifications, but on the extremities, especially on the upper end, prediction seems accurate.
+
+
+**7.** 
+
+Boston dataset is reloaded and standardized:
+
+```{r}
+data("Boston")
+boston_scaled2 <- scale(Boston)
+summary(boston_scaled2)
+class(boston_scaled2)
+boston_scaled2 <- as.data.frame(boston_scaled2)
+```
+
+
+Distances between observations are calculated and k-means clustering is executed.
+
+```{r}
+dist_eu <- dist(boston_scaled2)
+summary(dist_eu)
+dist_man <- dist(boston_scaled2, method = 'manhattan')
+summary(dist_man)
+
+km <-kmeans(boston_scaled2, centers = 4)
+km
+km <-kmeans(boston_scaled2, centers = 3)
+km
+km2 <-kmeans(boston_scaled2, centers = 2)
+km2
+```
+
+Based on total within sum squares, It seems, that the appropriate amount of clusters is 2 (the lowest value in comparison, 35,3 %).
+
+The largest differences between groups exists in indus(proportion of non-retail business acres per town), nox(nitrogen oxides concentration (parts per 10 million), tax(full-value property-tax rate per \$10,000) and rad(index of accessibility to radial highways).
+
+
+For graphical exploration of clustering, pairs() command is utilized:
+
+```{r}
+pairs(boston_scaled2[], col = km2$cluster)
+```
+

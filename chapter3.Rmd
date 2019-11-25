@@ -19,7 +19,6 @@ The data approach student achievement in secondary education of two Portuguese s
 
 ``` {r}
 setwd("~/IODS-project/data")
-read.csv("alc.csv")
 alc <- read.csv("alc.csv")
 colnames(alc)
 str(alc)

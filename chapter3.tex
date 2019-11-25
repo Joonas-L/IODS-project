@@ -1,0 +1,2371 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={chapter3},
+            pdfauthor={Joonas Luukkonen},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{chapter3}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Joonas Luukkonen}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{14 11 2019}
+
+
+\begin{document}
+\maketitle
+
+\hypertarget{logistic-regression}{%
+\subsection{Logistic Regression}\label{logistic-regression}}
+
+\textbf{2.}
+
+The data approach student achievement in secondary education of two
+Portuguese schools. There are 382 observations of 35 variables (+
+techical variable x, which appeared for some reason after reading data
+into r.) in the dataset after structuration. In addition to factor,
+integer and numerical variables there is a logical variable as well, the
+one which was created for the purpose of logistic regression.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{setwd}\NormalTok{(}\StringTok{"~/IODS-project/data"}\NormalTok{)}
+\KeywordTok{read.csv}\NormalTok{(}\StringTok{"alc.csv"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       X school sex age address famsize Pstatus Medu Fedu     Mjob     Fjob
+## 1     1     GP   F  18       U     GT3       A    4    4  at_home  teacher
+## 2     2     GP   F  17       U     GT3       T    1    1  at_home    other
+## 3     3     GP   F  15       U     LE3       T    1    1  at_home    other
+## 4     4     GP   F  15       U     GT3       T    4    2   health services
+## 5     5     GP   F  16       U     GT3       T    3    3    other    other
+## 6     6     GP   M  16       U     LE3       T    4    3 services    other
+## 7     7     GP   M  16       U     LE3       T    2    2    other    other
+## 8     8     GP   F  17       U     GT3       A    4    4    other  teacher
+## 9     9     GP   M  15       U     LE3       A    3    2 services    other
+## 10   10     GP   M  15       U     GT3       T    3    4    other    other
+## 11   11     GP   F  15       U     GT3       T    4    4  teacher   health
+## 12   12     GP   F  15       U     GT3       T    2    1 services    other
+## 13   13     GP   M  15       U     LE3       T    4    4   health services
+## 14   14     GP   M  15       U     GT3       T    4    3  teacher    other
+## 15   15     GP   M  15       U     GT3       A    2    2    other    other
+## 16   16     GP   F  16       U     GT3       T    4    4   health    other
+## 17   17     GP   F  16       U     GT3       T    4    4 services services
+## 18   18     GP   F  16       U     GT3       T    3    3    other    other
+## 19   19     GP   M  17       U     GT3       T    3    2 services services
+## 20   20     GP   M  16       U     LE3       T    4    3   health    other
+## 21   21     GP   M  15       U     GT3       T    4    3  teacher    other
+## 22   22     GP   M  15       U     GT3       T    4    4   health   health
+## 23   23     GP   M  16       U     LE3       T    4    2  teacher    other
+## 24   24     GP   M  16       U     LE3       T    2    2    other    other
+## 25   25     GP   F  15       R     GT3       T    2    4 services   health
+## 26   26     GP   F  16       U     GT3       T    2    2 services services
+## 27   27     GP   M  15       U     GT3       T    2    2    other    other
+## 28   28     GP   M  15       U     GT3       T    4    2   health services
+## 29   29     GP   M  16       U     LE3       A    3    4 services    other
+## 30   30     GP   M  16       U     GT3       T    4    4  teacher  teacher
+## 31   31     GP   M  15       U     GT3       T    4    4   health services
+## 32   32     GP   M  15       U     GT3       T    4    4 services services
+## 33   33     GP   M  15       R     GT3       T    4    3  teacher  at_home
+## 34   34     GP   M  15       U     LE3       T    3    3    other    other
+## 35   35     GP   M  16       U     GT3       T    3    2    other    other
+## 36   36     GP   F  15       U     GT3       T    2    3    other    other
+## 37   37     GP   M  15       U     LE3       T    4    3  teacher services
+## 38   38     GP   M  16       R     GT3       A    4    4    other  teacher
+## 39   39     GP   F  15       R     GT3       T    3    4 services   health
+## 40   40     GP   F  15       R     GT3       T    2    2  at_home    other
+## 41   41     GP   F  16       U     LE3       T    2    2    other    other
+## 42   42     GP   M  15       U     LE3       T    4    4  teacher    other
+## 43   43     GP   M  15       U     GT3       T    4    4 services  teacher
+## 44   44     GP   M  15       U     GT3       T    2    2 services services
+## 45   45     GP   F  16       U     LE3       T    2    2    other  at_home
+## 46   46     GP   F  15       U     LE3       A    4    3    other    other
+## 47   47     GP   F  16       U     LE3       A    3    3    other services
+## 48   48     GP   M  16       U     GT3       T    4    3   health services
+## 49   49     GP   M  15       U     GT3       T    4    2  teacher    other
+## 50   50     GP   F  15       U     GT3       T    4    4 services  teacher
+## 51   51     GP   F  16       U     LE3       T    2    2 services services
+## 52   52     GP   F  15       U     LE3       T    4    2   health    other
+## 53   53     GP   M  15       U     LE3       A    4    2   health   health
+## 54   54     GP   F  15       U     GT3       T    4    4 services services
+## 55   55     GP   F  15       U     LE3       A    3    3    other    other
+## 56   56     GP   F  16       U     GT3       A    2    1    other    other
+## 57   57     GP   F  15       U     GT3       A    4    3 services services
+## 58   58     GP   M  15       U     GT3       T    4    4  teacher   health
+## 59   59     GP   M  15       U     LE3       T    1    2    other  at_home
+## 60   60     GP   F  16       U     GT3       T    4    2 services    other
+## 61   61     GP   F  16       R     GT3       T    4    4   health  teacher
+## 62   62     GP   F  16       U     GT3       T    1    1 services services
+## 63   63     GP   F  16       U     LE3       T    1    2    other services
+## 64   64     GP   F  16       U     GT3       T    4    3  teacher   health
+## 65   65     GP   F  15       U     LE3       T    4    3 services services
+## 66   66     GP   F  16       U     LE3       T    4    3  teacher services
+## 67   67     GP   M  15       U     GT3       A    4    4    other services
+## 68   68     GP   F  16       U     GT3       T    3    1 services    other
+## 69   69     GP   F  15       R     LE3       T    2    2   health services
+## 70   70     GP   F  15       R     LE3       T    3    1    other    other
+## 71   71     GP   M  16       U     GT3       T    3    1    other    other
+## 72   72     GP   M  15       U     GT3       T    4    2    other    other
+## 73   73     GP   F  15       R     GT3       T    1    1    other    other
+## 74   74     GP   M  16       U     GT3       T    3    1    other    other
+## 75   75     GP   F  16       U     GT3       T    3    3    other services
+## 76   76     GP   M  15       U     GT3       T    4    3  teacher    other
+## 77   77     GP   M  15       U     GT3       T    4    0  teacher    other
+## 78   78     GP   F  16       U     GT3       T    2    2    other    other
+## 79   79     GP   M  17       U     GT3       T    2    1    other    other
+## 80   80     GP   M  17       U     GT3       T    2    1    other    other
+## 81   81     GP   F  16       U     GT3       T    3    4  at_home    other
+## 82   82     GP   M  15       U     GT3       T    2    3    other services
+## 83   83     GP   M  15       U     GT3       T    2    3    other    other
+## 84   84     GP   F  15       U     LE3       T    3    2 services    other
+## 85   85     GP   M  15       U     LE3       T    2    2 services services
+## 86   86     GP   F  15       U     GT3       T    1    1    other    other
+## 87   87     GP   F  15       U     GT3       T    4    4 services services
+## 88   88     GP   F  16       U     LE3       T    2    2  at_home    other
+## 89   89     GP   F  15       U     GT3       T    4    2    other    other
+## 90   90     GP   M  16       U     GT3       T    2    2 services    other
+## 91   91     GP   M  16       U     LE3       A    4    4  teacher   health
+## 92   92     GP   F  16       U     GT3       T    3    3    other    other
+## 93   93     GP   F  15       U     GT3       T    4    3 services    other
+## 94   94     GP   F  16       U     LE3       T    3    1    other    other
+## 95   95     GP   F  16       U     GT3       T    4    2  teacher services
+## 96   96     GP   M  15       U     LE3       T    2    2 services   health
+## 97   97     GP   F  15       R     GT3       T    1    1  at_home    other
+## 98   98     GP   M  16       R     GT3       T    4    3 services    other
+## 99   99     GP   F  16       U     GT3       T    2    1    other    other
+## 100 100     GP   F  16       U     GT3       T    4    4    other    other
+## 101 101     GP   F  16       U     GT3       T    4    3    other  at_home
+## 102 102     GP   M  16       U     GT3       T    4    4 services services
+## 103 103     GP   M  16       U     GT3       T    4    4 services  teacher
+## 104 104     GP   M  15       U     GT3       T    4    4 services    other
+## 105 105     GP   F  15       U     GT3       T    3    2 services    other
+## 106 106     GP   M  15       U     GT3       A    3    4 services    other
+## 107 107     GP   F  15       U     GT3       A    3    3    other   health
+## 108 108     GP   F  15       U     GT3       T    2    2    other    other
+## 109 109     GP   M  16       U     GT3       T    3    3 services    other
+## 110 110     GP   M  16       U     GT3       T    3    3 services    other
+## 111 111     GP   M  15       R     GT3       T    4    4    other    other
+## 112 112     GP   F  16       U     LE3       T    4    4   health   health
+## 113 113     GP   M  15       U     LE3       A    4    4  teacher  teacher
+## 114 114     GP   F  16       R     GT3       T    3    3 services    other
+## 115 115     GP   F  16       U     GT3       T    2    2  at_home    other
+## 116 116     GP   M  15       U     LE3       T    4    2  teacher    other
+## 117 117     GP   M  15       R     GT3       T    2    1   health services
+## 118 118     GP   M  16       U     GT3       T    4    4  teacher  teacher
+## 119 119     GP   M  16       U     GT3       T    4    4  teacher  teacher
+## 120 120     GP   M  15       U     GT3       T    4    4    other  teacher
+## 121 121     GP   M  16       U     GT3       T    3    3    other services
+## 122 122     GP   M  17       R     GT3       T    1    3    other    other
+## 123 123     GP   M  15       U     GT3       T    3    4    other    other
+## 124 124     GP   F  15       U     GT3       T    1    2  at_home services
+## 125 125     GP   M  15       U     GT3       T    2    2 services services
+## 126 126     GP   F  16       U     LE3       T    2    4    other   health
+## 127 127     GP   M  16       U     GT3       T    4    4   health    other
+## 128 128     GP   F  16       U     GT3       T    2    2    other    other
+## 129 129     GP   M  15       U     GT3       T    3    4 services services
+## 130 130     GP   F  15       U     LE3       A    3    4    other    other
+## 131 131     GP   F  19       U     GT3       T    0    1  at_home    other
+## 132 132     GP   M  16       R     GT3       T    4    4  teacher  teacher
+## 133 133     GP   F  15       R     GT3       T    3    4 services  teacher
+## 134 134     GP   F  15       U     GT3       T    1    1  at_home    other
+## 135 135     GP   F  17       U     LE3       T    2    2    other    other
+## 136 136     GP   F  16       U     GT3       A    3    4 services    other
+## 137 137     GP   M  15       R     GT3       T    3    4  at_home  teacher
+## 138 138     GP   F  15       U     GT3       T    4    4 services  at_home
+## 139 139     GP   M  17       R     GT3       T    3    4  at_home    other
+## 140 140     GP   F  16       U     GT3       A    3    3    other    other
+## 141 141     GP   M  16       U     LE3       T    1    1 services    other
+## 142 142     GP   F  15       U     GT3       T    4    4  teacher  teacher
+## 143 143     GP   M  15       U     GT3       T    4    3  teacher services
+## 144 144     GP   M  16       U     LE3       T    2    2 services services
+## 145 145     GP   F  15       U     GT3       T    4    4  teacher services
+## 146 146     GP   F  16       U     LE3       T    1    1  at_home  at_home
+## 147 147     GP   M  17       U     GT3       T    2    1    other    other
+## 148 148     GP   M  17       U     GT3       T    2    1    other    other
+## 149 149     GP   F  15       U     GT3       T    1    1    other services
+## 150 150     GP   F  15       U     GT3       T    3    2   health services
+## 151 151     GP   F  15       U     GT3       T    1    2  at_home    other
+## 152 152     GP   M  16       U     GT3       T    4    4  teacher  teacher
+## 153 153     GP   M  16       U     GT3       T    4    4  teacher  teacher
+## 154 154     GP   M  15       U     LE3       A    2    1 services    other
+## 155 155     GP   M  18       U     LE3       T    1    1    other    other
+## 156 156     GP   M  16       U     LE3       T    2    1  at_home    other
+## 157 157     GP   F  15       R     GT3       T    3    3 services services
+## 158 158     GP   M  19       U     GT3       T    3    2 services  at_home
+## 159 159     GP   F  17       U     GT3       T    4    4    other  teacher
+## 160 160     GP   M  15       R     GT3       T    2    3  at_home services
+## 161 161     GP   M  17       R     LE3       T    1    2    other    other
+## 162 162     GP   F  18       R     GT3       T    1    1  at_home    other
+## 163 163     GP   M  16       R     GT3       T    2    2  at_home    other
+## 164 164     GP   M  16       U     GT3       T    3    3    other services
+## 165 165     GP   M  17       R     LE3       T    2    1  at_home    other
+## 166 166     GP   M  17       R     LE3       T    1    1    other services
+## 167 167     GP   M  16       U     GT3       T    2    2    other    other
+## 168 168     GP   F  16       U     GT3       T    4    2   health services
+## 169 169     GP   F  16       U     GT3       T    2    2    other    other
+## 170 170     GP   F  16       U     GT3       T    4    4   health   health
+## 171 171     GP   M  16       U     GT3       T    3    4    other    other
+## 172 172     GP   M  16       U     GT3       T    1    0    other    other
+## 173 173     GP   M  17       U     LE3       T    4    4  teacher    other
+## 174 174     GP   F  16       U     GT3       T    1    3  at_home services
+## 175 175     GP   F  16       U     LE3       T    3    3    other    other
+## 176 176     GP   M  17       U     LE3       T    4    3  teacher    other
+## 177 177     GP   F  16       U     GT3       T    2    2 services    other
+## 178 178     GP   M  17       U     GT3       T    3    3    other    other
+## 179 179     GP   M  16       R     GT3       T    4    2  teacher services
+## 180 180     GP   M  17       U     GT3       T    4    3    other    other
+## 181 181     GP   M  16       U     GT3       T    4    3  teacher    other
+## 182 182     GP   M  16       U     GT3       T    3    3 services    other
+## 183 183     GP   M  16       U     GT3       T    3    3 services    other
+## 184 184     GP   F  17       U     GT3       T    2    4 services services
+## 185 185     GP   F  17       U     LE3       T    3    3    other    other
+## 186 186     GP   F  16       U     GT3       T    3    2    other    other
+## 187 187     GP   M  17       U     GT3       T    3    3 services services
+## 188 188     GP   M  16       U     GT3       T    1    2 services services
+## 189 189     GP   M  16       U     LE3       T    2    1    other    other
+## 190 190     GP   F  17       U     GT3       A    3    3   health    other
+## 191 191     GP   M  17       R     GT3       T    1    2  at_home    other
+## 192 192     GP   F  16       U     GT3       T    2    3 services services
+## 193 193     GP   F  17       U     GT3       T    1    1  at_home services
+## 194 194     GP   M  17       U     GT3       T    1    2  at_home services
+## 195 195     GP   M  16       R     GT3       T    3    3 services services
+## 196 196     GP   M  16       U     GT3       T    2    3    other    other
+## 197 197     GP   F  17       U     LE3       T    2    4 services services
+## 198 198     GP   M  17       U     GT3       T    4    4 services  teacher
+## 199 199     GP   M  16       R     LE3       T    3    3  teacher    other
+## 200 200     GP   F  17       U     GT3       T    4    4 services  teacher
+## 201 201     GP   F  16       U     LE3       T    4    4  teacher  teacher
+## 202 202     GP   F  16       U     GT3       T    4    3   health    other
+## 203 203     GP   F  16       U     GT3       T    2    3    other    other
+## 204 204     GP   F  17       U     GT3       T    1    1    other    other
+## 205 205     GP   F  17       R     GT3       T    2    2    other    other
+## 206 206     GP   F  16       R     GT3       T    2    2 services services
+## 207 207     GP   F  17       U     GT3       T    3    4  at_home services
+## 208 208     GP   F  16       U     GT3       A    3    1 services    other
+## 209 209     GP   F  16       U     GT3       T    4    3  teacher    other
+## 210 210     GP   F  16       U     GT3       T    1    1  at_home    other
+## 211 211     GP   F  17       R     GT3       T    4    3  teacher    other
+## 212 212     GP   F  19       U     GT3       T    3    3    other    other
+## 213 213     GP   M  17       U     LE3       T    4    4 services    other
+## 214 214     GP   F  16       U     GT3       A    2    2    other    other
+## 215 215     GP   M  18       U     GT3       T    2    2 services    other
+## 216 216     GP   F  17       R     LE3       T    4    4 services    other
+## 217 217     GP   F  17       U     LE3       T    3    2    other    other
+## 218 218     GP   F  17       U     GT3       T    4    3    other    other
+## 219 219     GP   M  18       U     LE3       T    3    3 services   health
+## 220 220     GP   F  17       U     GT3       T    2    3  at_home    other
+## 221 221     GP   F  17       U     GT3       T    2    2  at_home  at_home
+## 222 222     GP   F  17       R     GT3       T    2    1  at_home services
+## 223 223     GP   F  17       U     GT3       T    1    1  at_home    other
+## 224 224     GP   F  16       U     GT3       T    2    3 services  teacher
+## 225 225     GP   M  18       U     GT3       T    2    2    other    other
+## 226 226     GP   F  16       U     GT3       T    4    4  teacher services
+## 227 227     GP   F  18       R     GT3       T    3    1    other    other
+## 228 228     GP   F  17       U     GT3       T    3    2    other    other
+## 229 229     GP   M  17       U     LE3       T    2    3 services services
+## 230 230     GP   M  18       U     LE3       T    2    1  at_home    other
+## 231 231     GP   F  17       U     GT3       A    2    1    other    other
+## 232 232     GP   F  17       U     LE3       T    4    3   health    other
+## 233 233     GP   M  17       R     GT3       T    2    2    other    other
+## 234 234     GP   M  17       U     GT3       T    4    4  teacher  teacher
+## 235 235     GP   M  16       U     GT3       T    4    4   health    other
+## 236 236     GP   M  16       U     LE3       T    1    1    other    other
+## 237 237     GP   M  16       U     GT3       T    3    2  at_home    other
+## 238 238     GP   M  17       U     LE3       T    2    2    other    other
+## 239 239     GP   F  16       U     GT3       T    2    1    other    other
+## 240 240     GP   F  17       R     GT3       T    2    1  at_home services
+## 241 241     GP   M  18       U     GT3       T    2    2    other services
+## 242 242     GP   M  17       U     LE3       T    4    3   health    other
+## 243 243     GP   M  17       R     LE3       A    4    4  teacher    other
+## 244 244     GP   M  16       U     LE3       T    4    3  teacher    other
+## 245 245     GP   M  16       U     GT3       T    4    4 services services
+## 246 246     GP   M  16       U     GT3       T    4    4 services services
+## 247 247     GP   F  18       U     GT3       T    2    1    other    other
+## 248 248     GP   M  16       U     GT3       T    2    1    other    other
+## 249 249     GP   M  17       U     GT3       T    2    3    other    other
+## 250 250     GP   M  22       U     GT3       T    3    1 services services
+## 251 251     GP   M  18       R     LE3       T    3    3    other services
+## 252 252     GP   M  16       U     GT3       T    0    2    other    other
+## 253 253     GP   M  18       U     GT3       T    3    2 services    other
+## 254 254     GP   M  16       U     GT3       T    3    3  at_home    other
+## 255 255     GP   M  18       U     GT3       T    2    1 services services
+## 256 256     GP   M  16       R     GT3       T    2    1    other    other
+## 257 257     GP   M  17       R     GT3       T    2    1    other    other
+## 258 258     GP   M  17       U     LE3       T    1    1   health    other
+## 259 259     GP   F  17       U     LE3       T    4    2  teacher services
+## 260 260     GP   M  19       U     LE3       A    4    3 services  at_home
+## 261 261     GP   M  18       U     GT3       T    2    1    other    other
+## 262 262     GP   F  17       U     LE3       T    2    2 services services
+## 263 263     GP   F  18       U     GT3       T    4    3 services    other
+## 264 264     GP   M  18       U     GT3       T    4    3  teacher    other
+## 265 265     GP   M  18       R     GT3       T    3    2    other    other
+## 266 266     GP   F  17       U     GT3       T    3    3    other    other
+## 267 267     GP   F  18       U     GT3       T    2    2  at_home services
+## 268 268     GP   M  18       R     LE3       A    3    4    other    other
+## 269 269     GP   M  17       U     GT3       T    3    1 services    other
+## 270 270     GP   F  18       R     GT3       T    4    4  teacher    other
+## 271 271     GP   M  18       U     GT3       T    4    2   health    other
+## 272 272     GP   F  18       R     GT3       T    2    1    other    other
+## 273 273     GP   F  19       U     GT3       T    3    3    other services
+## 274 274     GP   F  18       U     GT3       T    2    3    other services
+## 275 275     GP   F  18       U     LE3       T    1    1    other    other
+## 276 276     GP   M  17       R     GT3       T    1    2  at_home  at_home
+## 277 277     GP   F  17       U     GT3       T    2    4  at_home   health
+## 278 278     GP   F  17       U     LE3       T    2    2 services    other
+## 279 279     GP   F  18       R     GT3       A    3    2    other services
+## 280 280     GP   M  18       U     GT3       T    4    4  teacher services
+## 281 281     GP   M  18       U     GT3       T    4    4  teacher services
+## 282 282     GP   F  18       U     GT3       T    4    4   health   health
+## 283 283     GP   M  18       U     LE3       T    4    3  teacher services
+## 284 284     GP   M  17       U     LE3       A    4    1 services    other
+## 285 285     GP   M  17       U     LE3       A    3    2  teacher services
+## 286 286     GP   F  18       R     LE3       T    1    1  at_home    other
+## 287 287     GP   F  18       U     GT3       T    1    1    other    other
+## 288 288     GP   F  18       U     GT3       T    1    1    other    other
+## 289 289     GP   F  17       U     GT3       T    2    2    other    other
+## 290 290     GP   M  17       U     GT3       T    1    1    other    other
+## 291 291     GP   F  18       U     GT3       T    2    2  at_home  at_home
+## 292 292     GP   F  17       U     GT3       T    1    1 services  teacher
+## 293 293     GP   M  18       U     GT3       T    2    1 services services
+## 294 294     GP   M  18       U     LE3       A    4    4  teacher  teacher
+## 295 295     GP   M  18       U     GT3       T    4    2  teacher    other
+## 296 296     GP   F  17       U     GT3       T    4    3   health services
+## 297 297     GP   F  17       R     LE3       T    3    1 services    other
+## 298 298     GP   M  18       R     LE3       T    3    2 services    other
+## 299 299     GP   M  17       U     GT3       T    3    3   health    other
+## 300 300     GP   F  19       U     GT3       T    4    4   health    other
+## 301 301     GP   F  18       U     LE3       T    4    3    other    other
+## 302 302     GP   F  18       U     GT3       T    4    3    other    other
+## 303 303     GP   M  18       U     LE3       T    4    4  teacher  teacher
+## 304 304     GP   F  18       U     LE3       A    4    4   health    other
+## 305 305     GP   M  17       U     LE3       T    4    4    other  teacher
+## 306 306     GP   F  17       U     GT3       T    4    2    other    other
+## 307 307     GP   F  17       U     GT3       T    3    2   health   health
+## 308 308     GP   M  20       U     GT3       A    3    2 services    other
+## 309 309     GP   M  19       R     GT3       T    3    3    other services
+## 310 310     GP   F  18       U     GT3       T    2    1 services    other
+## 311 311     GP   F  18       U     GT3       T    4    3    other    other
+## 312 312     GP   F  17       R     GT3       T    3    4  at_home services
+## 313 313     GP   F  18       U     GT3       T    4    4  teacher    other
+## 314 314     GP   F  17       U     GT3       A    4    3 services services
+## 315 315     GP   F  17       U     GT3       T    2    2    other    other
+## 316 316     GP   F  17       R     LE3       T    2    2 services services
+## 317 317     GP   F  17       U     GT3       T    3    1 services services
+## 318 318     GP   F  17       U     LE3       T    0    2  at_home  at_home
+## 319 319     GP   M  18       U     GT3       T    4    4    other    other
+## 320 320     GP   M  17       U     GT3       T    3    3    other services
+## 321 321     GP   M  17       R     GT3       T    2    2 services    other
+## 322 322     GP   F  17       U     GT3       T    4    4  teacher services
+## 323 323     GP   F  17       U     GT3       T    4    4  teacher services
+## 324 324     GP   F  17       U     GT3       T    4    4  teacher  teacher
+## 325 325     GP   M  18       U     LE3       T    2    2    other    other
+## 326 326     GP   F  17       R     GT3       T    2    4  at_home    other
+## 327 327     GP   F  18       U     GT3       T    3    3 services services
+## 328 328     GP   F  18       U     LE3       T    2    2    other    other
+## 329 329     GP   F  18       R     GT3       T    2    2  at_home    other
+## 330 330     GP   F  17       U     GT3       T    3    4 services    other
+## 331 331     GP   F  17       U     GT3       T    3    2    other    other
+## 332 332     GP   F  18       U     LE3       T    3    3 services services
+## 333 333     GP   F  17       R     GT3       A    3    2    other    other
+## 334 334     GP   M  18       U     GT3       T    4    4  teacher services
+## 335 335     GP   M  18       U     GT3       T    4    4  teacher services
+## 336 336     GP   M  18       U     LE3       T    3    4 services    other
+## 337 337     GP   F  17       U     GT3       A    2    2  at_home  at_home
+## 338 338     GP   F  18       U     GT3       T    2    3  at_home    other
+## 339 339     GP   F  18       U     GT3       T    3    2    other services
+## 340 340     GP   M  18       R     GT3       T    4    3  teacher services
+## 341 341     GP   M  18       U     GT3       T    4    3  teacher    other
+## 342 342     GP   F  17       U     GT3       T    4    3   health    other
+## 343 343     MS   M  18       R     GT3       T    3    2    other    other
+## 344 344     MS   M  19       R     GT3       T    1    1    other services
+## 345 345     MS   M  17       U     GT3       T    3    3   health    other
+## 346 346     MS   M  18       U     LE3       T    1    3  at_home services
+## 347 347     MS   M  19       R     GT3       T    1    1    other    other
+## 348 348     MS   M  17       R     GT3       T    4    3 services    other
+## 349 349     MS   F  18       U     GT3       T    3    3 services services
+## 350 350     MS   F  17       R     GT3       T    4    4  teacher services
+## 351 351     MS   F  17       U     LE3       A    3    2 services    other
+## 352 352     MS   M  18       U     LE3       T    1    1    other services
+## 353 353     MS   F  18       U     LE3       T    1    1  at_home services
+## 354 354     MS   F  18       U     GT3       T    3    3 services services
+## 355 355     MS   F  17       U     LE3       T    4    4  at_home  at_home
+## 356 356     MS   F  17       R     GT3       T    1    2    other services
+## 357 357     MS   M  18       R     GT3       T    1    3  at_home    other
+## 358 358     MS   M  18       U     LE3       T    4    4  teacher services
+## 359 359     MS   F  17       R     GT3       T    1    1    other services
+## 360 360     MS   F  18       U     GT3       T    2    3  at_home services
+## 361 361     MS   F  18       R     GT3       T    4    4    other  teacher
+## 362 362     MS   M  18       R     LE3       T    1    2  at_home services
+## 363 363     MS   F  17       U     GT3       T    2    2    other  at_home
+## 364 364     MS   F  17       R     GT3       T    1    2    other    other
+## 365 365     MS   F  18       R     LE3       T    4    4    other    other
+## 366 366     MS   F  18       R     GT3       T    1    1    other    other
+## 367 367     MS   F  18       R     LE3       T    4    4  teacher services
+## 368 368     MS   F  18       U     GT3       T    3    3    other    other
+## 369 369     MS   F  17       R     GT3       T    3    1  at_home    other
+## 370 370     MS   M  18       U     GT3       T    4    4  teacher  teacher
+## 371 371     MS   M  18       R     GT3       T    2    1    other    other
+## 372 372     MS   M  17       U     GT3       T    2    3    other services
+## 373 373     MS   M  19       R     GT3       T    1    1    other services
+## 374 374     MS   M  18       R     GT3       T    4    2    other    other
+## 375 375     MS   F  18       R     GT3       T    2    2  at_home    other
+## 376 376     MS   F  18       R     GT3       T    4    4  teacher  at_home
+## 377 377     MS   F  19       R     GT3       T    2    3 services    other
+## 378 378     MS   F  18       U     LE3       T    3    1  teacher services
+## 379 379     MS   F  18       U     GT3       T    1    1    other    other
+## 380 380     MS   F  18       U     GT3       T    1    1    other    other
+## 381 381     MS   M  17       U     LE3       T    3    1 services services
+## 382 382     MS   M  18       R     LE3       T    3    2 services    other
+##         reason nursery internet guardian traveltime studytime failures
+## 1       course     yes       no   mother          2         2        0
+## 2       course      no      yes   father          1         2        0
+## 3        other     yes      yes   mother          1         2        2
+## 4         home     yes      yes   mother          1         3        0
+## 5         home     yes       no   father          1         2        0
+## 6   reputation     yes      yes   mother          1         2        0
+## 7         home     yes      yes   mother          1         2        0
+## 8         home     yes       no   mother          2         2        0
+## 9         home     yes      yes   mother          1         2        0
+## 10        home     yes      yes   mother          1         2        0
+## 11  reputation     yes      yes   mother          1         2        0
+## 12  reputation     yes      yes   father          3         3        0
+## 13      course     yes      yes   father          1         1        0
+## 14      course     yes      yes   mother          2         2        0
+## 15        home     yes      yes    other          1         3        0
+## 16        home     yes      yes   mother          1         1        0
+## 17  reputation     yes      yes   mother          1         3        0
+## 18  reputation     yes       no   mother          3         2        0
+## 19      course     yes      yes   mother          1         1        3
+## 20        home     yes      yes   father          1         1        0
+## 21  reputation     yes      yes   mother          1         2        0
+## 22       other     yes      yes   father          1         1        0
+## 23      course     yes      yes   mother          1         2        0
+## 24  reputation     yes      yes   mother          2         2        0
+## 25      course     yes      yes   mother          1         3        0
+## 26        home      no      yes   mother          1         1        1
+## 27        home     yes      yes   mother          1         1        0
+## 28       other     yes      yes   mother          1         1        0
+## 29        home     yes      yes   mother          1         2        0
+## 30        home     yes      yes   mother          1         2        0
+## 31        home      no      yes   mother          1         2        0
+## 32  reputation     yes      yes   mother          2         2        0
+## 33      course     yes      yes   mother          1         2        0
+## 34      course      no      yes   mother          1         2        0
+## 35        home      no      yes   mother          1         1        0
+## 36       other     yes       no   father          2         1        0
+## 37        home     yes      yes   mother          1         3        0
+## 38  reputation     yes      yes   mother          2         3        0
+## 39      course     yes      yes   mother          1         3        0
+## 40  reputation     yes       no   mother          1         1        0
+## 41        home      no      yes   mother          2         2        0
+## 42        home      no      yes    other          1         1        0
+## 43      course     yes      yes   father          1         2        0
+## 44      course     yes      yes   father          1         1        0
+## 45      course     yes      yes   father          2         2        1
+## 46      course     yes      yes   mother          1         2        0
+## 47        home     yes      yes   mother          1         2        0
+## 48  reputation     yes      yes   mother          1         4        0
+## 49        home     yes       no   mother          1         2        0
+## 50       other      no      yes   father          1         2        0
+## 51      course     yes      yes   mother          3         2        0
+## 52       other     yes      yes   mother          1         2        0
+## 53       other     yes       no   father          2         1        0
+## 54      course     yes      yes   mother          1         1        0
+## 55       other     yes      yes   mother          1         1        0
+## 56       other     yes      yes   mother          1         2        0
+## 57  reputation     yes      yes   mother          1         2        0
+## 58  reputation     yes       no   mother          1         2        0
+## 59        home     yes      yes   father          1         2        0
+## 60      course     yes      yes   mother          1         2        0
+## 61       other     yes       no   mother          1         2        0
+## 62      course      no      yes   father          4         1        0
+## 63  reputation     yes      yes   father          1         2        0
+## 64        home     yes      yes   mother          1         3        0
+## 65  reputation     yes      yes   father          1         2        0
+## 66      course     yes      yes   mother          3         2        0
+## 67  reputation      no      yes   mother          1         4        0
+## 68      course     yes      yes   mother          1         4        0
+## 69  reputation     yes      yes   mother          2         2        0
+## 70  reputation      no      yes   father          2         4        0
+## 71  reputation     yes      yes   father          2         4        0
+## 72      course     yes      yes   mother          1         4        0
+## 73  reputation      no      yes   mother          1         2        1
+## 74  reputation     yes       no   mother          1         1        0
+## 75        home     yes      yes   mother          1         2        0
+## 76        home     yes      yes   mother          1         2        0
+## 77      course     yes      yes   mother          2         4        0
+## 78  reputation     yes      yes   mother          1         4        0
+## 79        home     yes      yes   mother          2         1        3
+## 80        home     yes      yes   mother          2         1        2
+## 81      course     yes      yes   mother          1         2        0
+## 82      course      no      yes   father          1         1        0
+## 83        home      no      yes   mother          1         3        0
+## 84  reputation     yes      yes   mother          1         2        0
+## 85        home     yes      yes   mother          2         2        0
+## 86        home      no      yes   father          1         2        0
+## 87  reputation     yes      yes   father          2         2        1
+## 88      course     yes       no   mother          1         2        0
+## 89  reputation     yes      yes   mother          1         3        0
+## 90  reputation      no      yes   father          2         2        0
+## 91  reputation     yes       no   mother          1         2        0
+## 92        home     yes      yes   mother          1         3        0
+## 93  reputation     yes      yes   mother          1         1        0
+## 94        home     yes       no   father          1         2        0
+## 95        home     yes      yes   mother          2         2        0
+## 96  reputation     yes      yes   mother          1         4        0
+## 97        home     yes      yes   mother          2         4        0
+## 98  reputation      no      yes   mother          2         1        0
+## 99      course     yes       no   mother          1         2        0
+## 100 reputation      no      yes   mother          1         1        0
+## 101     course     yes      yes   mother          1         3        0
+## 102      other     yes      yes   mother          1         1        0
+## 103      other     yes      yes   father          1         3        0
+## 104     course      no      yes   mother          1         1        0
+## 105       home     yes      yes   mother          2         2        0
+## 106     course     yes      yes   mother          1         2        0
+## 107 reputation     yes       no   father          1         4        0
+## 108     course     yes      yes   mother          1         4        0
+## 109       home     yes      yes   father          1         3        0
+## 110       home     yes      yes   father          1         2        0
+## 111       home     yes      yes   father          4         4        0
+## 112      other     yes      yes   mother          1         3        0
+## 113     course     yes      yes   mother          1         1        0
+## 114 reputation     yes      yes   father          1         3        0
+## 115       home     yes      yes   mother          1         2        1
+## 116     course     yes      yes   mother          1         1        0
+## 117 reputation     yes      yes   mother          1         2        0
+## 118     course     yes      yes   father          1         2        0
+## 119     course     yes      yes   father          1         2        0
+## 120 reputation     yes       no   father          2         2        0
+## 121       home     yes      yes   father          2         1        0
+## 122     course     yes      yes   father          3         2        1
+## 123 reputation     yes      yes   father          1         1        0
+## 124     course      no      yes   mother          1         2        0
+## 125       home     yes      yes   father          1         4        0
+## 126     course     yes      yes   father          2         2        0
+## 127     course     yes      yes   mother          1         1        0
+## 128       home     yes      yes   mother          1         2        0
+## 129       home     yes      yes   father          1         1        0
+## 130       home     yes      yes   mother          1         2        0
+## 131     course      no       no    other          1         2        2
+## 132     course     yes      yes   mother          1         1        0
+## 133     course     yes      yes   father          2         3        1
+## 134     course      no      yes   mother          3         1        0
+## 135     course     yes      yes   father          1         1        0
+## 136     course     yes      yes   father          1         1        0
+## 137     course     yes       no   mother          4         2        0
+## 138     course     yes      yes   mother          1         3        0
+## 139     course     yes       no   mother          3         2        0
+## 140     course      no      yes    other          2         1        1
+## 141     course     yes       no   mother          1         2        2
+## 142     course     yes      yes   mother          2         1        0
+## 143     course     yes      yes   father          2         4        0
+## 144 reputation     yes      yes   father          2         1        1
+## 145     course     yes      yes   mother          1         3        0
+## 146     course     yes      yes   mother          1         1        0
+## 147       home     yes      yes   mother          2         1        3
+## 148       home     yes      yes   mother          1         1        2
+## 149     course     yes      yes   father          1         2        0
+## 150       home     yes      yes   father          1         2        2
+## 151     course      no      yes   mother          1         2        0
+## 152     course     yes      yes   mother          1         2        0
+## 153     course     yes      yes   mother          1         1        0
+## 154     course     yes      yes   mother          4         1        2
+## 155     course     yes      yes   mother          1         1        2
+## 156     course     yes       no   mother          1         1        1
+## 157 reputation     yes      yes    other          2         3        1
+## 158       home     yes      yes   mother          1         1        2
+## 159     course     yes       no   mother          1         1        0
+## 160     course     yes       no   mother          1         2        0
+## 161 reputation     yes       no   mother          1         1        2
+## 162     course      no       no   mother          3         1        3
+## 163     course      no       no   mother          3         1        0
+## 164     course     yes      yes   father          1         2        1
+## 165     course     yes      yes   mother          2         1        2
+## 166     course     yes       no   mother          4         2        2
+## 167     course     yes      yes   father          1         2        0
+## 168       home     yes      yes   father          1         2        0
+## 169       home      no      yes   mother          1         2        0
+## 170 reputation     yes      yes   mother          1         2        0
+## 171     course      no      yes   father          3         1        2
+## 172 reputation     yes      yes   mother          2         2        0
+## 173 reputation     yes      yes   mother          1         2        0
+## 174       home      no      yes   mother          1         2        2
+## 175 reputation     yes      yes   mother          2         2        0
+## 176     course     yes      yes   mother          2         2        0
+## 177 reputation      no      yes   mother          2         2        0
+## 178 reputation      no      yes   father          1         2        0
+## 179      other     yes      yes   mother          1         1        0
+## 180     course     yes      yes   mother          1         2        0
+## 181       home     yes      yes   mother          1         2        0
+## 182       home     yes      yes   mother          1         2        0
+## 183       home     yes      yes   mother          1         2        0
+## 184 reputation     yes       no   father          1         2        0
+## 185 reputation     yes      yes   mother          1         2        0
+## 186 reputation     yes      yes   mother          1         2        0
+## 187      other     yes      yes   mother          1         2        0
+## 188      other     yes      yes   mother          1         1        0
+## 189     course     yes      yes   mother          1         2        0
+## 190 reputation      no      yes   mother          1         2        0
+## 191       home     yes       no   mother          1         2        0
+## 192     course     yes      yes   mother          1         2        0
+## 193     course     yes      yes   mother          1         2        0
+## 194      other      no      yes    other          2         2        0
+## 195 reputation     yes      yes   mother          1         1        0
+## 196       home     yes      yes   father          2         1        0
+## 197     course     yes      yes   father          1         2        0
+## 198       home     yes      yes   mother          1         1        0
+## 199       home     yes      yes   father          3         1        0
+## 200       home     yes      yes   mother          2         1        1
+## 201 reputation     yes      yes   mother          1         2        0
+## 202       home     yes      yes   mother          1         2        0
+## 203 reputation     yes       no   mother          1         2        0
+## 204     course      no       no   mother          1         2        0
+## 205 reputation     yes      yes   mother          1         1        0
+## 206 reputation      no      yes   mother          2         4        0
+## 207       home     yes      yes   mother          1         3        1
+## 208     course     yes      yes   mother          1         2        2
+## 209      other     yes      yes   mother          1         2        0
+## 210       home     yes       no   mother          2         1        0
+## 211 reputation     yes      yes   mother          2         3        0
+## 212 reputation     yes      yes    other          1         4        0
+## 213       home     yes      yes   mother          1         2        0
+## 214 reputation     yes      yes   mother          1         2        0
+## 215       home     yes      yes   mother          1         2        0
+## 216      other     yes       no   mother          1         1        0
+## 217 reputation     yes      yes   mother          2         2        0
+## 218 reputation     yes      yes   mother          1         2        1
+## 219       home     yes      yes   father          1         2        0
+## 220       home     yes       no   father          2         1        0
+## 221     course     yes      yes   mother          1         3        0
+## 222 reputation     yes      yes   mother          2         2        0
+## 223 reputation     yes       no   mother          1         3        0
+## 224      other     yes      yes   mother          1         2        0
+## 225       home     yes      yes   mother          2         2        2
+## 226       home      no      yes   mother          1         3        0
+## 227 reputation     yes      yes   mother          1         2        0
+## 228     course      no      yes   mother          1         2        0
+## 229 reputation      no      yes   father          1         2        0
+## 230     course     yes      yes   mother          4         2        0
+## 231     course     yes      yes   mother          2         3        0
+## 232 reputation     yes      yes   father          1         2        0
+## 233     course     yes      yes   father          2         2        0
+## 234 reputation     yes      yes   mother          1         2        0
+## 235 reputation     yes      yes   father          1         2        0
+## 236       home     yes      yes   mother          2         2        0
+## 237 reputation     yes      yes   mother          2         3        0
+## 238       home      no      yes   father          1         2        0
+## 239       home     yes      yes   mother          1         1        0
+## 240     course     yes       no   mother          3         2        0
+## 241 reputation     yes      yes   father          1         2        0
+## 242     course     yes      yes   mother          2         2        0
+## 243     course     yes      yes   mother          2         2        0
+## 244     course      no      yes   mother          1         1        0
+## 245     course     yes      yes   mother          1         2        0
+## 246     course     yes      yes   mother          1         1        0
+## 247     course      no      yes    other          2         3        0
+## 248     course     yes      yes   mother          3         1        0
+## 249     course     yes      yes   father          2         1        0
+## 250      other      no      yes   mother          1         1        3
+## 251     course     yes      yes   mother          1         2        0
+## 252      other      no      yes   mother          1         1        0
+## 253     course     yes      yes   mother          2         1        0
+## 254 reputation      no      yes    other          3         2        0
+## 255      other      no      yes   mother          1         1        2
+## 256     course      no       no   mother          2         1        0
+## 257     course      no      yes   mother          1         1        0
+## 258     course     yes      yes   mother          2         1        1
+## 259 reputation     yes      yes   mother          1         4        0
+## 260 reputation     yes      yes   mother          1         2        0
+## 261       home     yes      yes   mother          1         2        0
+## 262     course     yes      yes   father          1         4        0
+## 263       home     yes      yes   father          1         2        0
+## 264     course      no      yes   mother          1         2        0
+## 265     course      no       no   mother          1         3        0
+## 266       home      no       no   mother          1         3        0
+## 267       home     yes      yes   mother          1         3        0
+## 268 reputation     yes      yes   mother          2         2        0
+## 269      other     yes      yes   mother          1         2        0
+## 270 reputation     yes      yes   mother          2         2        0
+## 271 reputation     yes      yes   father          1         2        0
+## 272 reputation     yes      yes   mother          2         2        0
+## 273       home     yes      yes    other          1         2        1
+## 274 reputation     yes      yes   father          1         4        0
+## 275       home      no       no   mother          2         2        0
+## 276       home      no       no   mother          1         2        0
+## 277 reputation     yes      yes   mother          2         2        0
+## 278     course     yes      yes   mother          2         2        0
+## 279       home      no      yes   mother          2         2        0
+## 280       home     yes      yes   mother          2         1        0
+## 281       home     yes      yes   mother          2         2        0
+## 282 reputation     yes      yes   father          1         2        1
+## 283     course     yes      yes   mother          2         1        0
+## 284       home     yes      yes   mother          2         1        0
+## 285       home     yes      yes   mother          1         1        0
+## 286 reputation     yes       no   mother          2         4        0
+## 287       home     yes      yes   mother          2         2        0
+## 288       home     yes      yes   mother          2         2        0
+## 289     course      no      yes   mother          1         2        0
+## 290 reputation      no      yes   father          1         2        0
+## 291      other     yes      yes   mother          1         3        0
+## 292 reputation     yes      yes   mother          1         3        0
+## 293 reputation     yes      yes   mother          1         3        0
+## 294 reputation     yes      yes   mother          1         2        0
+## 295       home     yes      yes   mother          1         2        0
+## 296 reputation     yes      yes   mother          1         3        0
+## 297 reputation     yes       no   mother          2         4        0
+## 298 reputation     yes      yes   mother          2         3        0
+## 299       home     yes      yes   mother          1         1        0
+## 300 reputation     yes      yes    other          2         2        0
+## 301       home     yes      yes    other          2         2        0
+## 302 reputation     yes      yes   father          1         4        0
+## 303       home     yes      yes   mother          1         1        0
+## 304       home     yes      yes   mother          1         2        0
+## 305       home     yes      yes   father          2         1        0
+## 306 reputation     yes      yes   mother          2         3        0
+## 307 reputation      no      yes   father          1         4        0
+## 308     course     yes       no    other          1         1        1
+## 309 reputation     yes       no   father          1         2        0
+## 310     course     yes      yes   mother          2         2        0
+## 311     course     yes      yes   mother          1         3        0
+## 312     course      no      yes   father          1         3        0
+## 313     course     yes      yes   mother          1         2        0
+## 314     course     yes      yes   mother          1         2        0
+## 315     course     yes       no   mother          1         2        0
+## 316     course     yes      yes   mother          1         3        0
+## 317     course      no      yes   father          1         3        0
+## 318       home     yes      yes   father          2         3        0
+## 319     course     yes      yes   mother          1         3        0
+## 320 reputation      no      yes   mother          1         1        0
+## 321     course     yes      yes   mother          4         1        0
+## 322     course     yes      yes   mother          1         2        0
+## 323     course     yes      yes   mother          1         3        0
+## 324     course      no      yes   mother          2         3        0
+## 325     course     yes      yes   mother          1         4        0
+## 326     course     yes      yes   father          1         3        0
+## 327       home     yes      yes   mother          1         2        0
+## 328       home      no      yes    other          1         2        0
+## 329     course     yes       no   mother          2         4        0
+## 330     course     yes      yes   mother          1         3        0
+## 331       home     yes      yes   mother          1         2        0
+## 332       home     yes      yes   mother          1         4        0
+## 333       home     yes      yes   mother          1         2        0
+## 334       home     yes      yes   father          2         2        0
+## 335       home     yes      yes   father          1         2        0
+## 336       home     yes      yes   mother          1         2        0
+## 337       home     yes      yes   father          1         2        0
+## 338     course     yes      yes   mother          1         3        0
+## 339      other     yes      yes   mother          1         3        0
+## 340     course     yes      yes   mother          1         3        0
+## 341     course     yes      yes   mother          1         3        0
+## 342 reputation     yes      yes   mother          1         3        0
+## 343     course      no      yes   mother          2         1        0
+## 344       home     yes      yes    other          3         2        2
+## 345     course     yes      yes   mother          2         2        0
+## 346     course     yes      yes   mother          1         1        0
+## 347       home     yes      yes    other          3         1        1
+## 348       home      no      yes   mother          2         2        0
+## 349     course     yes       no   father          1         2        0
+## 350      other     yes      yes   father          2         2        0
+## 351 reputation     yes       no   mother          2         2        0
+## 352       home      no      yes   father          2         1        0
+## 353     course     yes      yes   father          2         3        0
+## 354      other     yes      yes   mother          2         2        0
+## 355     course     yes      yes   mother          1         2        0
+## 356     course      no       no   father          2         2        0
+## 357     course     yes       no   mother          2         2        0
+## 358      other     yes      yes   mother          2         3        0
+## 359 reputation     yes      yes   mother          3         1        1
+## 360     course     yes      yes   father          2         1        0
+## 361      other      no      yes   father          3         2        0
+## 362      other     yes      yes   father          3         1        0
+## 363       home     yes       no   mother          1         3        0
+## 364     course     yes      yes   mother          1         1        0
+## 365 reputation     yes      yes   mother          2         3        0
+## 366       home     yes      yes   mother          4         3        0
+## 367     course     yes      yes   mother          1         2        0
+## 368       home     yes      yes   mother          1         2        0
+## 369 reputation      no      yes   mother          1         2        0
+## 370       home      no      yes   father          1         2        0
+## 371      other      no      yes   mother          2         1        0
+## 372       home     yes      yes   father          2         2        0
+## 373      other     yes       no   mother          2         1        1
+## 374       home     yes       no   father          2         1        1
+## 375      other     yes       no   mother          2         3        0
+## 376 reputation     yes      yes   mother          3         1        0
+## 377     course      no      yes   mother          1         3        1
+## 378     course     yes      yes   mother          1         2        0
+## 379     course     yes       no   mother          2         2        2
+## 380     course     yes       no   mother          2         2        0
+## 381     course      no      yes   mother          2         1        0
+## 382     course      no      yes   mother          3         1        0
+##     schoolsup famsup paid activities higher romantic famrel freetime goout
+## 1         yes     no   no         no    yes       no      4        3     4
+## 2          no    yes   no         no    yes       no      5        3     3
+## 3         yes     no  yes         no    yes       no      4        3     2
+## 4          no    yes  yes        yes    yes      yes      3        2     2
+## 5          no    yes  yes         no    yes       no      4        3     2
+## 6          no    yes  yes        yes    yes       no      5        4     2
+## 7          no     no   no         no    yes       no      4        4     4
+## 8         yes    yes   no         no    yes       no      4        1     4
+## 9          no    yes  yes         no    yes       no      4        2     2
+## 10         no    yes  yes        yes    yes       no      5        5     1
+## 11         no    yes  yes         no    yes       no      3        3     3
+## 12         no    yes   no        yes    yes       no      5        2     2
+## 13         no    yes  yes        yes    yes       no      4        3     3
+## 14         no    yes  yes         no    yes       no      5        4     3
+## 15         no    yes   no         no    yes      yes      4        5     2
+## 16         no    yes   no         no    yes       no      4        4     4
+## 17         no    yes  yes        yes    yes       no      3        2     3
+## 18        yes    yes   no        yes    yes       no      5        3     2
+## 19         no    yes   no        yes    yes       no      5        5     5
+## 20         no     no  yes        yes    yes       no      3        1     3
+## 21         no     no   no         no    yes       no      4        4     1
+## 22         no    yes  yes         no    yes       no      5        4     2
+## 23         no     no   no        yes    yes       no      4        5     1
+## 24         no    yes   no        yes    yes       no      5        4     4
+## 25        yes    yes  yes        yes    yes       no      4        3     2
+## 26         no    yes  yes         no    yes       no      1        2     2
+## 27         no    yes  yes         no    yes       no      4        2     2
+## 28         no     no  yes         no    yes       no      2        2     4
+## 29        yes    yes   no        yes    yes       no      5        3     3
+## 30         no    yes  yes        yes    yes      yes      4        4     5
+## 31         no    yes  yes         no    yes       no      5        4     2
+## 32         no    yes   no        yes    yes       no      4        3     1
+## 33         no    yes   no        yes    yes      yes      4        5     2
+## 34         no     no   no        yes    yes       no      5        3     2
+## 35         no    yes  yes         no    yes       no      5        4     3
+## 36         no    yes   no        yes    yes       no      3        5     1
+## 37         no    yes   no        yes    yes       no      5        4     3
+## 38         no    yes   no        yes    yes      yes      2        4     3
+## 39        yes    yes  yes        yes    yes       no      4        3     2
+## 40        yes    yes  yes        yes    yes       no      4        3     1
+## 41         no    yes   no        yes    yes      yes      3        3     3
+## 42         no    yes   no         no    yes      yes      5        4     3
+## 43         no    yes   no        yes    yes       no      4        3     3
+## 44        yes    yes   no         no    yes       no      5        4     1
+## 45        yes     no   no        yes    yes       no      4        3     3
+## 46        yes    yes  yes        yes    yes      yes      5        2     2
+## 47         no    yes   no         no    yes       no      2        3     5
+## 48         no     no   no        yes    yes       no      4        2     2
+## 49         no    yes  yes         no    yes       no      4        3     3
+## 50        yes    yes   no        yes    yes       no      4        4     4
+## 51         no    yes  yes         no    yes       no      4        3     3
+## 52         no    yes  yes         no    yes       no      4        3     3
+## 53         no     no   no         no    yes       no      5        5     5
+## 54        yes    yes  yes         no    yes       no      3        3     4
+## 55         no     no  yes         no    yes       no      5        3     4
+## 56         no     no  yes        yes    yes      yes      5        3     4
+## 57         no    yes  yes        yes    yes       no      4        3     2
+## 58         no    yes   no        yes    yes       no      3        2     2
+## 59        yes    yes   no        yes    yes       no      4        3     2
+## 60         no    yes   no         no    yes       no      4        2     3
+## 61         no    yes   no        yes    yes       no      2        4     4
+## 62        yes    yes   no        yes    yes      yes      5        5     5
+## 63        yes     no   no        yes    yes       no      4        4     3
+## 64        yes    yes  yes        yes    yes       no      3        4     4
+## 65        yes     no   no        yes    yes      yes      4        4     4
+## 66         no    yes   no        yes    yes       no      5        4     3
+## 67         no    yes   no        yes    yes      yes      1        3     3
+## 68        yes    yes  yes         no    yes       no      4        3     3
+## 69        yes    yes  yes         no    yes       no      4        1     3
+## 70         no    yes   no         no    yes       no      4        4     2
+## 71         no    yes  yes         no    yes       no      4        3     2
+## 72         no     no   no         no    yes       no      3        3     3
+## 73        yes    yes   no         no    yes      yes      3        3     4
+## 74         no     no   no        yes    yes       no      5        3     2
+## 75        yes    yes  yes        yes    yes       no      4        3     3
+## 76         no    yes  yes        yes    yes       no      4        3     3
+## 77         no     no   no        yes    yes       no      3        4     3
+## 78         no     no  yes         no    yes      yes      5        2     3
+## 79        yes    yes   no        yes     no       no      4        5     1
+## 80        yes    yes   no        yes     no       no      4        4     3
+## 81         no    yes   no         no    yes       no      2        4     3
+## 82        yes    yes  yes        yes    yes      yes      3        2     2
+## 83        yes     no  yes         no    yes       no      5        3     2
+## 84         no    yes  yes         no    yes       no      4        4     4
+## 85         no     no  yes        yes    yes       no      5        3     3
+## 86         no    yes   no        yes    yes       no      4        3     2
+## 87         no     no  yes         no    yes      yes      4        4     4
+## 88         no    yes   no         no    yes       no      4        3     4
+## 89         no    yes   no        yes    yes       no      5        3     3
+## 90         no     no  yes        yes    yes       no      4        4     2
+## 91         no    yes   no         no    yes       no      4        1     3
+## 92         no    yes  yes         no    yes      yes      4        3     3
+## 93         no     no  yes        yes    yes       no      4        5     5
+## 94        yes    yes   no         no    yes       no      3        3     3
+## 95         no    yes  yes        yes    yes       no      5        3     3
+## 96         no    yes   no        yes    yes       no      4        3     4
+## 97        yes    yes  yes        yes    yes       no      3        1     2
+## 98        yes    yes   no        yes    yes       no      3        3     3
+## 99         no    yes  yes         no    yes      yes      4        3     5
+## 100        no     no   no        yes    yes       no      5        3     4
+## 101       yes    yes  yes         no    yes       no      5        3     5
+## 102       yes    yes  yes        yes    yes       no      4        5     5
+## 103        no    yes   no        yes    yes      yes      4        4     3
+## 104        no    yes   no        yes    yes       no      5        3     3
+## 105       yes    yes  yes         no    yes       no      4        3     5
+## 106        no    yes  yes        yes    yes       no      5        4     4
+## 107       yes     no   no         no    yes       no      4        3     3
+## 108       yes    yes  yes         no    yes       no      5        1     2
+## 109        no    yes   no        yes    yes       no      5        3     3
+## 110        no    yes   no        yes    yes       no      4        2     3
+## 111        no    yes  yes        yes    yes      yes      1        3     5
+## 112        no    yes  yes        yes    yes      yes      5        4     5
+## 113        no     no   no        yes    yes       no      5        5     3
+## 114       yes    yes   no        yes    yes       no      4        1     2
+## 115       yes     no   no        yes    yes       no      3        1     2
+## 116        no     no   no         no    yes       no      3        5     2
+## 117        no     no   no        yes    yes      yes      5        4     2
+## 118        no    yes   no        yes    yes       no      5        4     4
+## 119        no    yes   no        yes    yes       no      4        4     3
+## 120        no    yes   no        yes    yes       no      4        4     3
+## 121        no     no   no        yes    yes       no      5        4     2
+## 122        no    yes   no        yes    yes       no      5        2     4
+## 123        no     no   no         no    yes       no      3        4     3
+## 124        no     no   no         no    yes       no      3        2     3
+## 125        no    yes  yes        yes    yes       no      5        5     4
+## 126        no    yes  yes        yes    yes      yes      4        2     2
+## 127        no    yes   no        yes    yes       no      3        4     4
+## 128        no     no  yes         no    yes      yes      5        4     4
+## 129       yes     no   no         no    yes       no      5        5     5
+## 130       yes     no   no        yes    yes      yes      5        3     2
+## 131        no    yes   no         no     no       no      3        4     2
+## 132        no     no  yes        yes    yes       no      3        5     5
+## 133        no    yes   no         no    yes      yes      4        2     2
+## 134        no    yes   no        yes    yes      yes      4        3     3
+## 135        no    yes   no         no    yes      yes      3        4     4
+## 136        no     no   no         no    yes       no      3        2     1
+## 137        no    yes   no         no    yes      yes      5        3     3
+## 138        no    yes   no        yes    yes      yes      4        3     3
+## 139        no     no   no         no    yes       no      5        4     5
+## 140        no    yes   no        yes    yes      yes      4        3     2
+## 141        no     no   no         no    yes      yes      4        4     4
+## 142        no     no   no        yes    yes       no      4        3     2
+## 143       yes    yes   no         no    yes       no      2        2     2
+## 144        no    yes   no        yes    yes       no      2        3     3
+## 145        no    yes  yes        yes    yes       no      4        2     2
+## 146        no     no   no         no    yes       no      3        4     4
+## 147        no    yes   no         no    yes       no      4        4     3
+## 148        no    yes   no         no    yes       no      5        4     5
+## 149        no    yes  yes         no    yes       no      4        4     2
+## 150        no    yes   no         no    yes       no      3        3     2
+## 151        no    yes  yes         no    yes       no      4        3     2
+## 152        no    yes   no         no     no      yes      4        4     3
+## 153        no    yes   no         no     no      yes      3        3     2
+## 154        no     no   no         no    yes       no      4        5     5
+## 155        no     no   no         no     no      yes      2        3     5
+## 156        no     no   no        yes    yes      yes      4        4     4
+## 157        no    yes  yes        yes    yes      yes      4        2     1
+## 158        no    yes   no         no     no      yes      4        5     4
+## 159       yes    yes   no         no    yes      yes      4        2     1
+## 160       yes     no  yes        yes    yes       no      4        4     4
+## 161        no     no   no         no    yes       no      2        2     2
+## 162        no    yes   no        yes    yes       no      5        2     5
+## 163        no     no   no         no    yes       no      4        2     2
+## 164        no    yes  yes         no    yes      yes      4        5     5
+## 165        no     no   no        yes     no      yes      3        3     2
+## 166        no     no   no        yes     no      yes      5        3     5
+## 167        no     no   no         no     no       no      4        3     5
+## 168        no     no  yes         no    yes      yes      4        2     3
+## 169        no    yes  yes         no    yes       no      5        1     5
+## 170        no    yes  yes         no    yes      yes      4        4     2
+## 171        no    yes   no        yes    yes       no      3        4     5
+## 172        no    yes  yes        yes    yes      yes      4        3     2
+## 173        no    yes  yes        yes    yes       no      4        4     4
+## 174        no     no   no        yes    yes      yes      4        3     5
+## 175        no    yes  yes        yes    yes       no      4        4     5
+## 176        no     no  yes        yes    yes       no      4        4     4
+## 177        no     no  yes        yes    yes       no      3        4     4
+## 178        no     no   no        yes    yes       no      4        3     4
+## 179        no    yes   no        yes    yes      yes      4        3     3
+## 180        no    yes   no        yes    yes      yes      5        2     3
+## 181        no    yes  yes        yes    yes       no      3        4     3
+## 182        no     no  yes        yes    yes      yes      4        2     3
+## 183        no     no  yes        yes    yes      yes      4        2     3
+## 184        no    yes   no        yes    yes       no      5        4     2
+## 185        no    yes   no        yes    yes      yes      5        3     3
+## 186        no    yes  yes         no    yes       no      1        2     2
+## 187        no    yes   no        yes    yes      yes      4        3     4
+## 188        no    yes  yes        yes    yes      yes      3        3     3
+## 189        no     no  yes        yes    yes      yes      4        2     3
+## 190        no    yes   no         no    yes      yes      3        3     3
+## 191        no     no   no         no    yes       no      3        1     3
+## 192        no     no   no         no    yes       no      4        3     3
+## 193        no     no   no        yes    yes       no      5        3     3
+## 194        no     no  yes        yes    yes       no      4        4     4
+## 195        no    yes   no        yes    yes       no      4        3     2
+## 196        no     no   no         no    yes       no      5        3     3
+## 197        no     no   no        yes    yes      yes      4        3     2
+## 198        no     no   no         no    yes       no      5        2     3
+## 199        no    yes  yes        yes    yes       no      3        3     4
+## 200        no    yes   no         no    yes       no      4        2     4
+## 201        no    yes  yes         no    yes       no      4        5     2
+## 202        no    yes   no        yes    yes       no      4        3     5
+## 203       yes    yes  yes        yes    yes       no      4        4     3
+## 204        no    yes  yes         no    yes       no      4        4     4
+## 205        no    yes   no         no    yes       no      5        3     2
+## 206        no    yes  yes        yes    yes       no      5        3     5
+## 207        no    yes  yes         no    yes      yes      4        4     3
+## 208        no    yes  yes         no    yes       no      2        3     3
+## 209        no     no  yes        yes    yes      yes      1        3     2
+## 210        no    yes  yes         no    yes       no      4        3     2
+## 211        no    yes  yes        yes    yes      yes      4        4     2
+## 212        no    yes  yes        yes    yes       no      4        3     3
+## 213        no    yes  yes         no    yes      yes      5        3     5
+## 214       yes    yes  yes         no    yes       no      3        3     4
+## 215        no    yes  yes        yes    yes       no      4        4     4
+## 216        no    yes  yes         no    yes       no      5        2     1
+## 217        no     no  yes         no    yes       no      4        4     4
+## 218        no     no  yes         no    yes      yes      3        4     5
+## 219        no    yes  yes         no    yes       no      3        2     4
+## 220        no    yes  yes         no    yes       no      3        3     3
+## 221        no    yes  yes        yes    yes       no      4        3     3
+## 222        no    yes   no        yes    yes       no      4        2     5
+## 223        no    yes   no        yes    yes      yes      4        3     4
+## 224       yes     no   no         no    yes       no      2        3     1
+## 225        no    yes  yes         no    yes       no      3        3     3
+## 226        no    yes   no        yes    yes       no      5        3     2
+## 227        no     no   no        yes    yes      yes      5        3     3
+## 228        no     no   no        yes    yes       no      5        3     4
+## 229        no    yes  yes         no    yes       no      5        3     3
+## 230       yes    yes  yes        yes    yes      yes      4        3     2
+## 231        no     no   no        yes    yes      yes      3        2     3
+## 232        no     no   no        yes    yes      yes      3        2     3
+## 233        no    yes  yes        yes    yes       no      4        5     2
+## 234       yes    yes   no        yes    yes      yes      4        5     5
+## 235        no    yes  yes        yes    yes       no      4        2     4
+## 236        no    yes  yes         no    yes       no      3        4     2
+## 237        no     no   no        yes    yes      yes      5        3     3
+## 238        no     no  yes        yes    yes      yes      4        4     2
+## 239        no     no   no         no    yes      yes      4        5     2
+## 240        no     no   no        yes    yes       no      2        1     1
+## 241        no     no   no         no     no       no      5        5     4
+## 242        no     no   no        yes    yes      yes      2        5     5
+## 243        no    yes  yes         no    yes       no      3        3     3
+## 244        no     no   no        yes    yes       no      5        4     5
+## 245        no     no   no        yes    yes       no      5        3     2
+## 246        no     no   no        yes    yes       no      5        3     2
+## 247        no    yes  yes         no    yes      yes      4        4     4
+## 248        no     no   no         no    yes       no      4        3     3
+## 249        no     no   no         no    yes       no      5        2     2
+## 250        no     no   no         no     no      yes      5        4     5
+## 251        no    yes   no         no    yes      yes      4        3     3
+## 252        no     no  yes         no    yes       no      4        3     2
+## 253        no     no   no         no     no       no      4        4     5
+## 254       yes    yes   no         no    yes       no      5        3     3
+## 255        no     no   no         no     no       no      3        2     5
+## 256        no     no   no        yes    yes       no      3        3     2
+## 257        no     no   no         no    yes       no      4        4     2
+## 258        no    yes   no        yes    yes       no      4        4     4
+## 259        no    yes  yes        yes    yes       no      4        2     3
+## 260        no    yes   no         no    yes       no      4        3     1
+## 261        no     no   no        yes    yes       no      5        2     4
+## 262        no     no  yes        yes    yes      yes      3        4     1
+## 263        no    yes  yes         no    yes      yes      3        1     2
+## 264        no    yes  yes         no    yes       no      4        3     2
+## 265        no     no   no        yes    yes       no      5        3     2
+## 266        no     no   no        yes    yes       no      3        2     3
+## 267        no    yes  yes        yes    yes      yes      4        3     3
+## 268        no    yes  yes        yes    yes       no      4        2     5
+## 269        no     no  yes        yes    yes      yes      5        4     4
+## 270        no     no  yes        yes    yes       no      4        3     4
+## 271        no    yes  yes        yes    yes      yes      5        4     5
+## 272        no    yes   no         no     no      yes      4        3     5
+## 273        no    yes  yes        yes    yes       no      4        3     5
+## 274        no    yes  yes        yes    yes      yes      4        5     5
+## 275        no    yes  yes         no    yes       no      4        4     3
+## 276        no    yes  yes        yes    yes      yes      3        5     2
+## 277        no    yes  yes         no    yes      yes      4        3     3
+## 278       yes    yes  yes         no    yes      yes      4        4     4
+## 279        no     no   no         no     no      yes      4        1     1
+## 280        no     no  yes        yes    yes       no      3        2     4
+## 281        no     no  yes        yes    yes       no      4        2     4
+## 282       yes    yes   no        yes    yes      yes      2        4     4
+## 283        no     no  yes        yes    yes       no      4        2     3
+## 284        no     no  yes        yes    yes      yes      4        5     4
+## 285        no     no   no         no    yes       no      4        4     4
+## 286        no    yes  yes        yes    yes       no      5        2     2
+## 287       yes     no   no        yes    yes       no      5        4     4
+## 288       yes     no   no        yes    yes       no      4        4     4
+## 289        no    yes   no         no    yes       no      5        4     5
+## 290        no     no  yes         no    yes       no      4        3     3
+## 291        no    yes  yes         no    yes       no      4        3     3
+## 292        no    yes  yes         no    yes       no      4        3     3
+## 293        no     no  yes        yes    yes       no      4        2     4
+## 294        no    yes  yes        yes    yes       no      5        4     3
+## 295        no    yes  yes        yes    yes      yes      4        3     2
+## 296        no    yes  yes         no    yes       no      4        2     2
+## 297        no    yes  yes         no    yes       no      3        1     2
+## 298        no    yes  yes        yes    yes       no      5        4     2
+## 299        no    yes  yes         no    yes       no      4        4     3
+## 300        no    yes  yes        yes    yes       no      2        3     4
+## 301        no    yes  yes         no    yes      yes      4        4     5
+## 302        no    yes  yes         no    yes       no      4        3     3
+## 303        no    yes  yes         no    yes      yes      1        4     2
+## 304        no    yes   no         no    yes      yes      4        2     4
+## 305        no     no  yes         no    yes       no      4        1     1
+## 306        no    yes  yes         no    yes       no      4        3     3
+## 307        no    yes  yes        yes    yes       no      5        2     2
+## 308        no     no   no        yes    yes       no      5        5     3
+## 309        no     no   no        yes    yes      yes      4        5     3
+## 310        no    yes  yes        yes    yes       no      5        3     3
+## 311        no    yes  yes        yes    yes      yes      4        3     4
+## 312        no    yes  yes        yes    yes       no      4        3     4
+## 313        no    yes  yes         no    yes       no      4        4     4
+## 314        no    yes  yes         no    yes      yes      5        2     2
+## 315        no    yes   no         no    yes      yes      4        2     2
+## 316        no    yes  yes        yes    yes       no      3        3     2
+## 317        no    yes   no         no    yes       no      3        4     3
+## 318        no     no   no         no    yes       no      3        3     3
+## 319        no     no   no        yes    yes       no      4        3     3
+## 320        no     no   no        yes    yes       no      4        3     5
+## 321        no    yes   no         no    yes       no      4        4     5
+## 322        no    yes  yes        yes    yes       no      5        4     2
+## 323        no    yes  yes        yes    yes       no      5        4     4
+## 324        no    yes  yes         no    yes      yes      4        3     3
+## 325        no    yes   no        yes    yes       no      4        5     5
+## 326        no    yes   no         no    yes      yes      4        4     3
+## 327        no     no   no        yes    yes       no      5        3     4
+## 328        no     no   no        yes    yes      yes      4        3     3
+## 329        no     no   no        yes    yes       no      4        4     4
+## 330        no     no   no         no    yes       no      4        4     5
+## 331        no    yes  yes         no    yes      yes      4        3     2
+## 332        no    yes   no         no    yes       no      5        3     3
+## 333        no    yes  yes         no    yes       no      4        3     3
+## 334        no    yes   no        yes    yes       no      4        2     4
+## 335        no    yes   no        yes    yes       no      4        3     3
+## 336        no     no   no        yes    yes      yes      4        3     3
+## 337        no    yes   no         no    yes      yes      3        3     1
+## 338        no    yes   no         no    yes       no      4        3     3
+## 339        no     no   no         no    yes      yes      5        4     3
+## 340        no     no   no         no    yes      yes      5        3     2
+## 341        no    yes  yes         no    yes      yes      5        4     5
+## 342        no    yes  yes        yes    yes      yes      4        4     3
+## 343        no    yes   no         no    yes       no      2        5     5
+## 344        no     no   no         no    yes       no      5        4     4
+## 345        no    yes  yes         no    yes       no      4        5     4
+## 346        no     no   no         no     no      yes      4        3     3
+## 347        no    yes   no         no    yes       no      4        4     4
+## 348        no    yes  yes        yes    yes      yes      4        5     5
+## 349        no    yes   no         no    yes      yes      5        3     4
+## 350        no    yes  yes        yes    yes       no      4        3     3
+## 351        no     no   no         no    yes      yes      1        2     3
+## 352        no     no   no         no    yes      yes      3        3     2
+## 353        no     no   no         no    yes       no      5        3     2
+## 354        no    yes   no         no    yes      yes      4        3     2
+## 355        no    yes  yes        yes    yes      yes      2        3     4
+## 356        no     no   no         no    yes       no      3        2     2
+## 357        no    yes  yes         no    yes       no      3        3     4
+## 358        no     no  yes         no    yes      yes      4        2     2
+## 359        no    yes  yes         no    yes      yes      5        2     1
+## 360        no    yes  yes         no    yes      yes      5        2     3
+## 361        no    yes  yes         no    yes      yes      3        2     2
+## 362        no    yes  yes        yes     no      yes      4        3     3
+## 363        no     no   no        yes    yes      yes      3        4     3
+## 364        no     no   no        yes    yes       no      3        5     5
+## 365        no     no   no         no    yes       no      5        4     4
+## 366        no     no   no         no    yes       no      4        3     2
+## 367        no     no  yes        yes    yes       no      5        4     3
+## 368        no     no  yes         no    yes      yes      4        1     3
+## 369        no    yes  yes        yes    yes       no      4        5     4
+## 370        no     no  yes        yes    yes       no      3        2     4
+## 371        no     no   no        yes    yes      yes      4        4     3
+## 372        no     no   no        yes    yes       no      4        4     3
+## 373        no     no   no         no    yes       no      4        3     2
+## 374        no     no  yes         no    yes       no      5        4     3
+## 375        no     no  yes         no    yes       no      5        3     3
+## 376        no    yes  yes        yes    yes      yes      4        4     3
+## 377        no     no   no        yes    yes       no      5        4     2
+## 378        no    yes  yes         no    yes       no      4        3     4
+## 379        no     no   no        yes    yes       no      2        2     2
+## 380        no     no   no        yes    yes       no      1        1     1
+## 381        no     no   no         no    yes       no      2        4     5
+## 382        no     no   no         no    yes       no      4        4     1
+##     Dalc Walc health absences G1 G2 G3 alc_use high_use
+## 1      1    1      3        5  2  8  8     1.0    FALSE
+## 2      1    1      3        3  7  8  8     1.0    FALSE
+## 3      2    3      3        8 10 10 11     2.5     TRUE
+## 4      1    1      5        1 14 14 14     1.0    FALSE
+## 5      1    2      5        2  8 12 12     1.5    FALSE
+## 6      1    2      5        8 14 14 14     1.5    FALSE
+## 7      1    1      3        0 12 12 12     1.0    FALSE
+## 8      1    1      1        4  8  9 10     1.0    FALSE
+## 9      1    1      1        0 16 17 18     1.0    FALSE
+## 10     1    1      5        0 13 14 14     1.0    FALSE
+## 11     1    2      2        1 12 11 12     1.5    FALSE
+## 12     1    1      4        2 10 12 12     1.0    FALSE
+## 13     1    3      5        1 13 14 13     2.0    FALSE
+## 14     1    2      3        1 11 11 12     1.5    FALSE
+## 15     1    1      3        0 14 15 16     1.0    FALSE
+## 16     1    2      2        5 16 16 16     1.5    FALSE
+## 17     1    2      2        8 13 14 14     1.5    FALSE
+## 18     1    1      4        3 10 12 12     1.0    FALSE
+## 19     2    4      5        9  7  6  6     3.0     TRUE
+## 20     1    3      5        5 10 11 11     2.0    FALSE
+## 21     1    1      1        0 12 14 14     1.0    FALSE
+## 22     1    1      5        0 12 14 14     1.0    FALSE
+## 23     1    3      5        1 14 14 15     2.0    FALSE
+## 24     2    4      5        1 12 12 11     3.0     TRUE
+## 25     1    1      5        2 10 10  9     1.0    FALSE
+## 26     1    3      5       10  8 10 10     2.0    FALSE
+## 27     1    2      5        5 12 12 12     1.5    FALSE
+## 28     2    4      1        2 13 14 13     3.0     TRUE
+## 29     1    1      5        3 12 12 12     1.0    FALSE
+## 30     5    5      5       10 11 12 12     5.0     TRUE
+## 31     3    4      5        0 10 11 12     3.5     TRUE
+## 32     1    1      5        1 16 16 16     1.0    FALSE
+## 33     1    1      5        0 15 15 16     1.0    FALSE
+## 34     1    1      2        0 10 11 12     1.0    FALSE
+## 35     1    1      5        2 12 13 14     1.0    FALSE
+## 36     1    1      5        2 10  9  8     1.0    FALSE
+## 37     1    1      4        1 14 15 16     1.0    FALSE
+## 38     1    1      5        6 14 14 14     1.0    FALSE
+## 39     1    1      5        2 12 12 12     1.0    FALSE
+## 40     1    1      2        8 14 13 12     1.0    FALSE
+## 41     1    2      3       20  9 10 10     1.5    FALSE
+## 42     2    4      5        8 11 12 12     3.0     TRUE
+## 43     1    1      5        1 16 16 16     1.0    FALSE
+## 44     1    1      1        0  8  9 10     1.0    FALSE
+## 45     2    2      5       14 10 10 10     2.0    FALSE
+## 46     1    1      5        6  9 10  8     1.0    FALSE
+## 47     1    4      3        9 12 12 12     2.5     TRUE
+## 48     1    1      2        3 18 18 18     1.0    FALSE
+## 49     2    2      5        3 13 14 14     2.0    FALSE
+## 50     1    1      3        2 10 10 10     1.0    FALSE
+## 51     2    3      4        1 13 13 13     2.5     TRUE
+## 52     1    1      5        1 14 14 14     1.0    FALSE
+## 53     3    4      5        5 10 10 10     3.5     TRUE
+## 54     2    3      5        0 10 11 12     2.5     TRUE
+## 55     4    4      1        3 12 12 13     4.0     TRUE
+## 56     1    1      2        5 10 11 11     1.0    FALSE
+## 57     1    1      1        0 14 14 15     1.0    FALSE
+## 58     1    1      5        6 14 15 16     1.0    FALSE
+## 59     1    1      5        1 12 12 12     1.0    FALSE
+## 60     1    1      5        2 16 16 16     1.0    FALSE
+## 61     2    3      4        3 14 14 14     2.5     TRUE
+## 62     5    5      5        3 10  9 14     5.0     TRUE
+## 63     1    1      1        2 10 12 10     1.0    FALSE
+## 64     2    4      4        1 12 11 11     3.0     TRUE
+## 65     2    4      2        0 12 11 11     3.0     TRUE
+## 66     1    2      1        2 16 15 16     1.5    FALSE
+## 67     5    5      3        2 12 12 12     5.0     TRUE
+## 68     1    2      5        2  8  8  8     1.5    FALSE
+## 69     1    3      4        1 10 10 10     2.0    FALSE
+## 70     2    3      3        9 16 16 16     2.5     TRUE
+## 71     1    1      5        1 13 13 13     1.0    FALSE
+## 72     1    1      3        0 10 10 10     1.0    FALSE
+## 73     2    4      5        2 10  8  8     3.0     TRUE
+## 74     2    2      5        1 12 12 14     2.0    FALSE
+## 75     2    4      5       29 11 12 11     3.0     TRUE
+## 76     2    3      5        3 10 10 10     2.5     TRUE
+## 77     1    1      1        4 12 11 10     1.0    FALSE
+## 78     1    3      3        0 12 12 12     2.0    FALSE
+## 79     1    1      3        1  8  8 10     1.0    FALSE
+## 80     1    2      4       12  8  8  8     1.5    FALSE
+## 81     1    2      3       13  8  8  8     1.5    FALSE
+## 82     1    3      3        1 10 12 12     2.0    FALSE
+## 83     1    2      5        3 10 10 10     1.5    FALSE
+## 84     1    1      5        7 10  8  8     1.0    FALSE
+## 85     1    3      4        3 14 14 14     2.0    FALSE
+## 86     2    3      4        2 11 11 11     2.5     TRUE
+## 87     2    3      5        5 10 10 10     2.5     TRUE
+## 88     1    2      2        5 10  9  8     1.5    FALSE
+## 89     1    3      1        4 14 14 14     2.0    FALSE
+## 90     1    1      3        9 12 10 10     1.0    FALSE
+## 91     3    5      5       12  8  8  8     4.0     TRUE
+## 92     1    3      4        1  8  9 10     2.0    FALSE
+## 93     1    3      1        5 15 15 16     2.0    FALSE
+## 94     2    3      2        2 10 10  9     2.5     TRUE
+## 95     1    1      1        1 12 12 12     1.0    FALSE
+## 96     1    1      4        4 11 12 13     1.0    FALSE
+## 97     1    1      1        3 10 12 12     1.0    FALSE
+## 98     1    1      4        4 10 13 13     1.0    FALSE
+## 99     1    1      5        1 10 10 11     1.0    FALSE
+## 100    1    2      1        5 12 14 14     1.5    FALSE
+## 101    1    1      3        1 10 11 10     1.0    FALSE
+## 102    5    5      4       13  8  8  6     5.0     TRUE
+## 103    1    1      4        0 16 16 16     1.0    FALSE
+## 104    1    1      5        3 11 13 13     1.0    FALSE
+## 105    1    1      2       21  9  8  8     1.0    FALSE
+## 106    1    1      1        0 16 17 17     1.0    FALSE
+## 107    1    1      4       10 10 10 10     1.0    FALSE
+## 108    1    1      3        6  8  9  9     1.0    FALSE
+## 109    1    1      5        3 14 16 16     1.0    FALSE
+## 110    1    2      4        1 14 15 16     1.5    FALSE
+## 111    3    5      1        7 11 12 12     4.0     TRUE
+## 112    1    1      4        3 14 15 15     1.0    FALSE
+## 113    1    1      4        5 16 16 16     1.0    FALSE
+## 114    1    1      2        2  9 10 10     1.0    FALSE
+## 115    1    1      5        9  9 12 12     1.0    FALSE
+## 116    1    1      3       10 18 18 18     1.0    FALSE
+## 117    1    1      5        6 10  9 10     1.0    FALSE
+## 118    1    2      5        4 16 14 15     1.5    FALSE
+## 119    2    2      5        9 12 12 12     2.0    FALSE
+## 120    1    1      2        3 14 14 15     1.0    FALSE
+## 121    1    1      5        3 14 14 14     1.0    FALSE
+## 122    1    4      5       17 10  9 10     2.5     TRUE
+## 123    1    2      4        4 14 13 14     1.5    FALSE
+## 124    1    2      1        1 15 14 14     1.5    FALSE
+## 125    1    2      5        6 15 14 14     1.5    FALSE
+## 126    1    2      5        2 14 12 13     1.5    FALSE
+## 127    1    4      5       11 13 12 13     2.5     TRUE
+## 128    1    1      5        0 10  9 10     1.0    FALSE
+## 129    3    2      5        1 11 11 10     2.5     TRUE
+## 130    1    1      1        0  8 10 11     1.0    FALSE
+## 131    1    1      5        1  8  9 10     1.0    FALSE
+## 132    2    5      4        8 16 16 16     3.5     TRUE
+## 133    2    2      5        0 11  6  6     2.0    FALSE
+## 134    1    2      4        3 10  6  6     1.5    FALSE
+## 135    1    3      5        7 12 12 12     2.0    FALSE
+## 136    1    4      5       14 14 12 12     2.5     TRUE
+## 137    1    1      5        1 10  6  6     1.0    FALSE
+## 138    1    1      5        2 12  7  8     1.0    FALSE
+## 139    2    4      5        1 10  4  5     3.0     TRUE
+## 140    1    1      5        2  6  4  5     1.0    FALSE
+## 141    1    3      5        0 12 11 11     2.0    FALSE
+## 142    1    1      5        3 14 15 14     1.0    FALSE
+## 143    1    1      3        3  8 10  6     1.0    FALSE
+## 144    2    2      2        6 10 10 10     2.0    FALSE
+## 145    1    1      5        2 11 12 12     1.0    FALSE
+## 146    3    3      1        3 12 12 12     3.0     TRUE
+## 147    1    2      4        0  7  4  5     1.5    FALSE
+## 148    1    2      5       11  7  4  3     1.5    FALSE
+## 149    1    2      5        0 10 12 12     1.5    FALSE
+## 150    1    1      3        1  8  9  6     1.0    FALSE
+## 151    1    1      5        4 12 12 12     1.0    FALSE
+## 152    2    2      5        3 12 10  7     2.0    FALSE
+## 153    2    1      5        8  8  8  4     1.5    FALSE
+## 154    2    5      5        0 10 10 10     3.5     TRUE
+## 155    2    5      4        0  8  7  0     3.5     TRUE
+## 156    3    5      5        6 10 12 12     4.0     TRUE
+## 157    2    3      3        5 12 12 12     2.5     TRUE
+## 158    1    1      4        3  8  4  6     1.0    FALSE
+## 159    1    1      4        0 12 12 12     1.0    FALSE
+## 160    1    1      1        1  9  8  8     1.0    FALSE
+## 161    3    3      5       11 12 10 12     3.0     TRUE
+## 162    1    5      4        6 10  9 10     3.0     TRUE
+## 163    1    2      3        3 14 12 13     1.5    FALSE
+## 164    4    4      5        2 10 11  6     4.0     TRUE
+## 165    2    2      5        4  8  7  4     2.0    FALSE
+## 166    1    5      5        0  6  8  8     3.0     TRUE
+## 167    2    4      4        2 10 10 10     3.0     TRUE
+## 168    1    1      3        0 16 16 17     1.0    FALSE
+## 169    1    1      4        0  9 10  6     1.0    FALSE
+## 170    1    1      3        0 15 15 16     1.0    FALSE
+## 171    2    4      2        2  8  7  5     3.0     TRUE
+## 172    1    1      3        1 14 16 17     1.0    FALSE
+## 173    1    3      5        0 12 10 10     2.0    FALSE
+## 174    1    1      3        0 11 10  6     1.0    FALSE
+## 175    1    1      4        2 12 12 12     1.0    FALSE
+## 176    4    4      4        2 10 10 10     4.0     TRUE
+## 177    1    4      5        1 13 12 12     2.5     TRUE
+## 178    1    4      4        4  8  7  8     2.5     TRUE
+## 179    3    4      3        9 10  8 10     3.5     TRUE
+## 180    1    1      2        4 10 10 12     1.0    FALSE
+## 181    2    3      3        7 10  9 10     2.5     TRUE
+## 182    1    2      4        3 12 14 13     1.5    FALSE
+## 183    1    2      3        1 12 12 12     1.5    FALSE
+## 184    2    3      5        0 16 18 17     2.5     TRUE
+## 185    2    3      1       44 12 11 11     2.5     TRUE
+## 186    1    2      1       11 13 14 14     1.5    FALSE
+## 187    2    3      4        9 12 12 12     2.5     TRUE
+## 188    1    2      3        1 10 10 11     1.5    FALSE
+## 189    1    2      5        0 14 14 16     1.5    FALSE
+## 190    1    3      3        8 10 10 12     2.0    FALSE
+## 191    1    5      3        5  8  9 10     3.0     TRUE
+## 192    1    1      2        8 12 12 13     1.0    FALSE
+## 193    1    1      3        0 10 10 10     1.0    FALSE
+## 194    4    5      5       14  8 10 10     4.5     TRUE
+## 195    3    4      5        4 10 10 10     3.5     TRUE
+## 196    1    1      3        0 13 13 13     1.0    FALSE
+## 197    1    1      5        4 14 15 16     1.0    FALSE
+## 198    1    2      5        4 15 14 15     1.5    FALSE
+## 199    3    5      3       12 10 10 11     4.0     TRUE
+## 200    2    3      2       27 16 16 17     2.5     TRUE
+## 201    1    2      3        0 10 10 10     1.5    FALSE
+## 202    1    5      2        2 15 15 16     3.0     TRUE
+## 203    1    3      4        5 10 11 11     2.0    FALSE
+## 204    1    3      1        2 12 12 12     2.0    FALSE
+## 205    1    2      3       20 10 10 10     1.5    FALSE
+## 206    1    1      5        6 12 12 12     1.0    FALSE
+## 207    3    4      5       21  9  9  8     3.5     TRUE
+## 208    2    2      4        4  9  9 10     2.0    FALSE
+## 209    1    1      1        7 12 14 14     1.0    FALSE
+## 210    1    4      5        4 10 11 12     2.5     TRUE
+## 211    1    1      4        3  9 10 10     1.0    FALSE
+## 212    1    2      3        7 10 10 10     1.5    FALSE
+## 213    4    5      3       14 12 12 12     4.5     TRUE
+## 214    1    1      4        0 12 13 14     1.0    FALSE
+## 215    2    4      5       12  9  9 10     3.0     TRUE
+## 216    1    2      3        9 10 10 10     1.5    FALSE
+## 217    1    3      1        2 14 16 15     2.0    FALSE
+## 218    2    4      1       19  8  8  7     3.0     TRUE
+## 219    2    4      4       12  8  8  9     3.0     TRUE
+## 220    1    4      3        4 10 10 10     2.5     TRUE
+## 221    1    1      4        2 10 11 12     1.0    FALSE
+## 222    1    2      5        1  8  8  8     1.5    FALSE
+## 223    1    1      5        6  9  8  6     1.0    FALSE
+## 224    1    1      3        1 14 14 16     1.0    FALSE
+## 225    5    5      4        4 11 11 12     5.0     TRUE
+## 226    1    1      5        2 14 14 15     1.0    FALSE
+## 227    1    1      4       10  8  8  8     1.0    FALSE
+## 228    1    3      3        6 16 16 16     2.0    FALSE
+## 229    1    3      3        1 11 11 12     2.0    FALSE
+## 230    4    5      3        8 10  9 10     4.5     TRUE
+## 231    1    2      3        5 14 12 14     1.5    FALSE
+## 232    1    2      3        7 14 12 13     1.5    FALSE
+## 233    1    1      1        2 12 12 12     1.0    FALSE
+## 234    1    3      2        7 12 11 11     2.0    FALSE
+## 235    2    4      1        1 14 13 14     3.0     TRUE
+## 236    1    1      5       10  9  8  8     1.0    FALSE
+## 237    1    3      2        5 12 10 11     2.0    FALSE
+## 238    5    5      4        2 15 14 14     5.0     TRUE
+## 239    1    1      5       12 11 11 11     1.0    FALSE
+## 240    1    1      3        2 13 12 12     1.0    FALSE
+## 241    3    5      2        8  8  7  4     4.0     TRUE
+## 242    1    4      5       11 14 14 14     2.5     TRUE
+## 243    2    3      4        1 11 12 12     2.5     TRUE
+## 244    1    1      3        4 10  7  8     1.0    FALSE
+## 245    1    2      5        0 14 12 12     1.5    FALSE
+## 246    1    2      5        2 14 14 14     1.5    FALSE
+## 247    1    1      3        5 10  5  6     1.0    FALSE
+## 248    1    1      4        6 16 17 17     1.0    FALSE
+## 249    1    1      2        3 10 12 13     1.0    FALSE
+## 250    5    5      1       14  6  8  6     5.0     TRUE
+## 251    1    3      5        8  6  7  8     2.0    FALSE
+## 252    2    4      5        0 12 14 13     3.0     TRUE
+## 253    2    4      5        4  6  8  8     3.0     TRUE
+## 254    1    3      2        5  8 10 10     2.0    FALSE
+## 255    2    5      5        4  6  8  7     3.5     TRUE
+## 256    1    3      3        1 11 11 10     2.0    FALSE
+## 257    2    4      5        0 10 12 12     3.0     TRUE
+## 258    1    2      5        1  8 10  9     1.5    FALSE
+## 259    1    1      4        4 14 14 15     1.0    FALSE
+## 260    1    1      1        8 11 12 12     1.0    FALSE
+## 261    1    2      4        5 16 15 15     1.5    FALSE
+## 262    1    1      2        1 10 10  6     1.0    FALSE
+## 263    1    3      2       12 16 16 16     2.0    FALSE
+## 264    1    1      3        2  9  9 10     1.0    FALSE
+## 265    1    1      3        2 12 12 12     1.0    FALSE
+## 266    1    1      4        3 12 10 11     1.0    FALSE
+## 267    1    1      3        0 10 11  6     1.0    FALSE
+## 268    3    4      1       10 16 16 16     3.5     TRUE
+## 269    3    4      5        1 10 10 12     3.5     TRUE
+## 270    2    2      4        8 11 10 12     2.0    FALSE
+## 271    1    3      5        7 10 10 12     2.0    FALSE
+## 272    1    2      3        6  7  4  5     1.5    FALSE
+## 273    3    3      5       16 10 10 10     3.0     TRUE
+## 274    1    3      2        7 16 15 15     2.0    FALSE
+## 275    1    1      3        2 12 12 12     1.0    FALSE
+## 276    2    2      1        2 16 16 16     2.0    FALSE
+## 277    1    1      1        4 12 13 13     1.0    FALSE
+## 278    2    3      5        6 12 12 12     2.5     TRUE
+## 279    1    1      5       45 11  9 10     1.0    FALSE
+## 280    1    4      3       14 10 10 10     2.5     TRUE
+## 281    2    3      2       11 10 10 11     2.5     TRUE
+## 282    1    1      4        8 12 10 10     1.0    FALSE
+## 283    1    2      1        4 10 10 10     1.5    FALSE
+## 284    2    4      5       26 10 10  9     3.0     TRUE
+## 285    3    4      3       18 12 11 12     3.5     TRUE
+## 286    1    1      3        2 14 14 15     1.0    FALSE
+## 287    1    1      4        2 10 11 12     1.0    FALSE
+## 288    1    2      3        2 11 12 12     1.5    FALSE
+## 289    1    2      5        8 11 10 12     1.5    FALSE
+## 290    1    2      4        1 12 11 12     1.5    FALSE
+## 291    1    2      2        2 18 18 18     1.5    FALSE
+## 292    1    1      3        3 13 12 13     1.0    FALSE
+## 293    1    3      2        3 14 14 14     2.0    FALSE
+## 294    1    1      2        4 16 15 16     1.0    FALSE
+## 295    1    4      5        6 14 14 14     2.5     TRUE
+## 296    1    2      3        0 16 16 16     1.5    FALSE
+## 297    1    1      3        3 18 18 18     1.0    FALSE
+## 298    1    1      4        4 14 14 14     1.0    FALSE
+## 299    1    3      5        2 14 14 13     2.0    FALSE
+## 300    2    3      2        1 12 11  6     2.5     TRUE
+## 301    1    2      2        5 12 11 11     1.5    FALSE
+## 302    1    1      3        0 15 15 16     1.0    FALSE
+## 303    2    2      1        2 17 16 16     2.0    FALSE
+## 304    1    1      4        7 13 12 13     1.0    FALSE
+## 305    2    2      5        0 12 12 12     2.0    FALSE
+## 306    1    1      3        0 16 14 15     1.0    FALSE
+## 307    1    2      5        0 18 18 18     1.5    FALSE
+## 308    1    1      5        0 16 16 16     1.0    FALSE
+## 309    1    2      5        0 12 11 12     1.5    FALSE
+## 310    1    2      1        1 10 10  8     1.5    FALSE
+## 311    1    1      5        6 12 12 13     1.0    FALSE
+## 312    2    5      5        1 13 13 14     3.5     TRUE
+## 313    3    3      5        1 12 11 12     3.0     TRUE
+## 314    1    2      5       18 14 14 15     1.5    FALSE
+## 315    1    1      3        8 12 11 11     1.0    FALSE
+## 316    2    2      3        2 11 11 10     2.0    FALSE
+## 317    2    3      5        0 14 16 16     2.5     TRUE
+## 318    2    3      2        0 15 14 15     2.5     TRUE
+## 319    2    2      3        2 11 13 12     2.0    FALSE
+## 320    3    5      5        2 16 16 16     4.0     TRUE
+## 321    5    5      4        5 11 10 10     5.0     TRUE
+## 322    1    4      4        4 10 10 10     2.5     TRUE
+## 323    1    3      4        4 12 10 11     2.0    FALSE
+## 324    1    2      4        4 14 14 14     1.5    FALSE
+## 325    2    4      5        1 10 10 10     3.0     TRUE
+## 326    1    1      5        4 14 14 14     1.0    FALSE
+## 327    1    1      4        4  8  6  6     1.0    FALSE
+## 328    1    1      2        0  9  8  6     1.0    FALSE
+## 329    1    1      4        3 12 11  7     1.0    FALSE
+## 330    1    3      5       12 14 14 14     2.0    FALSE
+## 331    2    3      2        0 10 10  8     2.5     TRUE
+## 332    1    1      1        6 15 14 16     1.0    FALSE
+## 333    2    3      2        2 12 12 13     2.5     TRUE
+## 334    2    3      2        3 10 11  6     2.5     TRUE
+## 335    2    2      2        0 11 11  6     2.0    FALSE
+## 336    1    3      5        8 16 16 16     2.0    FALSE
+## 337    1    2      4        9 10 10  7     1.5    FALSE
+## 338    1    2      3        2 11 11 12     1.5    FALSE
+## 339    2    3      1        6 14 14 16     2.5     TRUE
+## 340    1    2      4        6 16 14 16     1.5    FALSE
+## 341    2    3      5        0 12 12 12     2.5     TRUE
+## 342    1    3      4        0 12 14 14     2.0    FALSE
+## 343    5    5      5        9 10 12 12     5.0     TRUE
+## 344    3    3      2        8  9  8 10     3.0     TRUE
+## 345    2    3      3        3 10 11 12     2.5     TRUE
+## 346    2    3      3        4  8  8  8     2.5     TRUE
+## 347    3    3      5        4  8  8  9     3.0     TRUE
+## 348    1    3      2        4 12 11 11     2.0    FALSE
+## 349    1    1      5        0 10 10 10     1.0    FALSE
+## 350    1    2      5        3 12 12 12     1.5    FALSE
+## 351    1    2      5        1 14 13 13     1.5    FALSE
+## 352    1    2      3        3 12 12 12     1.5    FALSE
+## 353    1    1      4        0 18 16 17     1.0    FALSE
+## 354    1    3      3        3 12 12 12     2.0    FALSE
+## 355    1    1      1        2 16 14 15     1.0    FALSE
+## 356    1    2      3        0 12 12 12     1.5    FALSE
+## 357    2    4      3        2  9 10 10     3.0     TRUE
+## 358    2    2      5        0 14 14 14     2.0    FALSE
+## 359    1    2      1        0  8  7  4     1.5    FALSE
+## 360    1    2      4        0 10 10 10     1.5    FALSE
+## 361    4    2      5        5 10  8  6     3.0     TRUE
+## 362    2    3      3        3 12 11 11     2.5     TRUE
+## 363    1    1      3        8 12 11 12     1.0    FALSE
+## 364    1    3      1        9  6  6  7     2.0    FALSE
+## 365    1    1      1        0 17 18 18     1.0    FALSE
+## 366    1    2      4        3  9 10 11     1.5    FALSE
+## 367    3    4      2        2 10 12 12     3.5     TRUE
+## 368    1    2      1        0 16 16 16     1.5    FALSE
+## 369    2    3      1       14  9 10 10     2.5     TRUE
+## 370    1    4      2        4 16 16 16     2.5     TRUE
+## 371    1    3      5        2  7  6  4     2.0    FALSE
+## 372    1    1      3        3 12 13 13     1.0    FALSE
+## 373    1    3      5        0  6  6  0     2.0    FALSE
+## 374    4    3      3        7  6  6  2     3.5     TRUE
+## 375    1    3      4        1 12 13 12     2.0    FALSE
+## 376    2    2      5        6  6  7  8     2.0    FALSE
+## 377    1    2      5        2  8  8  5     1.5    FALSE
+## 378    1    1      1        2 11 12 12     1.0    FALSE
+## 379    2    2      5        2  6  6  4     2.0    FALSE
+## 380    1    1      5        3  8  8  4     1.0    FALSE
+## 381    3    4      2        4 12 13 13     3.5     TRUE
+## 382    3    4      5        2 10 12 10     3.5     TRUE
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{alc <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"alc.csv"}\NormalTok{)}
+\KeywordTok{colnames}\NormalTok{(alc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "X"          "school"     "sex"        "age"        "address"   
+##  [6] "famsize"    "Pstatus"    "Medu"       "Fedu"       "Mjob"      
+## [11] "Fjob"       "reason"     "nursery"    "internet"   "guardian"  
+## [16] "traveltime" "studytime"  "failures"   "schoolsup"  "famsup"    
+## [21] "paid"       "activities" "higher"     "romantic"   "famrel"    
+## [26] "freetime"   "goout"      "Dalc"       "Walc"       "health"    
+## [31] "absences"   "G1"         "G2"         "G3"         "alc_use"   
+## [36] "high_use"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{str}\NormalTok{(alc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    382 obs. of  36 variables:
+##  $ X         : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ school    : Factor w/ 2 levels "GP","MS": 1 1 1 1 1 1 1 1 1 1 ...
+##  $ sex       : Factor w/ 2 levels "F","M": 1 1 1 1 1 2 2 1 2 2 ...
+##  $ age       : int  18 17 15 15 16 16 16 17 15 15 ...
+##  $ address   : Factor w/ 2 levels "R","U": 2 2 2 2 2 2 2 2 2 2 ...
+##  $ famsize   : Factor w/ 2 levels "GT3","LE3": 1 1 2 1 1 2 2 1 2 1 ...
+##  $ Pstatus   : Factor w/ 2 levels "A","T": 1 2 2 2 2 2 2 1 1 2 ...
+##  $ Medu      : int  4 1 1 4 3 4 2 4 3 3 ...
+##  $ Fedu      : int  4 1 1 2 3 3 2 4 2 4 ...
+##  $ Mjob      : Factor w/ 5 levels "at_home","health",..: 1 1 1 2 3 4 3 3 4 3 ...
+##  $ Fjob      : Factor w/ 5 levels "at_home","health",..: 5 3 3 4 3 3 3 5 3 3 ...
+##  $ reason    : Factor w/ 4 levels "course","home",..: 1 1 3 2 2 4 2 2 2 2 ...
+##  $ nursery   : Factor w/ 2 levels "no","yes": 2 1 2 2 2 2 2 2 2 2 ...
+##  $ internet  : Factor w/ 2 levels "no","yes": 1 2 2 2 1 2 2 1 2 2 ...
+##  $ guardian  : Factor w/ 3 levels "father","mother",..: 2 1 2 2 1 2 2 2 2 2 ...
+##  $ traveltime: int  2 1 1 1 1 1 1 2 1 1 ...
+##  $ studytime : int  2 2 2 3 2 2 2 2 2 2 ...
+##  $ failures  : int  0 0 2 0 0 0 0 0 0 0 ...
+##  $ schoolsup : Factor w/ 2 levels "no","yes": 2 1 2 1 1 1 1 2 1 1 ...
+##  $ famsup    : Factor w/ 2 levels "no","yes": 1 2 1 2 2 2 1 2 2 2 ...
+##  $ paid      : Factor w/ 2 levels "no","yes": 1 1 2 2 2 2 1 1 2 2 ...
+##  $ activities: Factor w/ 2 levels "no","yes": 1 1 1 2 1 2 1 1 1 2 ...
+##  $ higher    : Factor w/ 2 levels "no","yes": 2 2 2 2 2 2 2 2 2 2 ...
+##  $ romantic  : Factor w/ 2 levels "no","yes": 1 1 1 2 1 1 1 1 1 1 ...
+##  $ famrel    : int  4 5 4 3 4 5 4 4 4 5 ...
+##  $ freetime  : int  3 3 3 2 3 4 4 1 2 5 ...
+##  $ goout     : int  4 3 2 2 2 2 4 4 2 1 ...
+##  $ Dalc      : int  1 1 2 1 1 1 1 1 1 1 ...
+##  $ Walc      : int  1 1 3 1 2 2 1 1 1 1 ...
+##  $ health    : int  3 3 3 5 5 5 3 1 1 5 ...
+##  $ absences  : int  5 3 8 1 2 8 0 4 0 0 ...
+##  $ G1        : int  2 7 10 14 8 14 12 8 16 13 ...
+##  $ G2        : int  8 8 10 14 12 14 12 9 17 14 ...
+##  $ G3        : int  8 8 11 14 12 14 12 10 18 14 ...
+##  $ alc_use   : num  1 1 2.5 1 1.5 1.5 1 1 1 1 ...
+##  $ high_use  : logi  FALSE FALSE TRUE FALSE FALSE FALSE ...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{dim}\NormalTok{(alc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 382  36
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(alc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   X school sex age address famsize Pstatus Medu Fedu     Mjob     Fjob
+## 1 1     GP   F  18       U     GT3       A    4    4  at_home  teacher
+## 2 2     GP   F  17       U     GT3       T    1    1  at_home    other
+## 3 3     GP   F  15       U     LE3       T    1    1  at_home    other
+## 4 4     GP   F  15       U     GT3       T    4    2   health services
+## 5 5     GP   F  16       U     GT3       T    3    3    other    other
+## 6 6     GP   M  16       U     LE3       T    4    3 services    other
+##       reason nursery internet guardian traveltime studytime failures
+## 1     course     yes       no   mother          2         2        0
+## 2     course      no      yes   father          1         2        0
+## 3      other     yes      yes   mother          1         2        2
+## 4       home     yes      yes   mother          1         3        0
+## 5       home     yes       no   father          1         2        0
+## 6 reputation     yes      yes   mother          1         2        0
+##   schoolsup famsup paid activities higher romantic famrel freetime goout
+## 1       yes     no   no         no    yes       no      4        3     4
+## 2        no    yes   no         no    yes       no      5        3     3
+## 3       yes     no  yes         no    yes       no      4        3     2
+## 4        no    yes  yes        yes    yes      yes      3        2     2
+## 5        no    yes  yes         no    yes       no      4        3     2
+## 6        no    yes  yes        yes    yes       no      5        4     2
+##   Dalc Walc health absences G1 G2 G3 alc_use high_use
+## 1    1    1      3        5  2  8  8     1.0    FALSE
+## 2    1    1      3        3  7  8  8     1.0    FALSE
+## 3    2    3      3        8 10 10 11     2.5     TRUE
+## 4    1    1      5        1 14 14 14     1.0    FALSE
+## 5    1    2      5        2  8 12 12     1.5    FALSE
+## 6    1    2      5        8 14 14 14     1.5    FALSE
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(dplyr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(tidyr)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{3.}
+
+I chose \emph{absences}, \emph{going out with friens (goout)},
+\emph{mother's education} and \emph{father's job} for variables
+predicting student's alcohol consumption. My hypothesis is, that the
+absences from school is the strongest predictor of alcohol consumption
+of the four chosen predictors. I also assume, that going out with
+friends have a clear connection with alcohol consumption: the more one
+goes out, the more one consumes alcohol, on average. Third hypothesis
+is, that family's socio-economic position (mother's education + father's
+job) has an inverse connection to alcohol consumption of a child: the
+lower the family's socio-economic position, the more there is certain
+type of risk behavior (alcohol consumption) even intergenerationally.
+
+\textbf{4.}
+
+For preliminary, graphical exploration of the hypothesis formulated,
+following box plot graphs are printed for integer variables \emph{goout}
+and \emph{absences}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{g1 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(alc, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ high_use, }\DataTypeTok{y =}\NormalTok{ absences, }\DataTypeTok{col =}\NormalTok{ sex))}
+\NormalTok{g2 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(alc, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ high_use, }\DataTypeTok{y =}\NormalTok{ goout, }\DataTypeTok{col =}\NormalTok{ sex))}
+\NormalTok{g1 }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_boxplot}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{chapter3_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{g2 }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_boxplot}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{chapter3_files/figure-latex/unnamed-chunk-2-2.pdf}
+
+It seems, that there are some differences in absences between
+high\_users and low\_users of alcohol. The differences are more clear
+among men. Men whose alcohol consumption is high, have more absences
+from school in general. Also, high consuming men's distribution of
+absences seems wider than those who do not consume as much and seems
+skewed as well. Between high and not-high consuming females there are
+not so clear difference in absences based on boxplot diagram. Some
+outliers can be detected among all four classes in question. Among
+females there seem to be more outliers, that drastically differ from
+main population in absences, than among men. Going out seems to have a
+clear connection with alcohol consumption. For both female and men a
+high consumption of alcohol indicates a higher outgoing rate.
+
+For gategorial variables concerning family's socio-economic position,
+boxplot diagrams are not reasonable solution. Therefore, pobability
+tables are printed for Medu and Fjob with following commands and
+results:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{attach}\NormalTok{(alc)}
+\NormalTok{mytable0 <-}\StringTok{ }\KeywordTok{table}\NormalTok{(high_use)}
+\NormalTok{mytable0}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## high_use
+## FALSE  TRUE 
+##   268   114
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{prop.table}\NormalTok{(mytable0)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## high_use
+##     FALSE      TRUE 
+## 0.7015707 0.2984293
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mytable <-}\StringTok{ }\KeywordTok{table}\NormalTok{(Fjob, high_use)}
+\NormalTok{mytable}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           high_use
+## Fjob       FALSE TRUE
+##   at_home     14    2
+##   health      13    4
+##   other      149   62
+##   services    67   40
+##   teacher     25    6
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{prop.table}\NormalTok{(mytable, }\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           high_use
+## Fjob           FALSE      TRUE
+##   at_home  0.8750000 0.1250000
+##   health   0.7647059 0.2352941
+##   other    0.7061611 0.2938389
+##   services 0.6261682 0.3738318
+##   teacher  0.8064516 0.1935484
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mytable2 <-}\StringTok{ }\KeywordTok{table}\NormalTok{(Medu, high_use)}
+\NormalTok{mytable2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     high_use
+## Medu FALSE TRUE
+##    0     1    2
+##    1    33   18
+##    2    80   18
+##    3    59   36
+##    4    95   40
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{prop.table}\NormalTok{(mytable2, }\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     high_use
+## Medu     FALSE      TRUE
+##    0 0.3333333 0.6666667
+##    1 0.6470588 0.3529412
+##    2 0.8163265 0.1836735
+##    3 0.6210526 0.3789474
+##    4 0.7037037 0.2962963
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{chisq.test}\NormalTok{(mytable)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in chisq.test(mytable): Chi-squared approximation may be incorrect
+\end{verbatim}
+
+\begin{verbatim}
+## 
+##  Pearson's Chi-squared test
+## 
+## data:  mytable
+## X-squared = 7.1778, df = 4, p-value = 0.1268
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{chisq.test}\NormalTok{(mytable2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in chisq.test(mytable2): Chi-squared approximation may be incorrect
+\end{verbatim}
+
+\begin{verbatim}
+## 
+##  Pearson's Chi-squared test
+## 
+## data:  mytable2
+## X-squared = 11.775, df = 4, p-value = 0.0191
+\end{verbatim}
+
+In average, the probability of high alcohol consumption is
+\textasciitilde{} 30 \%. From tables concerning father's job, it can be
+seen, that especially students, whose father works at service sector,
+have a higher probability of high alcohol usage compared to students,
+whose fathers work in other sectors. Mother's education does not have a
+straightforward relationship with students high alcohol consumption.
+Although students, whose mothers do not have any education, have clearly
+higher probability (66\%) for high alcohol usage, it must be noticed,
+that there are only 3 students whose mother do not have any education in
+the data, which means that any conlcusions of those students cannot be
+drawn. Based on chi-square tests, father's job doesn't have
+statistically significant connection to student's alcohol consumption,
+but mother's education does have.
+
+In contrast to my hypotheses, it seems that going out might be the
+strongest predictor of high alcohol consumption, rather than absences
+from school. Also, family's socioeconomic position does have a
+connection, but the interpretation with these two variables in question
+(Medu, Fjob) is difficult due to shortages in sample size.
+
+\textbf{5.}
+
+Logistic regression is utilized to form a predictive model for alcohol
+consumption, using following commands:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(high_use }\OperatorTok{~}\StringTok{ }\NormalTok{Fjob }\OperatorTok{+}\StringTok{ }\NormalTok{Medu }\OperatorTok{+}\StringTok{ }\NormalTok{goout }\OperatorTok{+}\StringTok{ }\NormalTok{absences, }\DataTypeTok{data =}\NormalTok{ alc, }\DataTypeTok{family =} \StringTok{"binomial"}\NormalTok{)}
+\KeywordTok{summary}\NormalTok{(m)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = high_use ~ Fjob + Medu + goout + absences, family = "binomial", 
+##     data = alc)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.8866  -0.7804  -0.5554   0.8854   2.4079  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(>|z|)    
+## (Intercept)  -4.53829    0.92553  -4.903 9.42e-07 ***
+## Fjobhealth    0.60259    0.99512   0.606 0.544818    
+## Fjobother     0.85834    0.79461   1.080 0.280050    
+## Fjobservices  1.33889    0.80861   1.656 0.097766 .  
+## Fjobteacher   0.30601    0.93443   0.327 0.743301    
+## Medu         -0.02015    0.12079  -0.167 0.867490    
+## goout         0.74436    0.11896   6.257 3.92e-10 ***
+## absences      0.07683    0.02251   3.413 0.000643 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 465.68  on 381  degrees of freedom
+## Residual deviance: 395.11  on 374  degrees of freedom
+## AIC: 411.11
+## 
+## Number of Fisher Scoring iterations: 4
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{OR <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(m) }\OperatorTok{%>%}\StringTok{ }\NormalTok{exp}
+\NormalTok{CI <-}\StringTok{ }\KeywordTok{confint}\NormalTok{(m) }\OperatorTok{%>%}\StringTok{ }\NormalTok{exp}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Waiting for profiling to be done...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cbind}\NormalTok{(OR, CI)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                      OR       2.5 %      97.5 %
+## (Intercept)  0.01069165 0.001312637  0.05555929
+## Fjobhealth   1.82684300 0.274371446 15.92422759
+## Fjobother    2.35924185 0.596708164 15.77444797
+## Fjobservices 3.81479474 0.932973456 25.98660923
+## Fjobteacher  1.35800019 0.239357299 10.89282334
+## Medu         0.98004813 0.773500235  1.24334301
+## goout        2.10508797 1.676682452  2.67561855
+## absences     1.07986226 1.035215955  1.13186353
+\end{verbatim}
+
+Logistic regression model confirms the interpretation presented above:
+going out is the srongest predictor for high alcohol consumption. One
+unit increase in going out means that the odds ratio for belonging to
+the group of high alcohol consuming students grows 2,1. This is not
+exactly the same as saying ``probability increases two times'', although
+in reality it can be close to this kind of interpretation (relative risk
+vs.~odds ratio, eg.
+\url{https://journal.fi/janus/article/download/50456/15253}, in Finnish,
+unfortunately). Absences from school is statistically significant
+predictor as well, but it's effect seems modest. Partly this can be
+explained by the relatively large scale of the variable. If
+standardized, the effect would appear much stronger.
+
+The model interprets mother's education to be numerical due to
+variable's numerical coding. In this case, this can be accepted, because
+mother's education (based on crosstabs) didn't have the kind of
+relationship with alcohol consumption, that would have had a
+straightforward theoretical interpretation. That is, there were a
+statistically significant variation with alcohol usage, but as the
+connection was not even close to linear, this was enough to question my
+hypothesis concerning especially mother's low education.
+
+Father's job is considered as a factor variable in the model. Since the
+first class of the variable works as a reference group for others, it
+seems that students whose father works at a service sector, have a
+higher probability of high consumption of alcohol (OR = 3,81) compared
+to students whose father works / is at home (this category is not
+included visibly in the model). However, the value of the estimate is
+not statistically significant, so with this number of observations, this
+kind of interpretation cannot be made.
+
+\textbf{6.}
+
+Based on AIC criterion, a better fitting (simpler) model is formed by
+dropping statistically non-significant variables (Medu, Fjob) out of the
+model. Step by step it can be seen, that AIC has the lowest value with
+only two statistically significant predictors (goout and absences) in
+the model (AIC = 408,5), although, the differences are modest.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1 <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(high_use }\OperatorTok{~}\StringTok{ }\NormalTok{Fjob }\OperatorTok{+}\StringTok{ }\NormalTok{goout }\OperatorTok{+}\StringTok{ }\NormalTok{absences, }\DataTypeTok{data =}\NormalTok{ alc, }\DataTypeTok{family =} \StringTok{"binomial"}\NormalTok{)}
+\KeywordTok{summary}\NormalTok{(m1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = high_use ~ Fjob + goout + absences, family = "binomial", 
+##     data = alc)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.8868  -0.7831  -0.5612   0.8959   2.4044  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(>|z|)    
+## (Intercept)  -4.58738    0.87909  -5.218 1.81e-07 ***
+## Fjobhealth    0.58795    0.99170   0.593 0.553270    
+## Fjobother     0.85735    0.79501   1.078 0.280846    
+## Fjobservices  1.33554    0.80874   1.651 0.098659 .  
+## Fjobteacher   0.28172    0.92327   0.305 0.760264    
+## goout         0.74360    0.11887   6.256 3.96e-10 ***
+## absences      0.07654    0.02244   3.411 0.000648 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 465.68  on 381  degrees of freedom
+## Residual deviance: 395.14  on 375  degrees of freedom
+## AIC: 409.14
+## 
+## Number of Fisher Scoring iterations: 4
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{OR <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(m1) }\OperatorTok{%>%}\StringTok{ }\NormalTok{exp}
+\NormalTok{CI <-}\StringTok{ }\KeywordTok{confint}\NormalTok{(m1) }\OperatorTok{%>%}\StringTok{ }\NormalTok{exp}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Waiting for profiling to be done...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cbind}\NormalTok{(OR, CI)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                      OR       2.5 %      97.5 %
+## (Intercept)  0.01017947 0.001343874  0.04796635
+## Fjobhealth   1.80029096 0.272528679 15.61959813
+## Fjobother    2.35691789 0.595702770 15.76861178
+## Fjobservices 3.80205572 0.929991554 25.90839965
+## Fjobteacher  1.32541059 0.239495282 10.46342160
+## goout        2.10350198 1.675712336  2.67317870
+## absences     1.07955007 1.035062573  1.13137478
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m2 <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(high_use }\OperatorTok{~}\StringTok{ }\NormalTok{goout }\OperatorTok{+}\StringTok{ }\NormalTok{absences, }\DataTypeTok{data =}\NormalTok{ alc, }\DataTypeTok{family =} \StringTok{"binomial"}\NormalTok{)}
+\KeywordTok{summary}\NormalTok{(m2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = high_use ~ goout + absences, family = "binomial", 
+##     data = alc)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.9111  -0.7480  -0.5173   0.9427   2.3741  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(>|z|)    
+## (Intercept) -3.64647    0.43400  -8.402  < 2e-16 ***
+## goout        0.73590    0.11715   6.282 3.35e-10 ***
+## absences     0.07703    0.02209   3.487 0.000489 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 465.68  on 381  degrees of freedom
+## Residual deviance: 402.50  on 379  degrees of freedom
+## AIC: 408.5
+## 
+## Number of Fisher Scoring iterations: 4
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{OR <-}\StringTok{ }\KeywordTok{coef}\NormalTok{(m2) }\OperatorTok{%>%}\StringTok{ }\NormalTok{exp}
+\NormalTok{CI <-}\StringTok{ }\KeywordTok{confint}\NormalTok{(m2) }\OperatorTok{%>%}\StringTok{ }\NormalTok{exp}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Waiting for profiling to be done...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cbind}\NormalTok{(OR, CI)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                   OR      2.5 %     97.5 %
+## (Intercept) 0.026083 0.01076768 0.05922061
+## goout       2.087359 1.66817170 2.64318173
+## absences    1.080069 1.03581041 1.13071158
+\end{verbatim}
+
+A ``confusion matrix'' shows, that a model does have power predicting
+observations right, but it must be noticed, that there exist
+misclassified observations as well.
+
+Utilizing a loss function, the average number of correct (accuracy) and
+incorrect (penalty) predictions can be estimated. Based on the latter
+loss function, the average number of incorrect predictions is about 23,6
+percentage.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{probabilities <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(m2, }\DataTypeTok{type =} \StringTok{"response"}\NormalTok{)}
+\NormalTok{alc <-}\StringTok{ }\KeywordTok{mutate}\NormalTok{(alc, }\DataTypeTok{probability =}\NormalTok{ probabilities)}
+\NormalTok{alc <-}\StringTok{ }\KeywordTok{mutate}\NormalTok{(alc, }\DataTypeTok{prediction =}\NormalTok{ probability }\OperatorTok{>}\StringTok{ }\FloatTok{0.5}\NormalTok{)}
+\KeywordTok{table}\NormalTok{(}\DataTypeTok{high_use =}\NormalTok{ alc}\OperatorTok{$}\NormalTok{high_use, }\DataTypeTok{prediction =}\NormalTok{ alc}\OperatorTok{$}\NormalTok{prediction)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         prediction
+## high_use FALSE TRUE
+##    FALSE   245   23
+##    TRUE     67   47
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{g6 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(alc, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ probability, }\DataTypeTok{y =}\NormalTok{ high_use, }\DataTypeTok{col =}\NormalTok{ prediction))}
+\NormalTok{g6 }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_point}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{chapter3_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{table}\NormalTok{(}\DataTypeTok{high_use =}\NormalTok{ alc}\OperatorTok{$}\NormalTok{high_use, }\DataTypeTok{prediction =}\NormalTok{ alc}\OperatorTok{$}\NormalTok{prediction) }\OperatorTok{%>%}\StringTok{ }\NormalTok{prop.table }\OperatorTok{%>%}\StringTok{ }\NormalTok{addmargins}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         prediction
+## high_use      FALSE       TRUE        Sum
+##    FALSE 0.64136126 0.06020942 0.70157068
+##    TRUE  0.17539267 0.12303665 0.29842932
+##    Sum   0.81675393 0.18324607 1.00000000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{loss_func <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(class, prob) \{}
+\NormalTok{n_wrong <-}\StringTok{ }\KeywordTok{abs}\NormalTok{(class }\OperatorTok{-}\StringTok{ }\NormalTok{prob) }\OperatorTok{>}\StringTok{ }\FloatTok{0.5}
+\KeywordTok{mean}\NormalTok{(n_wrong)}
+\NormalTok{\}}
+
+\KeywordTok{loss_func}\NormalTok{(}\DataTypeTok{class =}\NormalTok{ alc}\OperatorTok{$}\NormalTok{high_use, }\DataTypeTok{prob =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.7015707
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{loss_func}\NormalTok{(}\DataTypeTok{class =}\NormalTok{ alc}\OperatorTok{$}\NormalTok{high_use, }\DataTypeTok{prob =} \DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.2984293
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{loss_func}\NormalTok{(}\DataTypeTok{class =}\NormalTok{ alc}\OperatorTok{$}\NormalTok{high_use, }\DataTypeTok{prob =}\NormalTok{ alc}\OperatorTok{$}\NormalTok{probability)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.2356021
+\end{verbatim}
+
+\textbf{7.}
+
+Following commands are executed for 10-fold cross-validation of the
+model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(boot)}
+\NormalTok{cv <-}\StringTok{ }\KeywordTok{cv.glm}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ alc, }\DataTypeTok{cost =}\NormalTok{ loss_func, }\DataTypeTok{glmfit =}\NormalTok{ m, }\DataTypeTok{K =} \DecValTok{10}\NormalTok{)}
+\NormalTok{cv}\OperatorTok{$}\NormalTok{delta[}\DecValTok{1}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.2460733
+\end{verbatim}
+
+It seems, that the mean prediction error of the model presented above
+(0,246) is slightly smaller compared to the model presented in the data
+camp excercise (0,264).
+
+
+\end{document}
