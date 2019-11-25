@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Clustering and Classification
 
+
 **2.**
 
 There are 506 observations of 14 variables in the data mapping housing values in suburbs of Boston. Data consist of constant, numerical variables and two integers. It is important to notice, that contrary to previous data, this data seems to contain information from aggregated measures, that is, neighbourgood or suburb-level measurements, which can explain strong correlations between varaibles in the dataset on average.
