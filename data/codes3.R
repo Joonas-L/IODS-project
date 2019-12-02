@@ -186,3 +186,89 @@ km2
 
 
 pairs(boston_scaled2[], col = km2$cluster)
+
+
+
+
+human <- read.table("https://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human2.txt", sep  =",", header = T)
+str(human)
+names(human)
+
+library(GGally)
+library(ggplot2)
+library(tidyr) 
+library(dplyr)
+library(corrplot)
+
+ggpairs(human)
+
+cor(human) %>% corrplot
+
+setwd("~/IODS-project/data")
+write.csv(human, file = "human.csv")
+str(human)
+
+
+setwd("~/IODS-project/data")
+human <- read.csv("human.csv")
+
+library(GGally)
+library(ggplot2)
+library(tidyr) 
+library(dplyr)
+library(corrplot)
+
+str(human)
+names(human)
+human <- select(human, -X)
+str(human)
+
+summary (human)
+
+
+pca_human <- prcomp(human)
+pca_human
+biplot(pca_human, choices = 1:2)
+
+
+human_std <- scale(human)
+pca_human_std <- prcomp(human_std)
+pca_human_std
+biplot(pca_human_std, choices = 1:2)
+
+s <- summary(pca_human)
+s_std <- summary(pca_human_std)
+s
+s_std
+
+
+
+ggpairs(human_std)
+cor(human_std) %>% corrplot
+
+
+install.packages("FactoMineR")
+library(FactoMineR)
+data("tea")
+str(tea)
+names(tea)
+summary(tea)
+tea1 <- select(tea, - age)
+summary(tea1)
+str(tea1)
+gather(tea1) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar()+ theme(axis.text.x = element_text(angle = 30, hjust = 2, size = 7))
+
+
+mca <- MCA(tea1, graph = FALSE)
+mca
+summary(mca)
+plot(mca, invisible=c("ind"), habillage = "quali")
+
+keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+tea_time <- select(tea, one_of(keep_columns))
+str(tea_time)
+gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+
+mca1 <- MCA(tea_time, graph = FALSE)
+summary(mca1)
+plot(mca1, invisible=c("ind"), habillage = "quali")

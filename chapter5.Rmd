@@ -1,0 +1,116 @@
+---
+title: "Chapter5"
+author: "Joonas Luukkonen"
+date: "02 12 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Dimensionality reduction techniques
+
+**1**
+
+At first, ggpairs and corrplot commands are executed for a graphical exploration of the data.
+
+```{r}
+setwd("~/IODS-project/data")
+human <- read.csv("human.csv")
+
+library(GGally)
+library(ggplot2)
+library(tidyr) 
+library(dplyr)
+library(corrplot)
+
+str(human)
+names(human)
+human <- select(human, -X)
+str(human)
+
+ggpairs(human)
+
+cor(human) %>% corrplot
+
+summary (human)
+```
+
+It seems, that expected years of schooling (Edu.Exp) is the most normally distributed variable in the data. Other ones are at least slightly skewed. Especially this can be seen in the cases of Gross National Income per capita (GNI) and Maternal mortality ratio (Mat.Mor). Strongest correlation exists between Maternal mortality ratio and life expectancy at birth (-0,857). Almost as strong is the correlation between expected years of schooling (Edu.Exp) and life expectancy (0,789).
+
+
+
+**2**
+
+Principal component analysis is executed in two steps: first with unstandardized variables.
+
+```{r}
+pca_human <- prcomp(human)
+pca_human
+biplot(pca_human, choices = 1:2)
+s <- summary(pca_human)
+s
+```
+
+The results of the PCA with unstandardized variables are not clearly reasonable. The first component seem to capture practically all of the variance in the dataset, because of relatively large scale of GNI.
+
+
+
+**3**
+
+```{r}
+human_std <- scale(human)
+pca_human_std <- prcomp(human_std)
+pca_human_std
+biplot(pca_human_std, choices = 1:2)
+s_std <- summary(pca_human_std)
+s_std
+```
+
+With standardized dataset the results seem more reasonable. PC1 captures 53,6 % of the variance of standardized variables, PC2 16,2 %. After standardization, Gross National Income per capita does not skew the results with  disproportionately large weight in the analysis.
+
+Based on the biplot diagram and printed results of the PCA, it can clearly be seen, that in the first component (PC1) there is a bunch of strongly correlating variables, which are divided into two directions: proportion of males and females with at least secondary education, expected years of schooling, life expectancy and GNI forming the negatively charged end and maternal mortality ratio with adolescent birth rate forming the positively charged end of the dimension. PC2 consists of two strongly charged variables, proportion of females and males in the labour force and percentage of female representatives in parliament. These two variables correlate together, although not as strongly as the ones in PC1, as can be seen from previous correlation matrix.
+
+The orthogonal relationship between arrows presenting variables charged into two principal components, indicates that principal components PC1 and PC2 presented do not correlate with each other.
+
+
+**4**
+
+In the countries, where maternal mortality ratio and adolescent birth rate are high, life expectancy, general educational level and Gross National Income per capita is usually low. All this has little to do with general level of labour force participation and female representatives in parliament.
+
+
+**5**
+
+```{r}
+library(FactoMineR)
+data("tea")
+
+tea1 <- select(tea, - age)
+summary(tea1)
+str(tea1)
+gather(tea1) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar()+ theme(axis.text.x = element_text(angle = 18, hjust = 1, size = 5))
+
+mca <- MCA(tea1, graph = FALSE)
+summary(mca)
+plot(mca, invisible=c("ind"), habillage = "quali")
+```
+
+
+After leaving Age-variable out of dataset, there are 300 observations of 35 factor variables in the data. The data consists of questions related to tea consumption preferences. Executing MCA for all the 35 variables gives results, that are very difficult to interpret. The variance each dimension captures stays quite low, 5,8 percent at maximum and the amount of dimensions is very high, 54. To get more fruitful results, analysis is executed following the datacamp procedure, with six variables.
+
+```{r}
+keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+tea_time <- select(tea, one_of(keep_columns))
+str(tea_time)
+gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+
+mca1 <- MCA(tea_time, graph = FALSE)
+summary(mca1)
+plot(mca1, invisible=c("ind"), habillage = "quali")
+```
+
+This time MCA produces 11 dimensions. The first dimension captures 15,2 % of the variance, the second one 14,2 %. V-test shows, that practically all coordinates of the variables in the first three dimensions differs significantly from zero. From MCA factor map, it can be noticed, that category "other" differs clearly from any other category and is loaded strongly in dimension 2. Although, it seems that the variable "How" in general does not have very strong load (0,190) in dimension 2. This could be explained by the observation that other categories of that varaible (marked with red colour) are quite close to each other (and origin) in dimension 2.
+
+Variable "where" is strongly loaded in both dimensions 1 and 2. It seems, that tea consumption patterns differ clearly based on where the individual tends to buy his/her tea. This seem to be in close relation with the description of how tea is consumed: those who buy their tea from tea shop, usually buy tea in unpackaged form, from chain stores tea is usually bought in tea bags. There is also a group, that buys tea both from chain stores and tea shops, in packaged and unpackaged forms. The tea consumption habits do not differ much based on sugar using.
