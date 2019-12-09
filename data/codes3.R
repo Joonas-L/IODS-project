@@ -247,7 +247,7 @@ ggpairs(human_std)
 cor(human_std) %>% corrplot
 
 
-install.packages("FactoMineR")
+
 library(FactoMineR)
 data("tea")
 str(tea)
@@ -272,3 +272,102 @@ gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + g
 mca1 <- MCA(tea_time, graph = FALSE)
 summary(mca1)
 plot(mca1, invisible=c("ind"), habillage = "quali")
+
+
+library(ggplot2)
+ggplot(RATSL, aes(x = Time, y = rats, linetype = ID)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ Group, labeller = label_both) +
+  theme(legend.position = "none") + 
+  scale_y_continuous(limits = c(min(RATSL$rats), max(RATSL$rats)))
+
+RATSLstd <- RATSL %>%
+  group_by(Time) %>%
+  mutate(stdrats = (rats - mean(rats))/sd(rats) ) %>%
+  ungroup()
+
+glimpse(RATSLstd)
+
+ggplot(RATSLstd, aes(x = Time, y = stdrats, linetype = ID)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ Group, labeller = label_both) +
+  theme(legend.position = "none") + 
+  scale_y_continuous(limits = c(min(RATSLstd$rats), max(RATSLstd$rats)))
+
+
+ggplot(RATSLstd, aes(x = Time, y = stdrats, linetype = ID)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ Group, labeller = label_both) +
+  scale_y_continuous(name = "standardized weight")
+
+
+n <- RATSLstd$Time %>% unique() %>% length()
+
+RATSLstdS <- RATSLstd %>%
+  group_by(Group, Time) %>%
+  summarise(mean = mean(rats), se = sd(rats)/sqrt(n) ) %>%
+  ungroup()
+
+glimpse(RATSLstdS)
+
+
+ggplot(RATSLstdS, aes(x = Time, y = mean, linetype = Group, shape = Group)) +
+  geom_line() +
+  scale_linetype_manual(values = c(1,2,3)) +
+  geom_point(size=3) +
+  scale_shape_manual(values = c(1,2,3)) +
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se, linetype="1"), width=1) +
+  theme(legend.position = c(0.8,0.8)) +
+  scale_y_continuous(name = "mean(weight) +/- se(weight)")
+
+
+str(RATSLstd)
+
+RATSLstdS_8 <- RATSLstdS %>%
+  filter(Time > 1) %>%
+  group_by(Group, ID) %>%
+  summarise( mean=mean(rats)) %>%
+  ungroup()
+
+BPRSL
+
+ggplot(BPRSL, aes(x = week, y = bprs, group = treatment)) +
+  geom_line(aes(linetype = subject)) +
+  scale_x_continuous(name = "week", breaks = seq(0, 60, 10)) +
+  scale_y_continuous(name = "bprs") +
+  theme(legend.position = "top")
+
+ggplot(BPRSL, aes(x = week, y = bprs, group = subject)) +
+  geom_line(aes(linetype = subject)) +
+  scale_x_continuous(name = "week") +
+  scale_y_continuous(name = "bprs") +
+  theme(legend.position = "top")
+
+
+BPRSL_reg <- lm(bprs ~ week + treatment, data = BPRSL)
+summary(BPRSL_reg)
+
+library(lme4)
+
+BPRSL_RI <- lmer(bprs ~ week + treatment + (1 | subject), data = BPRSL, REML = FALSE)
+summary(BPRSL_RI)
+
+BPRSL_RIS <- lmer(bprs ~ week + treatment + (week | subject), data = BPRSL, REML = FALSE)
+summary(BPRSL_RIS)
+
+anova(BPRSL_RIS, BPRSL_RI)
+
+BPRSL_RISI <- lmer(bprs ~ week * treatment + (week | subject), data = BPRSL, REML = FALSE)
+summary(BPRSL_RISI)
+
+anova(BPRSL_RISI, BPRSL_RIS)
+
+
+ggplot(BPRSL, aes(x = week, y = bprs, group = subject)) +
+  geom_line(aes(linetype = treatment)) +
+  scale_x_continuous(name = "week", breaks = seq(0, 60, 20)) +
+  scale_y_continuous(name = "Observed bprs") +
+  theme(legend.position = "top")

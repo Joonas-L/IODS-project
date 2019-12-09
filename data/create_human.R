@@ -10,3 +10,8 @@ names(human)
 
 # There are 195 observations of 19 varaibles in the data, including integer, numerical and factor variables. The data consists of measures related to calculating the human development indices and it combines several indicators from most countries in the world.
 
+library(stringr)
+library(tidyr)
+
+str_replace(human$GNI, pattern=",", replace ="") %>% as.numeric
+str_replace

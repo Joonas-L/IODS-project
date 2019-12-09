@@ -1,0 +1,119 @@
+---
+title: "chapter6"
+author: "Joonas Luukkonen"
+date: "8 12 2019"
+output: html_document
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+# Analysis of longitudinal data
+
+**1.**
+
+First, ggplots of unstandardized and standardized rat weight are executed. It seems, that within groups, there are no large differences in weight of individual rats, apart from one rat in group 2. Group one rats have clearly less weight than rats in group 2 or 3. Individual plots are useful and clear tool to present patterns in the data with  small number of individual observation units (16 rats). In addition, summary graphs are executed. Based on summary graphs, group differeces are relatively large. There is a tendency of slight growth in mean weight of all groups in time.
+
+```{r}
+setwd("~/IODS-project/data")
+RATSL <- read.csv("RATSL.sav")
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+RATSL$ID <- factor(RATSL$ID)
+RATSL$Group <- factor(RATSL$Group)
+
+
+ggplot(RATSL, aes(x = Time, y = rats, linetype = ID)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ Group, labeller = label_both) +
+  theme(legend.position = "none") + 
+  scale_y_continuous(limits = c(min(RATSL$rats), max(RATSL$rats)))
+
+RATSLstd <- RATSL %>%
+  group_by(Time) %>%
+  mutate(stdrats = (rats - mean(rats))/sd(rats) ) %>%
+  ungroup()
+
+glimpse(RATSLstd)
+
+
+ggplot(RATSLstd, aes(x = Time, y = stdrats, linetype = ID)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ Group, labeller = label_both) +
+  scale_y_continuous(name = "standardized weight")
+
+
+n <- RATSLstd$Time %>% unique() %>% length()
+
+RATSLstdS <- RATSLstd %>%
+  group_by(Group, Time) %>%
+  summarise(mean = mean(rats), se = sd(rats)/sqrt(n) ) %>%
+  ungroup()
+
+glimpse(RATSLstdS)
+
+ggplot(RATSLstdS, aes(x = Time, y = mean, linetype = Group, shape = Group)) +
+  geom_line() +
+  scale_linetype_manual(values = c(1,2,3)) +
+  geom_point(size=3) +
+  scale_shape_manual(values = c(1,2,3)) +
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se, linetype="1"), width=1) +
+  theme(legend.position = c(0.8,0.8)) +
+  scale_y_continuous(name = "mean(weight) +/- se(weight)")
+```
+
+
+  
+**2**
+
+Before the analysis of wrangled BPRS data, treatment and subject variables must be transformed into factor variables.
+
+```{r}
+setwd("~/IODS-project/data")
+BPRSL <- read.csv("BPRSL.sav")
+
+BPRSL$treatment <- factor(BPRSL$treatment)
+BPRSL$subject <- factor(BPRSL$subject)
+glimpse(BPRSL)
+```
+
+
+Predicting models are fitted with following codes.
+
+```{r}
+BPRSL_reg <- lm(bprs ~ week + treatment, data = BPRSL)
+summary(BPRSL_reg)
+
+library(lme4)
+
+BPRSL_RI <- lmer(bprs ~ week + treatment + (1 | subject), data = BPRSL, REML = FALSE)
+summary(BPRSL_RI)
+
+BPRSL_RIS <- lmer(bprs ~ week + treatment + (week | subject), data = BPRSL, REML = FALSE)
+summary(BPRSL_RIS)
+
+anova(BPRSL_RIS, BPRSL_RI)
+
+BPRSL_RISI <- lmer(bprs ~ week * treatment + (week | subject), data = BPRSL, REML = FALSE)
+summary(BPRSL_RISI)
+
+anova(BPRSL_RISI, BPRSL_RIS)
+```
+
+First, linear regression predicting brief psychiatric rating scale, which is used to evaluate patients suspected of having schitzoprhrenia, is fitted. Predictors in the model are observation week and treatment group. Based on the linear model, week predicts statistically significantly bprs, but treatment group doesn't. The model explains 18,5 % of the variability of bprs in the data.
+
+Linear regression assumes that obsearvations are independent of each other,  which is not true in the case of repeated measurements. Therefore, the estimates of the model are not reliable and random intercept model is fitted. Fitting random intercept model reduces standard error of both week and treatment group, which highlights the abovementioned. There seem to be some variation in the intercepts of the regression fits of the individual bprs profiles, based on standard deviation and variance of subject (intercept), that is, individuals differ in intercept.
+
+Next, random intercept model is reinforced with random slope. There is practically no changes in fixed effects, but based on anova table, the random intercept model with random slope seems to fit better to the data (likelihood ratio test between the models RI and RIS is statistically significant, p = 0,026).
+
+At last, model is completed with interaction term of treatment x time. Based on likelihood ratio test against previous model, adding interaction to the model doesn't improve the fit of the model to the data (p = 0,075).
+
+Interesting notion is, that after adjusting interaction of week and treatment, fixed effect estimate of treatment grows dramatically and gets negative value. However, standard error of the estimate grows remarkably as well. Since the fit of the model to the data doesn't get clearly better with interaction term, it seems, that all in all treatment doesn't seem to have an effect to symptoms measured with brief psychiatric rating scale. Instead, week seem to have an effect: when weeks go forward, symptoms seem to decrease.
